@@ -2802,7 +2802,7 @@ static void PokeSum_PrintSelectedMoveStats(void) {
           GetCategoryIconId(
               gBattleMoves[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos]]
                   .category),
-          64, 28);
+          92, 0);
 
     AddTextPrinterParameterized4(
         sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL, 7,

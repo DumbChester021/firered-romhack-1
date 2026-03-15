@@ -1,14 +1,53 @@
-# Pokémon FireRed and LeafGreen
+# Pokémon FireRed Romhack
 
-This is a decompilation of English Pokémon FireRed and LeafGreen.
+A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ mechanical updates and quality-of-life improvements.
 
-It builds the following ROM images:
+## Features (vs. pret/pokefirered)
 
-* [**pokefirered.gba**](https://datomatic.no-intro.org/?page=show_record&s=23&n=1616) `sha1: 41cb23d8dccc8ebd7c649cd8fbb58eeace6e2fdc`
-* [**pokeleafgreen.gba**](https://datomatic.no-intro.org/?page=show_record&s=23&n=1617) `sha1: 574fa542ffebb14be69902d1d36f1ec0a4afd71e`
-* [**pokefirered_rev1.gba**](https://datomatic.no-intro.org/?page=show_record&s=23&n=1672) `sha1: dd5945db9b930750cb39d00c84da8571feebf417`
-* [**pokeleafgreen_rev1.gba**](https://datomatic.no-intro.org/index.php?page=show_record&s=23&n=1668) `sha1: 7862c67bdecbe21d1d69ce082ce34327e1c6ed5e`
+### Fairy Type
+- Added `TYPE_FAIRY` as the 19th type
+- Complete type effectiveness table with all Gen 6 interactions:
+  - Fairy is super effective against Fighting, Dragon, Dark
+  - Fairy resists Fighting, Bug, Dark; immune to Dragon
+  - Fairy is weak to Poison, Steel; resisted by Fire, Poison, Steel
+  - Steel no longer resists Ghost and Dark (Gen 6 change)
+- 18 Pokémon species reclassified with Fairy typing:
+  Cleffa, Clefairy, Clefable, Igglybuff, Jigglypuff, Wigglytuff, Mr. Mime, Togepi, Togetic, Marill, Azumarill, Snubbull, Granbull, Azurill, Mawile, Ralts, Kirlia, Gardevoir
+- Fairy type label, icon, and TM/HM palette graphics
+- Union Room type filter includes Fairy
 
-To set up the repository, see [INSTALL.md](INSTALL.md).
+### Physical/Special Split
+- Moves now have an explicit `category` field (Physical, Special, or Status)
+- Damage calculation uses per-move category instead of type-based split
+- All 355 moves assigned correct categories matching Gen 4+ data
+- Physical/Special/Status category icons displayed on summary screen
+- Battle accuracy (Hustle) and damage tracking use per-move category
 
-For contacts and other pret projects, see [pret.github.io](https://pret.github.io/).
+### Running Shoes
+- Running shoes enabled from the start (no item pickup required)
+- Running allowed indoors
+
+### Starter Pokémon
+- Starters changed to Clefairy, Togepi, and Azurill (Fairy-type themed)
+
+## Building
+
+See [INSTALL.md](INSTALL.md) for toolchain setup.
+
+```bash
+# Build (modern compiler)
+make MODERN=1 -j$(nproc)
+```
+
+## Data Verification
+
+A Python script validates the integrity of Fairy type and Physical/Special split data:
+
+```bash
+python3 tools/verify_data.py
+```
+
+## Credits
+
+- [pret/pokefirered](https://github.com/pret/pokefirered) — base decompilation
+- [RHH/pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) — reference for Physical/Special split icons

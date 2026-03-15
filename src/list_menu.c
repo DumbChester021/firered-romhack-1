@@ -76,9 +76,9 @@ static const struct MoveMenuInfoIcon sMenuInfoIcons[] =
     [MENU_INFO_ICON_ACCURACY]  = { 40, 12, 0xC8 },
     [MENU_INFO_ICON_PP]        = { 40, 12, 0xE0 },
     [MENU_INFO_ICON_EFFECT]    = { 40, 12, 0xE8 },
-    [MENU_INFO_ICON_PHYSICAL]  = { 12, 12, 0x104 },
-    [MENU_INFO_ICON_SPECIAL]   = { 12, 12, 0x108 },
-    [MENU_INFO_ICON_STATUS]    = { 12, 12, 0x10C },
+    [MENU_INFO_ICON_PHYSICAL]  = { 16, 16, 0x104 },
+    [MENU_INFO_ICON_SPECIAL]   = { 16, 16, 0x108 },
+    [MENU_INFO_ICON_STATUS]    = { 16, 16, 0x10C },
 };
 
 static void ListMenuDummyTask(u8 taskId)
