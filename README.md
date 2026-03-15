@@ -13,6 +13,7 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
   - Steel no longer resists Ghost and Dark (Gen 6 change)
 - 18 Pokémon species reclassified with Fairy typing:
   Cleffa, Clefairy, Clefable, Igglybuff, Jigglypuff, Wigglytuff, Mr. Mime, Togepi, Togetic, Marill, Azumarill, Snubbull, Granbull, Azurill, Mawile, Ralts, Kirlia, Gardevoir
+- Updated Sweet Kiss, Moonlight and Charm to TYPE_FAIRY from TYPE_NORMAL  
 - Fairy type label, icon, and TM/HM palette graphics
 - Union Room type filter includes Fairy
 
@@ -26,6 +27,7 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 ### Running Shoes
 - Running shoes enabled from the start (no item pickup required)
 - Running allowed indoors
+- Silently removed the script of the aide after you defeated Brock
 
 ### Starter Pokémon
 - Starters changed to Clefairy, Togepi, and Azurill (Fairy-type themed)
