@@ -273,6 +273,7 @@ def main():
     verify_damage_calc()
     verify_ui()
     verify_move_types()
+    verify_reusable_tms()
 
     print("\n" + "=" * 60)
     print(f"  Results: {results['passed']} passed, {results['failed']} failed, {results['warnings']} warnings")
@@ -282,6 +283,59 @@ def main():
         sys.exit(1)
     else:
         sys.exit(0)
+
+
+def verify_reusable_tms():
+    """Verify reusable TM implementation."""
+    print("\n--- Reusable TMs ---")
+
+    party_menu = read_file("src/party_menu.c")
+    tm_case = read_file("src/tm_case.c")
+    shop = read_file("src/shop.c")
+
+    # TMs must NOT be removed from bag after teaching
+    tm_removal_pattern = re.compile(
+        r'if\s*\(\s*gSpecialVar_ItemId\s*<\s*ITEM_HM01\s*\)\s*\n\s*RemoveBagItem',
+        re.MULTILINE
+    )
+    check(
+        "party_menu.c: no TM consumption (RemoveBagItem guarded by ITEM_HM01)",
+        not tm_removal_pattern.search(party_menu),
+        "Found RemoveBagItem call guarded by ITEM_HM01 check"
+    )
+
+    # TM Case must NOT display quantity for TMs
+    quantity_pattern = re.compile(
+        r'!IS_HM.*BagGetQuantityByPocketPosition',
+        re.DOTALL
+    )
+    check(
+        "tm_case.c: TM quantity display removed",
+        not quantity_pattern.search(tm_case),
+        "Found TM quantity display code"
+    )
+
+    # TM selling must be disabled (function body should just show "can't buy that")
+    sell_func_match = re.search(
+        r'static void Task_SelectedTMHM_Sell\(.*?\)\s*\{(.*?)\n\}',
+        tm_case, re.DOTALL
+    )
+    sell_disabled = True
+    if sell_func_match:
+        sell_body = sell_func_match.group(1)
+        sell_disabled = "tQuantitySelected" not in sell_body and "ItemId_GetPrice" not in sell_body
+    check(
+        "tm_case.c: TM selling disabled",
+        sell_disabled,
+        "Task_SelectedTMHM_Sell still has sell quantity/price logic"
+    )
+
+    # Shop must check for already-owned TMs
+    check(
+        "shop.c: already-own TM check present",
+        "POCKET_TM_CASE" in shop and "CheckBagHasItem" in shop,
+        "Missing TM already-owned check in shop buy flow"
+    )
 
 if __name__ == "__main__":
     main()

@@ -36,3 +36,6 @@ PalletTown_PlayersHouse_1F_Text_MovieOnTVGirlOnBrickRoad::
 PalletTown_PlayersHouse_1F_Text_OopsWrongSide::
     .string "Oops, wrong side…$"
 
+PalletTown_PlayersHouse_1F_Text_TVGaveRandomTM::
+    .string "The TV spat out a {STR_VAR_1}!$"
+

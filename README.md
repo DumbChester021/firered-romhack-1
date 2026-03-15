@@ -31,6 +31,31 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 
 ### Starter Pokémon
 - Starters changed to Clefairy, Togepi, and Azurill (Fairy-type themed)
+- I have not updated the Team of the Rival yet to reflect Fairy Change to starter since this is temporaray anyways for testing purposes
+
+### Reusable TMs
+- TMs are infinite-use (Gen 5+ behavior) — teaching a TM no longer consumes it
+- TM Case no longer shows quantity counts for TMs
+- TMs cannot be sold at shops (exploit prevention)
+- Shops prevent buying a TM you already own ("You already have that TM")
+- TM28 (Dig) removed from Celadon Dept Store (redundant with story reward)
+- TM10 (Hidden Power) added to Celadon Dept Store (was previously unobtainable)
+- Shop TM prices raised to reflect infinite-use value
+
+## Planned Features
+
+- Day/Night Cycle
+- EV/IV Summary Screen
+- Forgettable HMs / HM Item Replacement
+- BW-style Repel System
+- Modern EXP Share
+- Decapitalization
+- Poison Survival (1 HP in overworld)
+- Updated Learnsets / Base Stats
+- Mega Evolution
+- Follower Pokémon
+- Expanded Pokédex (Gen 4+ species)
+- Nature/Ability Display Colors
 
 ## Building
 
@@ -43,7 +68,7 @@ make MODERN=1 -j$(nproc)
 
 ## Data Verification
 
-A Python script validates the integrity of Fairy type and Physical/Special split data:
+Validates Fairy type, Physical/Special split, and Reusable TM data integrity:
 
 ```bash
 python3 tools/verify_data.py
