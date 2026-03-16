@@ -57,15 +57,15 @@
 #define UNITS_METRIC
 #endif // ENGLISH
 
-// Crashes may occur due to section reordering in the modern build,
-// so we force BUGFIX here.
-#if MODERN
+// Enable all documented bug fixes unconditionally.
+// The original pret codebase guards these behind BUGFIX/UBFIX
+// so they can be toggled for matching builds. Since this is a
+// romhack, we always want them active.
 #ifndef BUGFIX
 #define BUGFIX
 #endif // BUGFIX
 #ifndef UBFIX
 #define UBFIX
 #endif // UBFIX
-#endif // MODERN
 
 #endif // GUARD_CONFIG_H

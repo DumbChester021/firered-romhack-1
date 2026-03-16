@@ -29,10 +29,6 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - Running allowed indoors
 - Silently removed the script of the aide after you defeated Brock
 
-### Starter Pokémon
-- Starters changed to Clefairy, Togepi, and Azurill (Fairy-type themed)
-- I have not updated the Team of the Rival yet to reflect Fairy Change to starter since this is temporaray anyways for testing purposes
-
 ### Reusable TMs
 - TMs are infinite-use (Gen 5+ behavior) — teaching a TM no longer consumes it
 - TM Case no longer shows quantity counts for TMs
@@ -41,6 +37,45 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - TM28 (Dig) removed from Celadon Dept Store (redundant with story reward)
 - TM10 (Hidden Power) added to Celadon Dept Store (was previously unobtainable)
 - Shop TM prices raised to reflect infinite-use value
+
+### Bug Fixes (pret-documented)
+All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` / `#ifdef UBFIX` guards are enabled unconditionally. These include:
+- **Roamer status corruption** — u8 status field read as u32, corrupting contest stats (`roamer.c`)
+- **HP underflow on level up** — currentHP could drop to ≤0 after stat recalc (`pokemon.c`)
+- **Nature stat overflow** — u16 overflow for high base stats with positive natures (`pokemon.c`)
+- **Unown letter calculation** — incorrect form calculation (`pokemon.c`)
+- **Trade data bugs** — incorrect data handling during trades (`trade.c`)
+- **Union Room string destination** — prints to wrong buffer (`union_room.c`)
+- **Pokéball animation** — animation state bug (`pokeball.c`)
+- **Pokédex screen** — display glitch (`pokedex_screen.c`)
+- **Oak speech intro** — intro sequence bug (`oak_speech.c`)
+- **Map preview window** — window creation bug (`map_preview_screen.c`)
+- **Event object NULL deref** — potential freeze with modern compilers (`event_object_movement.c`)
+- **Battle script commands** — two battle command bugs (`battle_script_commands.c`)
+- **Battle initialization** — battle setup bug (`battle_main.c`)
+- **Berry Crush wrong field** — incorrect field used twice (`berry_crush.c`)
+- **Dodrio Berry Picking** — column sharing / difficulty bugs (`dodrio_berry_picking.c`)
+- **Intro animation** — intro gfx bug (`intro.c`)
+- **Heal location** — heal point bug (`heal_location.c`)
+- **Text window graphics** — text rendering bug (`text_window_graphics.c`)
+- **Wild Pokémon area** — encounter area bug (`wild_pokemon_area.c`)
+- **Easy Chat clear** — clears 64 bytes instead of 64 bits (`easy_chat.c`)
+- **Map view bounds** — loop reads past array bounds (`fieldmap.c`)
+- **Map connection NULL deref** — possible null dereference (`fieldmap.c`)
+- **Mystery Gift** — display bug (`mystery_gift_show_card.c`)
+- **Trainer class lookup** — class lookup bug (`trainer_class_lookups.h`)
+- **Party menu memory leak** — switching tilemap buffers never freed (`party_menu.c`) *(additionally fixed — was only commented)*
+
+### Build System
+- Modern compiler (`arm-none-eabi-gcc`) is now the default — no need to pass `MODERN=1`
+- Legacy `agbcc` build still available via `make MODERN=0` if needed
+
+## Active Test/Debug Changes
+
+> **Note:** This section tracks any temporary test or debug code currently active in the build.
+> If you add test code, document it here so it can be found and removed later.
+
+*None currently active.*
 
 ## Planned Features
 
@@ -62,8 +97,11 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 See [INSTALL.md](INSTALL.md) for toolchain setup.
 
 ```bash
-# Build (modern compiler)
-make MODERN=1 -j$(nproc)
+# Build (modern compiler is now the default)
+make -j$(nproc)
+
+# Legacy agbcc build (requires agbcc toolchain)
+make MODERN=0 -j$(nproc)
 ```
 
 ## Data Verification

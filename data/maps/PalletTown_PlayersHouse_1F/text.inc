@@ -33,9 +33,5 @@ PalletTown_PlayersHouse_1F_Text_MovieOnTVGirlOnBrickRoad::
     .string "walking up a brick road.\p"
     .string "…I better go, too.$"
 
-PalletTown_PlayersHouse_1F_Text_OopsWrongSide::
-    .string "Oops, wrong side…$"
-
-PalletTown_PlayersHouse_1F_Text_TVGaveRandomTM::
-    .string "The TV spat out a {STR_VAR_1}!$"
-
+PalletTown_PlayersHouse_1F_Text_TVSideView::
+    .string "A Pokemon show is on.$"

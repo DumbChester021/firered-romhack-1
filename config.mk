@@ -4,8 +4,8 @@ GAME_VERSION  ?= FIRERED
 GAME_REVISION ?= 0
 GAME_LANGUAGE ?= ENGLISH
 
-# Builds the ROM using a modern compiler
-MODERN        ?= 0
+# Builds the ROM using a modern compiler (default: on)
+MODERN        ?= 1
 # Compares the ROM to a checksum of the original - only makes sense using when non-modern
 COMPARE       ?= 0
 

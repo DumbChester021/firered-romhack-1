@@ -30,23 +30,17 @@ PalletTown_PlayersHouse_1F_EventScript_MomHeal::
 	release
 	end
 
-@ Debug TM dispenser: interact with TV to receive a random TM.
-@ Tests reusable TM behavior (receiving, re-receiving, not consumed on use).
 PalletTown_PlayersHouse_1F_EventScript_TV::
 	lockall
 	goto_if_eq VAR_FACING, DIR_NORTH, PalletTown_PlayersHouse_1F_EventScript_TVScreen
-	msgbox PalletTown_PlayersHouse_1F_Text_OopsWrongSide
+	msgbox PalletTown_PlayersHouse_1F_Text_TVSideView
 	releaseall
 	end
 
 PalletTown_PlayersHouse_1F_EventScript_TVScreen::
-	random 50
-	addvar VAR_RESULT, ITEM_TM01
-	copyvar VAR_TEMP_1, VAR_RESULT
-	additem VAR_TEMP_1, 1
-	copyvar VAR_0x8004, VAR_TEMP_1
-	bufferitemname STR_VAR_1, VAR_0x8004
-	msgbox PalletTown_PlayersHouse_1F_Text_TVGaveRandomTM
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, PalletTown_PlayersHouse_1F_EventScript_TVScreenMale
+	call_if_eq VAR_RESULT, FEMALE, PalletTown_PlayersHouse_1F_EventScript_TVScreenFemale
 	releaseall
 	end
 
