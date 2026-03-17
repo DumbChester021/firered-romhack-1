@@ -14,6 +14,7 @@
 #include "constants/field_tasks.h"
 #include "constants/metatile_labels.h"
 #include "constants/songs.h"
+#include "day_night.h"
 
 /*  This file handles some persistent tasks that run in the overworld.
  *  - Task_RunTimeBasedEvents: Triggers ambient cries. In RSE, this also periodically updates local time and RTC events.
@@ -73,12 +74,15 @@ static void Task_RunPerStepCallback(u8 taskId)
 #define tAmbientCryDelay data[2]
 
 // RTC functionality from RS was removed here.
+// Day/Night cycle uses play-time-based clock instead.
 static void Task_RunTimeBasedEvents(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
     if (!ArePlayerFieldControlsLocked() && !QL_IS_PLAYBACK_STATE)
         UpdateAmbientCry(&tAmbientCryState, &tAmbientCryDelay);
+
+    DayNight_UpdateClock();
 }
 
 void SetUpFieldTasks(void)

@@ -68,4 +68,13 @@
 #define UBFIX
 #endif // UBFIX
 
+// --- Day/Night Cycle Configuration ---
+// Set to 1 to enable the day/night palette tinting system.
+#define DN_ENABLED 1
+
+// How many real-time minutes equal one in-game hour.
+// With the default value of 1, a full 24-hour cycle takes 24 real minutes.
+// Set to 2 for a slower cycle (48 min), 0 for fastest (debug).
+#define DN_MINUTES_PER_INGAME_HOUR 1
+
 #endif // GUARD_CONFIG_H

@@ -47,6 +47,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "vs_seeker.h"
 #include "wild_encounter.h"
+#include "day_night.h"
 #include "constants/cable_club.h"
 #include "constants/event_objects.h"
 #include "constants/maps.h"
@@ -774,6 +775,8 @@ void LoadMapFromCameraTransition(u8 mapGroup, u8 mapNum)
     RoamerMove();
     QL_ResetDefeatedWildMonRecord();
     DoCurrentWeather();
+    DayNight_SetTintImmediate(DayNight_GetTimeOfDay());
+    DayNight_ApplyTintToFadedPalettes();
     ResetFieldTasksArgs();
     RunOnResumeMapScript();
     if (GetLastUsedWarpMapSectionId() != gMapHeader.regionMapSectionId)
@@ -805,6 +808,7 @@ static void LoadMapFromWarp(bool32 unused)
     RoamerMoveToOtherLocationSet();
     QL_ResetDefeatedWildMonRecord();
     InitMap();
+    DayNight_SetTintImmediate(DayNight_GetTimeOfDay());
 }
 
 static void QL_LoadMapNormal(void)
@@ -1462,6 +1466,7 @@ static void OverworldBasic(void)
     UpdateCameraPanning();
     BuildOamBuffer();
     UpdatePaletteFade();
+    DayNight_ApplyTintToFadedPalettes();
     UpdateTilesetAnimations();
     DoScheduledBgTilemapCopiesToVram();
 }
@@ -2348,6 +2353,7 @@ void Overworld_CreditsMainCB(void)
     UpdateCameraPanning();
     BuildOamBuffer();
     UpdatePaletteFade();
+    DayNight_ApplyTintToFadedPalettes();
     UpdateTilesetAnimations();
     DoScheduledBgTilemapCopiesToVram();
     if (fading)
