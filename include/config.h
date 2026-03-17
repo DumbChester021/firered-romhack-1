@@ -57,6 +57,25 @@
 #define UNITS_METRIC
 #endif // ENGLISH
 
+// Generation constants for config toggles.
+// Used by generational feature configs below.
+#define GEN_1 0
+#define GEN_2 1
+#define GEN_3 2
+#define GEN_4 3
+#define GEN_5 4
+#define GEN_6 5
+#define GEN_7 6
+#define GEN_8 7
+#define GEN_9 8
+#define GEN_LATEST GEN_9
+
+// Overworld poison behavior.
+// Gen 1-3: Poison damages every few steps, can faint (0HP), may white-out.
+// Gen 4:   Poison damages every few steps, stops at 1HP, then cures poison.
+// Gen 5+:  No overworld poison damage at all (default).
+#define OW_POISON_DAMAGE GEN_LATEST
+
 // Enable all documented bug fixes unconditionally.
 // The original pret codebase guards these behind BUGFIX/UBFIX
 // so they can be toggled for matching builds. Since this is a

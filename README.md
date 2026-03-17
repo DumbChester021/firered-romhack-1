@@ -38,6 +38,13 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - TM10 (Hidden Power) added to Celadon Dept Store (was previously unobtainable)
 - Shop TM prices raised to reflect infinite-use value
 
+### Overworld Poison (`OW_POISON_DAMAGE`)
+- Configurable overworld poison behavior via `OW_POISON_DAMAGE` in `include/config.h`
+- Defaults to `GEN_LATEST` (Gen 5+: no overworld poison damage)
+- Set to `GEN_3` for classic behavior (faint from poison, white-out)
+- Set to `GEN_4` for Gen 4 behavior (survive at 1HP, poison cured)
+- Generation constants `GEN_1`–`GEN_9` and `GEN_LATEST` added for future config toggles
+
 ### Bug Fixes (pret-documented)
 All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` / `#ifdef UBFIX` guards are enabled unconditionally. These include:
 - **Roamer status corruption** — u8 status field read as u32, corrupting contest stats (`roamer.c`)
@@ -79,13 +86,13 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 
 ## Planned Features
 
-- Day/Night Cycle
+- Day/Night Cycle (Implmented but imperfect with bugs, as a Feature Branch for now)
 - EV/IV Summary Screen
 - Forgettable HMs / HM Item Replacement
 - BW-style Repel System
 - Modern EXP Share
 - Decapitalization
-- Poison Survival (1 HP in overworld)
+- Poison Survival — ✅ Implemented as configurable `OW_POISON_DAMAGE`
 - Updated Learnsets / Base Stats
 - Mega Evolution
 - Follower Pokémon
@@ -115,4 +122,4 @@ python3 tools/verify_data.py
 ## Credits
 
 - [pret/pokefirered](https://github.com/pret/pokefirered) — base decompilation
-- [RHH/pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) — reference for Physical/Special split icons
+- [RHH/pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) — reference for Physical/Special split icons and `OW_POISON_DAMAGE` pattern
