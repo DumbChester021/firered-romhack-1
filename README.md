@@ -98,6 +98,16 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 - Follower Pokémon
 - Expanded Pokédex (Gen 4+ species)
 - Nature/Ability Display Colors
+- Text input auto change to small case after first letter
+- Faster text writer speeds
+- Display IMG can be hooked via conversations, scripts etc.. could show items, trainers etc..
+- Transparent Textboxes
+- Updated Sprites
+- Removal of Last Events replay
+- New Moves
+- Items
+- Abilities
+
 
 ## Building
 
