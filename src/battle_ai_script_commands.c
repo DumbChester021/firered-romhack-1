@@ -5,6 +5,7 @@
 #include "item.h"
 #include "random.h"
 #include "battle_ai_script_commands.h"
+#include "battle_ai_main.h"
 #include "constants/abilities.h"
 #include "constants/battle_ai.h"
 #include "constants/battle_move_effects.h"
@@ -408,50 +409,34 @@ u8 BattleAI_ChooseMoveOrAction(void)
     return consideredMoveArray[Random() % numOfBestMoves]; // break any ties that exist.
 }
 
+// BattleAI_DoAIProcessing: replaces the ASM bytecode VM state machine.
+// Called once per set AI flag bit from BattleAI_ChooseMoveOrAction.
+// Evaluates all moves by invoking the C function for the current flag,
+// and updates scores in AI_THINKING_STRUCT.
 static void BattleAI_DoAIProcessing(void)
 {
-    while (AI_THINKING_STRUCT->aiState != AIState_FinishedProcessing)
+    u8 flagIdx = AI_THINKING_STRUCT->aiLogicId;
+    u8 i;
+
+    if (flagIdx >= gAIFunctionTableSize || gAIFunctionTable[flagIdx] == NULL)
+        return;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        switch (AI_THINKING_STRUCT->aiState)
-        {
-        case AIState_DoNotProcess: // Needed to match.
-            break;
-        case AIState_SettingUp:
-            sAIScriptPtr = gBattleAI_ScriptsTable[AI_THINKING_STRUCT->aiLogicId];
+        u16 move = gBattleMons[gBattlerAttacker].moves[i];
 
-            if (gBattleMons[gBattlerAttacker].pp[AI_THINKING_STRUCT->movesetIndex] == 0)
-            {
-                AI_THINKING_STRUCT->moveConsidered = 0; // Don't consider moves with no PP
-            }
-            else
-            {
-                AI_THINKING_STRUCT->moveConsidered = gBattleMons[gBattlerAttacker].moves[AI_THINKING_STRUCT->movesetIndex];
-            }
-            AI_THINKING_STRUCT->aiState++;
-            break;
-        case AIState_Processing:
-            if (AI_THINKING_STRUCT->moveConsidered != 0)
-            {
-                sBattleAICmdTable[*sAIScriptPtr](); // Run AI command.
-            }
-            else
-            {
-                AI_THINKING_STRUCT->score[AI_THINKING_STRUCT->movesetIndex] = 0;
-                AI_THINKING_STRUCT->aiAction |= AI_ACTION_DONE;
-            }
-            if (AI_THINKING_STRUCT->aiAction & AI_ACTION_DONE)
-            {
-                AI_THINKING_STRUCT->movesetIndex++;
+        // Skip moves the AI cannot use (already zeroed by BattleAI_SetupAIData).
+        if (AI_THINKING_STRUCT->score[i] == 0)
+            continue;
+        if (move == MOVE_NONE || gBattleMons[gBattlerAttacker].pp[i] == 0)
+            continue;
 
-                if (AI_THINKING_STRUCT->movesetIndex < MAX_MON_MOVES && (AI_THINKING_STRUCT->aiAction & AI_ACTION_DO_NOT_ATTACK) == 0)
-                    AI_THINKING_STRUCT->aiState = AIState_SettingUp; // as long as their are more moves to process, keep setting this to setup state.
-                else
-                    AI_THINKING_STRUCT->aiState++; // done processing.
-                AI_THINKING_STRUCT->aiAction &= (AI_ACTION_FLEE | AI_ACTION_WATCH | AI_ACTION_DO_NOT_ATTACK |
-                AI_ACTION_UNK5 | AI_ACTION_UNK6 | AI_ACTION_UNK7 | AI_ACTION_UNK8); // disable AI_ACTION_DONE.
-            }
-            break;
-        }
+        AI_THINKING_STRUCT->score[i] = gAIFunctionTable[flagIdx](
+            gBattlerAttacker, gBattlerTarget, move, AI_THINKING_STRUCT->score[i]);
+
+        // Scores must not go negative.
+        if (AI_THINKING_STRUCT->score[i] < 0)
+            AI_THINKING_STRUCT->score[i] = 0;
     }
 }
 
