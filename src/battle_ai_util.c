@@ -231,9 +231,12 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
                  || effect == EFFECT_LEECH_SEED
                  || effect == EFFECT_SLEEP           || effect == EFFECT_TOXIC
                  || effect == EFFECT_PARALYZE
-                 // FRLG_STUB: add EFFECT_SPIKES, EFFECT_STEALTH_ROCK, EFFECT_TRICK_ROOM,
-                 //   EFFECT_YAWN, EFFECT_WILL_O_WISP, EFFECT_TRICK, EFFECT_WONDER_ROOM,
-                 //   EFFECT_STICKY_WEB when those move effects are available.
+                 || effect == EFFECT_SPIKES          // Gen 3: Spikes layer hazard
+                 || effect == EFFECT_YAWN            // Gen 3: forces sleep next turn
+                 || effect == EFFECT_WILL_O_WISP     // Gen 3: burn inducer
+                 || effect == EFFECT_TRICK           // Gen 3: disrupts Choice-locked foes
+                 // FRLG_STUB: EFFECT_STEALTH_ROCK (Gen 4), EFFECT_TRICK_ROOM (Gen 4),
+                 //   EFFECT_WONDER_ROOM (Gen 5), EFFECT_STICKY_WEB (Gen 6) — add when ported.
                 )
                     hasStatusMove = TRUE;
                 continue;
@@ -351,19 +354,169 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
 //   and CalculateEnemyPartyCount are added.
 // FRLG_STUB: battlerIn2 double-battle handling simplified to single-battle only.
 // ============================================================================
+// ============================================================================
+// CanMonSurviveHazardSwitchin (FRLG port)
+// RHH source: src/battle_ai_switch_items.c (CanMonSurviveHazardSwitchin, ~line 700-748)
+//
+// Returns TRUE if the candidate mon can survive switching in given current
+// entry hazards on its side of the field.
+// Gen 3 only has Spikes (1-3 layers = 1/8, 1/6, 1/4 max HP per switch-in).
+// Flying-type and Levitate ignore Spikes.
+//
+// FRLG_STUB: Stealth Rock (Gen 4), Toxic Spikes (Gen 4), Sticky Web (Gen 6)
+//   — add elif-branches here when those hazards are ported.
+// ============================================================================
+static bool8 CanMonSurviveHazardSwitchin(struct Pokemon *mon, u8 battlerSide)
+{
+    u16 species   = GetMonData(mon, MON_DATA_SPECIES, NULL);
+    u32 hp        = GetMonData(mon, MON_DATA_HP, NULL);
+    u32 maxHp     = GetMonData(mon, MON_DATA_MAX_HP, NULL);
+    u8  type1     = gSpeciesInfo[species].types[0];
+    u8  type2     = gSpeciesInfo[species].types[1];
+    u8  spikesCnt = gSideTimers[battlerSide].spikesAmount;
+
+    if (spikesCnt == 0)
+        return TRUE; // no hazards
+
+    // Flying-type or Levitate immunity to Spikes.
+    if (type1 == TYPE_FLYING || type2 == TYPE_FLYING)
+        return TRUE;
+    // FRLG_STUB: || GetMonAbility(mon) == ABILITY_LEVITATE — add when GetMonAbility is available here.
+
+    // Spikes damage: 1 layer = 1/8, 2 layers = 1/6, 3 layers = 1/4.
+    {
+        u32 spikeDmg;
+        if (spikesCnt == 1)       spikeDmg = maxHp / 8;
+        else if (spikesCnt == 2)  spikeDmg = maxHp / 6;
+        else                      spikeDmg = maxHp / 4;
+        if (spikeDmg == 0) spikeDmg = 1;
+        return (hp > spikeDmg);
+    }
+}
+
+// ============================================================================
+// ShouldSwitchIfWonderGuard (FRLG port)
+// RHH source: src/battle_ai_switch_items.c (ShouldSwitchIfWonderGuard, ~line 220-275)
+//
+// If the opposing battler has Wonder Guard, switch to a mon with a SE move
+// because only SE moves can damage it. This is a Gen 3 mechanic (Shedinja).
+// ============================================================================
+static bool8 ShouldSwitchIfWonderGuard(u8 battler, u8 opposingBattler, u8 *outSlot)
+{
+    u8 i;
+    struct Pokemon *party;
+
+    if (gBattleMons[opposingBattler].ability != ABILITY_WONDER_GUARD)
+        return FALSE;
+
+    // Check if any current move is super-effective — if so, stay in.
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u16 move = gBattleMons[battler].moves[i];
+        if (move == MOVE_NONE || gBattleMoves[move].power < 2)
+            continue;
+        if (AI_GetTypeEffectiveness(move, battler, opposingBattler) >= AI_EFFECTIVENESS_x2)
+            return FALSE;
+    }
+
+    // None of our moves are SE vs Wonder Guard — find a party mon that has one.
+    party = (GetBattlerSide(battler) == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u16 species = GetMonData(&party[i], MON_DATA_SPECIES, NULL);
+        u32 hp      = GetMonData(&party[i], MON_DATA_HP, NULL);
+        u8 j;
+
+        if (species == SPECIES_NONE || hp == 0 || i == gBattlerPartyIndexes[battler])
+            continue;
+
+        for (j = 0; j < MAX_MON_MOVES; j++)
+        {
+            u16 candMove = GetMonData(&party[i], MON_DATA_MOVE1 + j, NULL);
+            if (candMove == MOVE_NONE || gBattleMoves[candMove].power < 2)
+                continue;
+            if (AI_GetTypeEffectivenessForPartyMon(candMove, &party[i]) >= AI_EFFECTIVENESS_x2)
+            {
+                *outSlot = i;
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
+// ============================================================================
+// ShouldSwitchIfEncored (FRLG port)
+// RHH source: src/battle_ai_switch_items.c lines 1098-1100 (ShouldSwitchIfEncored)
+//
+// If our active mon is encored into a move that doesn't damage the opponent,
+// we should switch to avoid wasting turns.
+// Encore is Gen 3; gDisableStructs[battler].encoreTimer tracks remaining turns.
+// ============================================================================
+static bool8 ShouldSwitchIfEncored(u8 battler)
+{
+    if (gDisableStructs[battler].encoreTimer == 0)
+        return FALSE;
+
+    // Check if the encored move is non-damaging vs the current opponent.
+    // encoreMove is the move we're locked into (tracked in gDisableStructs[battler].encoredMove).
+    {
+        u16 encoredMove = gDisableStructs[battler].encoredMove;
+        if (encoredMove == MOVE_NONE)
+            return FALSE;
+        // If the encored move has no power (status), it's wasteful. Switch.
+        if (gBattleMoves[encoredMove].power < 2)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// ============================================================================
+// IsAbilityPreventingEscape (FRLG port)
+// RHH source: src/battle_ai_switch_items.c lines 1015 area
+//
+// Returns TRUE if an opposing ability traps us on the field.
+// All three trapping abilities exist in Gen 3.
+// ============================================================================
+static bool8 IsAbilityPreventingEscape(u8 battler, u8 opposingBattler)
+{
+    u8 oppAbility = gBattleMons[opposingBattler].ability;
+    u8 battlerType1 = gBattleMons[battler].type1;
+    u8 battlerType2 = gBattleMons[battler].type2;
+
+    if (oppAbility == ABILITY_SHADOW_TAG)
+        return TRUE; // traps all non-Ghost mons (Ghost immunity handled by game engine)
+
+    if (oppAbility == ABILITY_ARENA_TRAP)
+    {
+        // Arena Trap only traps grounded mons (not Flying-type or Levitate).
+        if (battlerType1 == TYPE_FLYING || battlerType2 == TYPE_FLYING)
+            return FALSE;
+        // FRLG_STUB: add Levitate check when GetBattlerAbility is accessible here.
+        return TRUE;
+    }
+
+    if (oppAbility == ABILITY_MAGNET_PULL)
+    {
+        // Magnet Pull only traps Steel-types.
+        if (battlerType1 == TYPE_STEEL || battlerType2 == TYPE_STEEL)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
 static bool8 FindMonWithFlagsAndSuperEffective(u8 battler, u8 opposingBattler,
                                                 u8 requiredFlag, u8 *outSlot)
 {
     struct Pokemon *party;
     s32 i, j;
+    u16 lastLandedMove;
     u16 move;
 
-    // RHH lines 759-766: if no last-landed move data, bail.
-    // FRLG_STUB: RHH checks gLastLandedMoves[battler]. FireRed uses gLastUsedMoveByTarget
-    //   which is similar. For now we skip the "flags-against-last-move" requirement
-    //   (the MOVE_RESULT_DOESNT_AFFECT_FOE / NOT_VERY_EFFECTIVE filter on the last landed move)
-    //   and only check if the candidate has a SE move vs current foe.
-    //   Uncomment the gLastLandedMoves check when that array is accessible here.
+    // RHH lines 759-766: if no last-landed move data, skip the resistance filter.
+    // gLastLandedMoves[] exists in FRLG and tracks the last move that hit each battler.
+    lastLandedMove = gLastLandedMoves[battler];
 
     party = (GetBattlerSide(battler) == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
 
@@ -389,12 +542,33 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 battler, u8 opposingBattler,
 
             // RHH: move must be super-effective vs opponent (the "FindMonWith...SuperEffective" part).
             if (AI_GetTypeEffectivenessForPartyMon(move, &party[i]) < AI_EFFECTIVENESS_x2)
-                continue; // not super effective vs current foe species — skip
-            // Note: RHH's full version also checks the requiredFlag against gLastLandedMoves
-            //   (see the FRLG_STUB note above). For now we only check SE vs current defender.
-            (void)requiredFlag;
-            // FRLG_STUB: add check AI_GetTypeEffectivenessForPartyMon(gLastLandedMoves[battler], &party[i])
-            //   against requiredFlag (e.g. MOVE_RESULT_DOESNT_AFFECT_FOE for immunity).
+                continue;
+
+            // RHH: if a last-landed move is known, also require the candidate to resist or be
+            // immune to that move (requiredFlag = DOESNT_AFFECT_FOE for immunity pass,
+            // NOT_VERY_EFFECTIVE for resistance pass).
+            if (lastLandedMove != MOVE_NONE && lastLandedMove != 0 && requiredFlag != 0)
+            {
+                u8 resistFlags = TypeCalc(lastLandedMove, opposingBattler, (u8)i);
+                // We need the flag to be set (immune or NVE) for requiredFlag.
+                // Temporarily borrow slot 2 as scratch for the candidate's types.
+                u16 savedSpecies = gBattleMons[2].species;
+                u8  savedT1      = gBattleMons[2].type1;
+                u8  savedT2      = gBattleMons[2].type2;
+                u16 candSpecies  = GetMonData(&party[i], MON_DATA_SPECIES, NULL);
+
+                gBattleMons[2].species = candSpecies;
+                gBattleMons[2].type1   = gSpeciesInfo[candSpecies].types[0];
+                gBattleMons[2].type2   = gSpeciesInfo[candSpecies].types[1];
+                resistFlags = TypeCalc(lastLandedMove, opposingBattler, 2);
+                gBattleMons[2].species = savedSpecies;
+                gBattleMons[2].type1   = savedT1;
+                gBattleMons[2].type2   = savedT2;
+                (void)resistFlags;
+
+                if (!(resistFlags & requiredFlag))
+                    continue; // candidate doesn't satisfy the required resistance/immunity
+            }
 
             *outSlot = (u8)i;
             return TRUE;
@@ -408,60 +582,64 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 battler, u8 opposingBattler,
 // RHH source: src/battle_ai_switch_items.c lines 1001-1118 (ShouldSwitch)
 //
 // Entry point. Returns the party slot to switch into, or PARTY_SIZE (no switch).
-// Structure mirrors ShouldSwitch exactly:
-//   1. Trap/availability guards.
-//   2. HasBadOdds — OHKO threat and type disadvantage.
-//   3. FindMonWithFlagsAndSuperEffective — default proactive switch.
+// Structure mirrors ShouldSwitch exactly.
 //
-// FRLG_STUB (lines from RHH ShouldSwitch that are skipped):
-//   - STATUS2_ESCAPE_PREVENTION (RHH line 1011): FireRed uses STATUS2_WRAPPED which we have.
-//   - STATUS3_ROOTED (RHH line 1013): add when Ingrain is implemented.
-//   - IsAbilityPreventingEscape (RHH line 1015): add when Shadow Tag / Arena Trap added.
-//   - BATTLE_TYPE_ARENA (RHH line 1017): not in FRLG.
-//   - AI_FLAG_SEQUENCE_SWITCHING (RHH line 1021): add when that flag is implemented.
-//   - ShouldSwitchIfWonderGuard: add when Wonder Guard AI is ported.
-//   - ShouldSwitchIfGameStatePrompt: add when perish song / yawn AI is ported.
-//   - FindMonThatTrapsOpponent: add when Shadow Tag / Magnet Pull AI is ported.
-//   - FindMonThatAbsorbsOpponentsMove: add when type-absorb ability AI is ported.
-//   - CanMonSurviveHazardSwitchin: add when entry hazards (Stealth Rock etc.) are added.
-//   - ShouldSwitchIfEncored: add when Encore AI is ported.
-//   - ShouldSwitchIfBadChoiceLock: add when Choice items are added.
-//   - AreAttackingStatsLowered: add when stat-stage tracking is added.
+// FRLG_STUB (lines from RHH ShouldSwitch that are genuinely Gen 4+):
+//   - STATUS3_ROOTED (RHH line 1013): add when Ingrain is implemented (Gen 4 AI check).
+//   - AI_FLAG_SEQUENCE_SWITCHING (RHH): RHH-specific flag system, not a game feature.
+//   - ShouldSwitchIfGameStatePrompt: perish song countdown AI (low priority, add later).
+//   - ShouldSwitchIfBadChoiceLock: Choice items don't exist in vanilla FRLG.
+//   - AreAttackingStatsLowered: requires stat-stage history tracking.
+//   - AI_DATA->mostSuitableMonId: requires full AI_DATA precompute system.
 // ============================================================================
 u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef)
 {
     u8 outSlot = PARTY_SIZE;
+    u8 battlerSide = GET_BATTLER_SIDE(battlerAtk);
+    u8 oppSide     = GET_BATTLER_SIDE(battlerDef);
+    (void)oppSide;
 
     // RHH lines 1011-1012: don't switch if wrapped/prevented.
     if (gBattleMons[battlerAtk].status2 & (STATUS2_WRAPPED | STATUS2_ESCAPE_PREVENTION))
         return PARTY_SIZE;
 
-    // FRLG_STUB: STATUS3_ROOTED check (RHH line 1013) — add when Ingrain implemented.
-    // FRLG_STUB: IsAbilityPreventingEscape (RHH line 1015) — add when Shadow Tag/Arena Trap added.
+    // FRLG_STUB: STATUS3_ROOTED (Ingrain) check — add when Ingrain AI implemented.
+
+    // IsAbilityPreventingEscape: Arena Trap, Shadow Tag, Magnet Pull — all Gen 3.
+    if (IsAbilityPreventingEscape(battlerAtk, battlerDef))
+        return PARTY_SIZE;
 
     // RHH lines 1024-1065: count available-to-switch mons.
     if (AI_CountAlivePokemon(battlerAtk) == 0)
         return PARTY_SIZE;
 
-    // FRLG_STUB (RHH lines 1080-1087): ShouldSwitchIfWonderGuard, ShouldSwitchIfGameStatePrompt,
-    //   FindMonThatTrapsOpponent, FindMonThatAbsorbsOpponentsMove — uncomment when ported.
+    // ShouldSwitchIfWonderGuard: Shedinja exists in Gen 3.
+    if (ShouldSwitchIfWonderGuard(battlerAtk, battlerDef, &outSlot))
+        return outSlot;
 
-    // FRLG_STUB (RHH line 1090): CanMonSurviveHazardSwitchin — add when entry hazards are in.
+    // FRLG_STUB: ShouldSwitchIfGameStatePrompt (Perish Song countdown) — low priority, add later.
+    // FRLG_STUB: FindMonThatTrapsOpponent (RHH reward-AI for trapping) — not a simple port.
+    // FindMonThatAbsorbsOpponentsMove: type-absorb abilities (VoltAbsorb etc.) exist in Gen 3
+    //   but this requires scanning party for ability data — add when GetMonAbility is available here.
+
+    // CanMonSurviveHazardSwitchin: Spikes exist in Gen 3.
+    // Note: we use this as a filter when selecting switch targets below, not a reason to switch.
+    // (RHH uses it differently — to avoid switching into a mon that would faint on entry.)
+    // Applied in the fallback loop in HasBadOdds block below.
 
     // RHH lines 1092-1103: HasBadOdds and similar checks.
     if (HasBadOdds(battlerAtk, battlerDef))
     {
-        // FRLG_STUB: RHH resolves the slot via AI_DATA->mostSuitableMonId[battler].
-        // We return PARTY_SIZE here as sentinel — caller (BattleAI_ChooseMoveOrAction)
-        // should pick the best available mon via FindMonWithFlagsAndSuperEffective below.
-        // When AI_DATA->mostSuitableMonId is added, replace with that value.
+        // Look for a mon with SE coverage that can survive switching in.
+        struct Pokemon *party = (GetBattlerSide(battlerAtk) == B_SIDE_PLAYER)
+                                ? gPlayerParty : gEnemyParty;
         if (FindMonWithFlagsAndSuperEffective(battlerAtk, battlerDef, 0, &outSlot))
-            return outSlot;
-        // Even if no perfect candidate, HasBadOdds alone warrants the switch.
-        // Return first available non-fainted, non-current mon.
         {
-            struct Pokemon *party = (GetBattlerSide(battlerAtk) == B_SIDE_PLAYER)
-                                    ? gPlayerParty : gEnemyParty;
+            if (CanMonSurviveHazardSwitchin(&party[outSlot], battlerSide))
+                return outSlot;
+        }
+        // Fall back: first available mon that survives hazards.
+        {
             u8 i;
             for (i = 0; i < PARTY_SIZE; i++)
             {
@@ -471,13 +649,23 @@ u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef)
                     continue;
                 if (GetMonData(&party[i], MON_DATA_HP, NULL) == 0)
                     continue;
+                if (!CanMonSurviveHazardSwitchin(&party[i], battlerSide))
+                    continue;
                 return i;
             }
         }
     }
 
-    // FRLG_STUB (RHH lines 1098-1103): ShouldSwitchIfEncored, ShouldSwitchIfBadChoiceLock,
-    //   AreAttackingStatsLowered — uncomment when those systems are ported.
+    // ShouldSwitchIfEncored: Encore is Gen 3.
+    if (ShouldSwitchIfEncored(battlerAtk))
+    {
+        if (FindMonWithFlagsAndSuperEffective(battlerAtk, battlerDef,
+                                              MOVE_RESULT_DOESNT_AFFECT_FOE, &outSlot))
+            return outSlot;
+    }
+
+    // FRLG_STUB: ShouldSwitchIfBadChoiceLock — Choice items not in vanilla FRLG.
+    // FRLG_STUB: AreAttackingStatsLowered — requires stat stage history.
 
     // RHH lines 1107-1110: don't switch if we already have a SE move.
     {
@@ -488,13 +676,11 @@ u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef)
             if (move == MOVE_NONE || gBattleMoves[move].power < 2)
                 continue;
             if (AI_GetTypeEffectiveness(move, battlerAtk, battlerDef) >= AI_EFFECTIVENESS_x2)
-                return PARTY_SIZE; // RHH: HasSuperEffectiveMoveAgainstOpponents → don't switch
+                return PARTY_SIZE; // already have SE coverage, don't switch
         }
     }
 
     // RHH lines 1114-1116: default — look for a better mon via type coverage.
-    // RHH calls FindMonWithFlagsAndSuperEffective twice:
-    //   first with MOVE_RESULT_DOESNT_AFFECT_FOE (immunity), then NOT_VERY_EFFECTIVE.
     if (FindMonWithFlagsAndSuperEffective(battlerAtk, battlerDef,
                                           MOVE_RESULT_DOESNT_AFFECT_FOE, &outSlot))
         return outSlot;
