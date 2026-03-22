@@ -1,175 +1,158 @@
-# FireRed AI Upgrade — Zero-Context Continuation Guide
+# FireRed Romhack — Zero-Context Continuation Guide
 
-> **Read this first.** This document is the single source of truth for continuing work on this project.  
-> It is designed to be complete enough that a new AI session with no prior context can pick up immediately.
-
----
-
-## What This Project Is
-
-A FireRed ROM hack (`feature-AI-upgrade` branch) where the original **ASM bytecode Battle AI** has been fully replaced with **native C** code, and the AI's switching logic has been ported faithfully from the [pokeemerald-expansion (RHH)](https://github.com/rh-hideout/pokeemerald-expansion) codebase.
-
-The ROM is GBA FireRed. The toolchain is `arm-none-eabi-gcc`. Build with `make -j$(nproc)`.  
-The repo is at `/mnt/data/Github/prototype/firered-romhack-1` on the `feature-AI-upgrade` branch.
-
-**Save compatibility**: existing saves work. The AI changes are non-breaking.
+> **Read this first.** This is the single source of truth for continuing work on this project.  
+> Complete enough for a new AI/dev session to pick up immediately with no prior context.
 
 ---
 
-## Current State (as of 2026-03-22)
+## What This Is
 
-All implementation is complete. Phases 0–6 are done.
+A **FireRed decompilation romhack** (`feature-AI-upgrade` branch, forked from [pret/pokefirered](https://github.com/pret/pokefirered)) with Gen 6+ mechanical upgrades and quality-of-life improvements. The codebase is at `/mnt/data/Github/prototype/firered-romhack-1`. Build with `make -j$(nproc)`.
 
-| Phase | What | Status |
+The reference codebase for porting is **pokeemerald-expansion (RHH)** at `/mnt/data/Github/rh-hideout/pokeemerald-expansion`.
+
+**Existing saves are compatible.** All changes are non-breaking.
+
+---
+
+## What's Already Done (Shipped)
+
+| Feature | Status | Notes |
 |---|---|---|
-| 0 | Housekeeping: remove Natural Gift, docs reorg | ✅ Done |
-| 1 | Branch `feature-AI-upgrade` created from main | ✅ Done |
-| 2 | Research + implementation plan | ✅ Done |
-| 2.5 | `battle_ai_util.c/h` — damage calc, speed check, move effect scan | ✅ Done |
-| 3 | C dispatch table (`gAIFunctionTable`) replaces ASM VM | ✅ Done |
-| 4 | All 9 standard AI flags ported from ASM → C | ✅ Done |
-| 4b | Smart switching (`AI_SCRIPT_SMART_SWITCHING`) — faithful RHH port + all Gen 3 mechanics | ✅ Done |
-| 6 | Dead ASM removed (3259-line `data/battle_ai_scripts.s`, ~1700 lines of dead C VM code) | ✅ Done |
-| 5 | Automated test framework (RHH DSL port) | ⏳ **Next up** |
+| **Fairy Type** | ✅ Done | 19th type, full Gen 6 effectiveness table, 18 species reclassified, graphics |
+| **Physical/Special Split** | ✅ Done | Per-move `category` field, all 355 moves assigned, UI icons |
+| **Running Shoes from start** | ✅ Done | No item needed, works indoors |
+| **Reusable TMs** | ✅ Done | Infinite-use (Gen 5+), shop sell blocked, duplicate buy blocked |
+| **Overworld Poison** | ✅ Done | Configurable via `OW_POISON_DAMAGE` in `include/config.h` (default: Gen 5+ no faint) |
+| **pret Bug Fixes** | ✅ Done | All `#ifdef BUGFIX` / `#ifdef UBFIX` enabled — ~25 bugs fixed |
+| **Battle AI: C Port** | ✅ Done | ASM VM replaced with native C dispatch table (9 flags ported) |
+| **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, all Gen 3 mechanics (Spikes, Wonder Guard, Encore, etc.) |
+| **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` is now the default, no `MODERN=1` needed |
+
+**Branch:** `feature-AI-upgrade` contains all of the above. Main branch is behind.
 
 ---
 
-## Key Files
+## The Goal: New Moves + Engine Scaling
 
-| File | Role |
+Adding new moves is the **immediate next objective**. But before adding moves at scale, several engine systems hit hard limits that need upgrading first. These upgrades are **future-proofing multipliers** — do them first so every following move doesn't hit a wall.
+
+### Hard Limits That Block Move Scaling
+
+| Constraint | Current | Cap | Impact |
+|---|---|---|---|
+| **Move ID** | 354 (Gen 1-3) | **511** (9-bit learnset encoding) | Hit at ~157 more moves. Expanding beyond 511 requires changing `LEVEL_UP_MOVE` encoding. |
+| **TM slots** | 58 used (50 TM + 8 HM) | **64** (64-bit bitmask in `tmhm_learnsets.h`) | 6 slots left. Adding new TMs beyond 64 requires replacing the bitmask system. |
+| **Move data** | 4–6 separate files per move | — | Every new move requires edits to `battle_moves.h`, `move_names.h`, `move_descriptions.c`, `battle_anim_scripts.s`. High friction. |
+| **Learnset encoding** | Single file | — | RHH splits by gen (`level_up_learnsets/gen_1.h`–`gen_9.h`). Manageable for now. |
+| **New move effects** | Must write ASM battle scripts | — | New Gen 4+ effects require implementing in `data/battle_scripts_1.s` — most complex part. |
+
+---
+
+## Priority Order for Next Work
+
+### Priority 1 — Add New Moves (Can Start Now, Hit Limits Carefully)
+
+The existing system can handle ~157 more moves (up to ID 511) before the learnset encoding breaks. TM system has 6 slots left, so don't add new TMs carelessly.
+
+**Minimum files for any new move (existing effect, no TM):**
+
+| File | Change |
 |---|---|
-| `src/battle_ai_main.c` | All 9+ AI flag implementations + `gAIFunctionTable` dispatch |
-| `src/battle_ai_util.c` | Shared utilities: damage calc, switching logic (HasBadOdds, WonderGuard, Spikes, etc.) |
-| `src/battle_ai_script_commands.c` | Entry points: `BattleAI_ChooseMoveOrAction()`, `BattleAI_SetupAIData()`, `RecordAbilityBattle()` |
-| `include/battle_ai_main.h` | `AIFunc` typedef + `extern gAIFunctionTable[]` |
-| `include/battle_ai_util.h` | Utility declarations + `AI_EFFECTIVENESS_x*` constants |
-| `include/constants/battle_ai.h` | `AI_SCRIPT_*` flag bit constants |
-| `src/data/trainers.h` | Per-trainer `aiFlags` — **edit here to enable smart switching** |
-| `docs/battle_ai_architecture.md` | Full technical reference (read this for anything not covered here) |
+| `include/constants/moves.h` | Add `#define MOVE_XYZ N`, bump `MOVES_COUNT` |
+| `src/data/battle_moves.h` | Add stats struct `[MOVE_XYZ] = { ... }` |
+| `src/data/text/move_names.h` | `[MOVE_XYZ] = _("NAME")` — ALLCAPS, max 12 chars |
+| `src/move_descriptions.c` | String + pointer in `gMoveDescriptionPointers[MOVE_XYZ - 1]` |
+| `data/battle_anim_scripts.s` | `.4byte Move_SIMILAR` — reuse existing animation |
+| `src/data/pokemon/level_up_learnsets.h` | Add to at least one species |
 
-**Deleted in Phase 6:**
-- `data/battle_ai_scripts.s` — original 3259-line ASM AI scripts (gone)
-- All `Cmd_*` VM handler functions and `sBattleAICmdTable` from `battle_ai_script_commands.c` (gone)
+> Full workflow: `docs/research/adding_new_moves_workflow.md`  
+> RHH → FireRed field mapping: `docs/research/emerald_expansion_move_structure.md`
 
----
+**New move effects** (Gen 4+ mechanics not yet in FireRed): Must write or port a battle script in `data/battle_scripts_1.s` + C command handler in `src/battle_script_commands.c`. Use RHH as reference. If the mechanic doesn't exist yet (e.g., Trick Room engine behavior), stub it.
 
-## How the AI Works Now
-
-```
-Battle turn → BattleAI_ChooseMoveOrAction()
-  │
-  ├─ [if AI_SCRIPT_SMART_SWITCHING] AI_EvaluateSwitch()
-  │     → returns party slot to switch to, or PARTY_SIZE (no switch)
-  │     → if switch: sets monToSwitchIntoId, returns B_ACTION_SWITCH
-  │
-  ├─ BattleAI_SetupAIData()  → initialize scores[4] = 100
-  │
-  └─ BattleAI_DoAIProcessing()  → iterate set bits in aiFlags
-        for each flag bit set:
-          gAIFunctionTable[bit](battlerAtk, battlerDef, move, score)
-          → returns adjusted score
-        → pick highest-scoring move
-```
+**AI handling for new moves**: The new C AI handles moves by effect, not move ID. If reusing an existing effect, AI works automatically. If adding a new effect, add a `case EFFECT_XYZ:` in `AI_CheckBadMove()` and `AI_CheckViability()` in `src/battle_ai_main.c`. See `docs/battle_ai_architecture.md`.
 
 ---
 
-## AI Flags Reference
+### Priority 2 — Engine Upgrades That Unblock Scaling
 
-| Bit | Constant | Behavior |
+Do these when you hit a limit, or proactively if planning a large batch:
+
+#### 2a. TM System Expansion (6 slots left)
+RHH uses a flat `u16[]` per-species array (`teachable_learnsets.h`) instead of a 64-bit bitmask. No hard limit. To port:
+- Replace `TMHM()` bitmask in `src/data/pokemon/tmhm_learnsets.h`  
+- Update `sTMHMMoves[]` / `sTMHMMoves_Duplicate[]` in `src/data/party_menu.h`
+- Reference: RHH `include/constants/tms_hms.h` + `src/data/pokemon/teachable_learnsets.h`
+
+#### 2b. Move Learnset Encoding (157 moves left before ID 511 cap)
+Current `LEVEL_UP_MOVE(lvl, move)` macro encodes as `(lvl << 9) | move` — max move ID = 511. To expand:
+- Change encoding to use `u32` with 16-bit move ID field
+- Update `GetLevelUpMovesBySpecies()` / `GetMonLevelUpMoves()` in `src/pokemon.c`
+- Reference: RHH `struct LevelUpMove { u16 move; u8 level; }` in `level_up_learnsets.h`
+
+#### 2c. Consolidated Move Data (Quality of Life)
+RHH stores all move data in a single unified struct in `moves_info.h` — no index sync issues. For FireRed, consider migrating to a unified `gMovesInfo[]` to eliminate the 4–6-file-per-move friction. High effort, high payoff at scale.
+
+---
+
+### Priority 3 — Planned Features (From README)
+
+Ordered by estimated dependency and complexity:
+
+| Feature | Dependency | Complexity |
 |---|---|---|
-| 0 | `AI_SCRIPT_CHECK_BAD_MOVE` | Penalizes impossible/pointless moves (-10 each) |
-| 1 | `AI_SCRIPT_CHECK_VIABILITY` | Contextual score adjustments (HP%, weather, stat stages) |
-| 2 | `AI_SCRIPT_TRY_TO_FAINT` | Boosts KO moves (+5 or +7 with priority advantage) |
-| 3 | `AI_SCRIPT_SETUP_FIRST_TURN` | Boosts setup moves on turn 0 |
-| 4 | `AI_SCRIPT_RISKY` | Boosts high-risk moves (50% chance) |
-| 5 | `AI_SCRIPT_PREFER_STRONGEST_MOVE` | Random +2 for status moves |
-| 6 | `AI_SCRIPT_PREFER_BATON_PASS` | +3 for setup when Baton Pass in moveset |
-| 7 | `AI_SCRIPT_DOUBLE_BATTLE` | No-op (FRLG has no double AI) |
-| 8 | `AI_SCRIPT_HP_AWARE` | HP-bracket based penalties for inappropriate moves |
-| 9 | `AI_SCRIPT_SMART_SWITCHING` | **Pre-move switching evaluation** (see below) |
-| 20 | `AI_SCRIPT_ROAMING` | Roaming battle (no scoring) |
-| 21 | `AI_SCRIPT_SAFARI` | Safari zone |
-| 22 | `AI_SCRIPT_FIRST_BATTLE` | First trainer battle |
-
-### Default flag assignment (in `BattleAI_SetupAIData()`):
-```
-Trainer level ≤ 20 → CHECK_BAD_MOVE only
-Trainer level  > 20 → CHECK_BAD_MOVE | TRY_TO_FAINT | CHECK_VIABILITY
-Named trainers (gym leaders, rivals) → defined per-trainer in src/data/trainers.h
-```
+| **Updated Learnsets / Base Stats** | New moves done | Low — data edit only |
+| **EV/IV Summary Screen** | None | Medium — UI work |
+| **Decapitalization** | None | Low — text data edit |
+| **Faster Text Speed** | None | Low |
+| **BW-style Repel System** | None | Low-Medium |
+| **Forgettable HMs / HM Item Replacement** | None | Medium |
+| **Modern EXP Share** | None | Medium |
+| **Nature/Ability Display Colors** | None | Medium |
+| **New Abilities** | Ability system research | High |
+| **Items (new Gen items)** | `docs/research/missing_items.md` | Medium-High |
+| **Day/Night Cycle** | Separate branch (has bugs) | High |
+| **Follower Pokémon** | Overworld system | Very High |
+| **Expanded Pokédex (Gen 4+ species)** | Sprite/data | Very High |
+| **Mega Evolution** | Ability + item + battle system | Extremely High |
 
 ---
 
-## Smart Switching (`AI_SCRIPT_SMART_SWITCHING`)
+## Key Files Reference
 
-**Disabled by default** — add to `aiFlags` in `src/data/trainers.h` to enable.
-
-```c
-// Example — enable for Elite Four:
-{ .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE | AI_SCRIPT_TRY_TO_FAINT
-           | AI_SCRIPT_CHECK_VIABILITY | AI_SCRIPT_SMART_SWITCHING, ... }
-```
-
-### What it does:
-
-All logic is in `src/battle_ai_util.c`. Every function cites its RHH source file + line number.
-
-| Function | RHH source | Behavior |
-|---|---|---|
-| `AI_EvaluateSwitch()` | `battle_ai_switch_items.c:1001` | Entry point |
-| `IsAbilityPreventingEscape()` | `:1015` | Don't switch if Arena Trap / Shadow Tag / Magnet Pull traps us |
-| `ShouldSwitchIfWonderGuard()` | `:220` | Force switch vs Shedinja if no SE move |
-| `HasBadOdds()` | `:71` | Switch if OHKO-threatened while outsped, or type-disadvantaged with no SE move |
-| `CanMonSurviveHazardSwitchin()` | `:700` | Only switch into a mon that survives Spikes damage |
-| `ShouldSwitchIfEncored()` | `:1098` | Switch if Encore-locked into a status move |
-| `FindMonWithFlagsAndSuperEffective()` | `:750` | Find a party mon with a SE move that also resists the last move hit us (`gLastLandedMoves`) |
-| `AI_GetTypeEffectiveness()` | `battle_ai_util.c:1013` | MOVE_RESULT_* flags → `AI_EFFECTIVENESS_x*` enum |
-| `AI_GetTypeEffectivenessForPartyMon()` | `battle_util.c:10487` | Type check for benched mons (uses slot-2 scratch) |
-
-### Remaining `FRLG_STUB` markers (all genuinely Gen 4+):
-
-| Stub | Unlock when |
+| File | Purpose |
 |---|---|
-| `ABILITY_REGENERATOR` HP threshold | Gen 5 ability added |
-| Stealth Rock / Toxic Spikes in hazard check | Gen 4 hazards ported |
-| `AI_DATA->mostSuitableMonId` | Full RHH AI_DATA precompute system ported |
-| Levitate immunity in Arena Trap check | `GetMonAbility()` added to util layer |
-| `FindMonThatAbsorbsOpponentsMove` | Same as above |
-| `ShouldSwitchIfBadChoiceLock` | Choice items added |
-| `AreAttackingStatsLowered` | Stat-stage history tracking added |
+| `include/config.h` | Feature toggles (`OW_POISON_DAMAGE`, etc.) |
+| `include/constants/moves.h` | Move ID `#defines` + `MOVES_COUNT` |
+| `include/constants/battle_move_effects.h` | `EFFECT_*` constants (214 effects, ends at `EFFECT_CAMOUFLAGE`) |
+| `include/constants/battle_ai.h` | AI flag constants (`AI_SCRIPT_*`) |
+| `src/data/battle_moves.h` | Move stats (power, type, accuracy, PP, flags, category) |
+| `src/data/text/move_names.h` | Move display names (ALLCAPS, max 12 chars) |
+| `src/move_descriptions.c` | Move description strings + pointer array |
+| `src/data/pokemon/level_up_learnsets.h` | Level-up moves per species |
+| `src/data/pokemon/egg_moves.h` | Egg moves per species |
+| `src/data/pokemon/tmhm_learnsets.h` | 64-bit TM/HM compatibility bitmask per species |
+| `src/data/party_menu.h` | `sTMHMMoves[]` table mapping TM slot → move |
+| `data/battle_scripts_1.s` | Battle effect scripts (ASM macro language) |
+| `src/battle_script_commands.c` | C handlers for battle script commands |
+| `data/battle_anim_scripts.s` | Move animation scripts + `gBattleAnims_Moves` table |
+| `src/battle_ai_main.c` | All AI flag functions + `gAIFunctionTable` dispatch |
+| `src/battle_ai_util.c` | AI utilities: damage calc, switching logic |
+| `src/data/trainers.h` | Per-trainer `aiFlags` (add `AI_SCRIPT_SMART_SWITCHING` here) |
+| `tools/verify_data.py` | Data integrity checker (Fairy type, P/S split, TMs) |
 
 ---
 
-## How to Add a New AI Flag
+## Battle AI — Current State
 
-1. Add constant in `include/constants/battle_ai.h`:
-   ```c
-   #define AI_SCRIPT_MY_FLAG  (1 << 10)
-   ```
+The ASM AI VM is fully removed. The new system is C-based and RHH-faithful.
 
-2. Add the function signature in `src/battle_ai_main.c`:
-   ```c
-   static s32 AI_MyFlag(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
-   ```
+**To enable smart switching for a trainer** — add `AI_SCRIPT_SMART_SWITCHING` to their `aiFlags` in `src/data/trainers.h`. Disabled by default to preserve existing behavior.
 
-3. Add to table in `gAIFunctionTable`:
-   ```c
-   [10] = AI_MyFlag,
-   ```
+**To add AI awareness for a new move effect** — add a `case EFFECT_XYZ:` in `AI_CheckBadMove()` and `AI_CheckViability()` in `src/battle_ai_main.c`. Return `score` unchanged for effects you don't want to penalize/reward.
 
-4. Implement the function. Return `score` unchanged for moves you don't want to affect.
-
-5. Add to trainer `aiFlags` in `src/data/trainers.h`.
-
----
-
-## How to Add a New Move Effect Handler
-
-When a new move effect needs AI awareness:
-
-1. Add `case EFFECT_MY_EFFECT:` in `AI_CheckBadMove()` to prevent impossible use.
-2. Add `case EFFECT_MY_EFFECT:` in `AI_CheckViability()` to score it.
-3. If it's a Gen 4+ move and the mechanic isn't yet in the engine, add `// GEN4_STUB` and return `score` unchanged.
+Full switching logic reference: `docs/battle_ai_architecture.md`
 
 ---
 
@@ -178,40 +161,36 @@ When a new move effect needs AI awareness:
 ```bash
 cd /mnt/data/Github/prototype/firered-romhack-1
 git checkout feature-AI-upgrade
-make -j$(nproc) 2>&1 | grep "error:"    # must be empty
-wc -c pokefirered_modern.gba             # must be exactly 16777216
+make -j$(nproc) 2>&1 | grep "error:"   # must be empty
+wc -c pokefirered_modern.gba            # must be 16777216 (exactly 16MB)
+python3 tools/verify_data.py            # validates Fairy/P-S split/TM data
 ```
 
 **Quick smoke test in mGBA:**
 1. Load ROM → reach title → no freeze ✅
-2. Wild battle → wild mon uses moves, no crash ✅
-3. Fight Brock (no `SMART_SWITCHING` flag) → AI never voluntarily switches ✅
+2. Wild battle → mon uses moves, no crash ✅
+3. Trainer battle (no smart switching) → AI never voluntarily switches ✅
 
 ---
 
-## What's Next (Phase 5)
+## Coding Rules for This Project
 
-Port the RHH test framework so AI behavior can be verified automatically:
-
-- Port `test/test_runner.c` and `test/test_runner_battle.c` from RHH
-- Port the `GIVEN/WHEN/SCORE_GT/EXPECT_MOVE` DSL macros from `include/test/battle.h`
-- Add `make BATTLE_TEST=1` build target
-- Write test files:
-  - `test/battle/ai/ai_check_bad_move.c`
-  - `test/battle/ai/ai_check_viability.c`
-  - `test/battle/ai/ai_trytofaint.c`
-  - `test/battle/ai/ai_smart_switching.c`
-- Run test ROM headlessly in mGBA, all pass
-
-**RHH reference for the test framework:**  
-`/mnt/data/Github/rh-hideout/pokeemerald-expansion/test/` (fully functional reference)
+1. **Port, don't invent.** Cite the RHH source if porting. If inventing, document why.
+2. **`FRLG_STUB`** = mechanic that exists in RHH but is Gen 4+ or needs infrastructure not yet in FireRed. Must say exactly when to un-stub.
+3. **`GEN4_STUB`** = utility function returning neutral value. Declared in header, real body later.
+4. **No invented AI logic.** Trace it to RHH or don't add it.
+5. **Build must stay clean.** `make -j$(nproc) 2>&1 | grep "error:"` returns nothing.
+6. **Active test/debug code** must be documented in the `## Active Test/Debug Changes` section of `README.md` before it's merged.
 
 ---
 
-## Important Coding Rules for This Project
+## Research Docs (in `docs/research/`)
 
-1. **Port, don't invent.** Every function must cite its RHH source file + line number.
-2. **FRLG_STUB** = feature that exists in RHH but is genuinely Gen 4+ or requires infrastructure not yet in FireRed. Must include exact condition for when to un-stub.
-3. **GEN4_STUB** = stub function in the utility layer returning `0` or `FALSE`. Only for things that will eventually be real.
-4. **No invented logic.** If you can't trace it to RHH, it doesn't belong here.
-5. **Build must stay clean.** `make -j$(nproc) 2>&1 | grep "error:"` must return nothing.
+| File | What's in it |
+|---|---|
+| `adding_new_moves_workflow.md` | Step-by-step guide: every file to touch when adding a move |
+| `firered_vs_emerald_structure.md` | Deep structural diff: FireRed vs RHH for AI, battle scripts, move data |
+| `emerald_expansion_move_structure.md` | RHH field-by-field mapping for porting move data |
+| `missing_items.md` | Gen 4+ items not yet in FireRed — research for future item work |
+| `missing_egg_moves.md` | Egg moves not yet in FireRed — reference for learnset updates |
+| `battle_ai_migration_research.md` | Full research log for the AI ASM→C migration |
