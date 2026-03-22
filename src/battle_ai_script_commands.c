@@ -6,6 +6,7 @@
 #include "random.h"
 #include "battle_ai_script_commands.h"
 #include "battle_ai_main.h"
+#include "battle_ai_util.h"
 #include "constants/abilities.h"
 #include "constants/battle_ai.h"
 #include "constants/battle_move_effects.h"
@@ -369,6 +370,20 @@ u8 BattleAI_ChooseMoveOrAction(void)
     s32 i;
 
     RecordLastUsedMoveByTarget();
+
+    // Smart switching: evaluate before move scoring.
+    // If the trainer has AI_SCRIPT_SMART_SWITCHING and a better benched mon
+    // exists for the current matchup, switch now instead of using a move.
+    if (AI_THINKING_STRUCT->aiFlags & AI_SCRIPT_SMART_SWITCHING)
+    {
+        u8 switchSlot = AI_EvaluateSwitch(gBattlerAttacker, gBattlerTarget);
+        if (switchSlot != PARTY_SIZE)
+        {
+            *(gBattleStruct->monToSwitchIntoId + gBattlerAttacker) = switchSlot;
+            return B_ACTION_SWITCH;
+        }
+    }
+
     while (AI_THINKING_STRUCT->aiFlags != 0)
     {
         if (AI_THINKING_STRUCT->aiFlags & 1)

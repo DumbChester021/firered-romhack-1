@@ -24,6 +24,7 @@ static s32 AI_PreferStrongestMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 sc
 static s32 AI_PreferBatonPass(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
 static s32 AI_DoubleBattle(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
 static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
+static s32 AI_SmartSwitching(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
 static s32 AI_Roaming(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
 static s32 AI_Safari(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
 static s32 AI_FirstBattle(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
@@ -40,7 +41,8 @@ const AIFunc gAIFunctionTable[] = {
     [6]  = AI_PreferBatonPass,
     [7]  = AI_DoubleBattle,
     [8]  = AI_HPAware,
-    // [9-19] = NULL (implicitly, since C zero-initializes)
+    [9]  = AI_SmartSwitching,  // No-op scoring slot; switch logic runs in BattleAI_ChooseMoveOrAction
+    // [10-19] = NULL (implicitly)
     [20] = AI_Roaming,
     [21] = AI_Safari,
     [22] = AI_FirstBattle,
@@ -1686,6 +1688,20 @@ static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         }
     }
 
+    return score;
+}
+
+// ============================================================================
+// AI_SmartSwitching (flag bit 9)
+// This is a scoring-loop no-op. The actual switch decision happens in
+// BattleAI_ChooseMoveOrAction() BEFORE move scoring begins. If the switch
+// fires there, we return B_ACTION_SWITCH immediately and never reach here.
+// This slot exists only to prevent a null-pointer call if the flag bit
+// somehow survives into the scoring loop iteration.
+// ============================================================================
+static s32 AI_SmartSwitching(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
+{
+    (void)battlerAtk; (void)battlerDef; (void)move;
     return score;
 }
 
