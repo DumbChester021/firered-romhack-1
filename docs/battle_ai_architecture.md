@@ -121,16 +121,15 @@ bool8 AI_IsTrickRoomActive(void);
 
 ---
 
-## 5. Smart Switching (`AI_SCRIPT_SMART_SWITCHING`, bit 9) — Design
+## 5. Smart Switching (`AI_SCRIPT_SMART_SWITCHING`, bit 9)
 
-> **Status**: Planned (Phase 4b). Not yet implemented.
+> **Status**: Implemented (Phase 4b). Enable per-trainer via `aiFlags`.
 
 ### Architecture
 
-Smart switching runs **before** move selection, not inside the per-move scoring loop. The hook point is `BattleAI_ChooseMoveOrAction()`:
+Smart switching runs **before** move selection in `BattleAI_ChooseMoveOrAction()`:
 
 ```c
-// In BattleAI_ChooseMoveOrAction(), before BattleAI_SetupAIData():
 if (AI_THINKING_STRUCT->aiFlags & AI_SCRIPT_SMART_SWITCHING)
 {
     u8 switchTarget = AI_EvaluateSwitch(battlerAtk, battlerDef);
@@ -142,32 +141,42 @@ if (AI_THINKING_STRUCT->aiFlags & AI_SCRIPT_SMART_SWITCHING)
 }
 ```
 
-`B_ACTION_SWITCH` is already handled by `HandleTurnActionSelectionState()` in `battle_main.c`. `gBattleStruct->monToSwitchIntoId[battler]` stores which party slot to switch to.
+### Functions (all in `src/battle_ai_util.c`, citing RHH source)
 
-### `AI_EvaluateSwitch()` Logic
+| Function | RHH source | What it does |
+|---|---|---|
+| `AI_EvaluateSwitch()` | `battle_ai_switch_items.c:1001` | Entry point. Returns party slot or `PARTY_SIZE`. |
+| `HasBadOdds()` | `battle_ai_switch_items.c:71` | OHKO threat + type disadvantage detection. |
+| `FindMonWithFlagsAndSuperEffective()` | `battle_ai_switch_items.c:750` | Finds a party mon with SE + resistance to last move. Uses `gLastLandedMoves[]`. |
+| `ShouldSwitchIfWonderGuard()` | `battle_ai_switch_items.c:220` | Forces switch vs Shedinja if no SE move. |
+| `ShouldSwitchIfEncored()` | `battle_ai_switch_items.c:1098` | Switches if locked into a zero-power move by Encore. |
+| `CanMonSurviveHazardSwitchin()` | `battle_ai_switch_items.c:700` | Validates candidate can survive Spikes damage on entry. |
+| `IsAbilityPreventingEscape()` | `battle_ai_switch_items.c:1015` | Returns TRUE if Arena Trap / Shadow Tag / Magnet Pull traps us. |
+| `AI_GetTypeEffectiveness()` | `battle_ai_util.c:1013` | MOVE_RESULT_* → AI_EFFECTIVENESS_x* translation. |
+| `AI_GetTypeEffectivenessForPartyMon()` | `battle_util.c:10487` | Type lookup for benched party mons (uses slot-2 scratch). |
+
+### Genuine Gen 4+ stubs remaining (clearly marked `FRLG_STUB` in source)
+
+| Stub | Reason | When to add |
+|---|---|---|
+| `ABILITY_REGENERATOR` threshold | Gen 5 ability | When Regenerator is added |
+| `AI_DATA->mostSuitableMonId` | Requires AI_DATA precompute system | When full RHH AI_DATA is ported |
+| `STATUS3_ROOTED` (Ingrain) | Gen 4 AI check | When Ingrain AI is added |
+| `GetMonAbility()` in `CanMonSurviveHazardSwitchin` | Not accessible here | When ability helpers are added to util layer |
+| `FindMonThatAbsorbsOpponentsMove` | Needs party ability scan | When `GetMonAbility()` available |
+| Stealth Rock / Toxic Spikes in hazard check | Gen 4 hazards | When those hazards are ported |
+| `ShouldSwitchIfBadChoiceLock` | Choice items not in vanilla FRLG | When Choice items are added |
+| `AreAttackingStatsLowered` | Requires stat-stage history | When stat tracking is added |
+
+### Enabling for a trainer
 
 ```c
-u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef):
-  1. if CountAlive(battlerAtk) == 0: return PARTY_SIZE  // no one to switch to
-  2. Compute "matchup score" for current mon vs battlerDef:
-     - All 4 moves not very effective OR immune → bad matchup
-     - Defender's ability absorbs attacker's primary STAB type → very bad
-     - Attacker is paralyzed/confused AND slower than target → bad
-  3. If not bad matchup: return PARTY_SIZE (no switch)
-  4. For each benched party member (alive, not on field):
-     - Compute "candidate score": type coverage + speed advantage
-  5. If best candidate score >= SWITCH_THRESHOLD (3): return that slot
-  6. Else: return PARTY_SIZE
+// In src/data/trainers.h — add AI_SCRIPT_SMART_SWITCHING to aiFlags:
+{ .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE | AI_SCRIPT_TRY_TO_FAINT
+           | AI_SCRIPT_CHECK_VIABILITY | AI_SCRIPT_SMART_SWITCHING, ... }
 ```
 
-### Trainer Flag Usage
-
-To enable smart switching for a trainer, add `AI_SCRIPT_SMART_SWITCHING` to its `aiFlags` in `src/data/trainers.h`:
-```c
-// Example: Blaine uses smart switching
-{ .partyFlags = ..., .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE | AI_SCRIPT_TRY_TO_FAINT
-                               | AI_SCRIPT_CHECK_VIABILITY | AI_SCRIPT_SMART_SWITCHING, ... }
-```
+No trainers have it enabled by default. Existing trainer behaviour is 100% unchanged.
 
 ---
 
@@ -263,13 +272,17 @@ wc -c pokefirered_modern.gba  # must be exactly 16777216 (16MB)
 
 These RHH features are not present and were deliberately skipped:
 
-| Feature | Reason skipped |
+| Feature | Reason |
 |---|---|
-| `AI_FLAG_WEIGH_ABILITY_ACTIVATION` | Requires full ability interaction matrix |
-| `AI_FLAG_ACE_POKEMON` | Requires trainer data extension |
+| `AI_FLAG_ACE_POKEMON` / `IsAceMon` | Requires trainer data extension |
 | Expanded `AI_DoubleBattle` targeting | Only useful if double-battle trainers are prioritized |
 | Gen 4+ terrain/weather scoring | Terrain doesn't exist in FRLG engine |
 | Full `AI_CheckViability` parity with RHH | RHH has 200+ handlers for Gen 4-9 moves |
+| `ShouldSwitchIfBadChoiceLock` | Choice Band/Scarf not in vanilla FRLG |
+| `ShouldSwitchIfGameStatePrompt` | Perish Song countdown AI — low priority |
+| `FindMonThatAbsorbsOpponentsMove` | Needs `GetMonAbility()` in util layer |
+| `AI_DATA->mostSuitableMonId` | Requires full RHH AI_DATA precompute system |
+| `AreAttackingStatsLowered` | Requires stat-stage history tracking |
 
 To implement any of these, follow the pattern in Section 7.
 
@@ -285,6 +298,6 @@ To implement any of these, follow the pattern in Section 7.
 | Phase 2.5 | `battle_ai_util.c/h` (damage calc utilities) | ✅ Done |
 | Phase 3 | Structural plumbing (C dispatch table, `BattleAI_DoAIProcessing` rewrite) | ✅ Done |
 | Phase 4 | All 9 AI flags ported from ASM to C | ✅ Done |
-| Phase 4b | Smart switching + Gen 4+ stubs | 🔄 In progress |
+| Phase 4b | Smart switching — faithful RHH port + Gen 3 mechanics fully implemented | ✅ Done |
 | Phase 5 | Automated AI test framework (in-ROM DSL from RHH) | ⏳ Pending |
 | Phase 6 | Remove dead ASM scripts from `data/battle_ai_scripts.s` | ⏳ Pending |
