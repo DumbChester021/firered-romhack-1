@@ -3,6 +3,19 @@
 
 #include "global.h"
 
+// ============================================================================
+// AI_EFFECTIVENESS_x* constants
+// RHH source: include/battle_ai_util.h (AI_EFFECTIVENESS_* enum)
+// Same values and semantics — translates from uq4_12_t fixed-point to simple
+// byte enum so the rest of the switch logic is structurally identical to RHH.
+// ============================================================================
+#define AI_EFFECTIVENESS_x0    0  // Immune (no damage)
+#define AI_EFFECTIVENESS_x0_5  1  // Not very effective
+#define AI_EFFECTIVENESS_x1    2  // Neutral
+#define AI_EFFECTIVENESS_x2    3  // Super effective
+// FRLG_STUB: RHH also has x0_125, x0_25, x4, x8 for triple-weakness combos.
+//   Add these when dual-type combinations with 4x or more are needed.
+
 // Damage estimation for the C-based Battle AI.
 // Returns estimated damage the move will deal (0 if the move has no power or is completely ineffective).
 // Sets *typeEffectiveness to the MOVE_RESULT_* flags from TypeCalc.
