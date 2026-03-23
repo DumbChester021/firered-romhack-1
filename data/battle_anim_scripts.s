@@ -391,34 +391,62 @@ gBattleAnims_StatusConditions::
 
 	.align 2
 gBattleAnims_General::
-	.4byte General_CastformChange           @ B_ANIM_CASTFORM_CHANGE
-	.4byte General_StatsChange              @ B_ANIM_STATS_CHANGE
-	.4byte General_SubstituteFade           @ B_ANIM_SUBSTITUTE_FADE
-	.4byte General_SubstituteAppear         @ B_ANIM_SUBSTITUTE_APPEAR
-	.4byte General_BaitThrow                @ B_ANIM_BAIT_THROW
-	.4byte General_ItemKnockoff             @ B_ANIM_ITEM_KNOCKOFF
-	.4byte General_TurnTrap                 @ B_ANIM_TURN_TRAP
-	.4byte General_HeldItemEffect           @ B_ANIM_HELD_ITEM_EFFECT
-	.4byte General_SmokeballEscape          @ B_ANIM_SMOKEBALL_ESCAPE
-	.4byte General_FocusBand                @ B_ANIM_FOCUS_BAND
-	.4byte General_Rain                     @ B_ANIM_RAIN_CONTINUES
-	.4byte General_Sun                      @ B_ANIM_SUN_CONTINUES
-	.4byte General_Sandstorm                @ B_ANIM_SANDSTORM_CONTINUES
-	.4byte General_Hail                     @ B_ANIM_HAIL_CONTINUES
-	.4byte General_LeechSeedDrain           @ B_ANIM_LEECH_SEED_DRAIN
-	.4byte General_MonHit                   @ B_ANIM_MON_HIT
-	.4byte General_ItemSteal                @ B_ANIM_ITEM_STEAL
-	.4byte General_SnatchMove               @ B_ANIM_SNATCH_MOVE
-	.4byte General_FutureSightHit           @ B_ANIM_FUTURE_SIGHT_HIT
-	.4byte General_DoomDesireHit            @ B_ANIM_DOOM_DESIRE_HIT
-	.4byte General_FocusPunchSetUp          @ B_ANIM_FOCUS_PUNCH_SETUP
-	.4byte General_IngrainHeal              @ B_ANIM_INGRAIN_HEAL
-	.4byte General_WishHeal                 @ B_ANIM_WISH_HEAL
-	.4byte General_MonScared                @ B_ANIM_MON_SCARED
-	.4byte General_GhostGetOut              @ B_ANIM_GHOST_GET_OUT
-	.4byte General_SilphScoped              @ B_ANIM_SILPH_SCOPED
-	.4byte General_SafariRockThrow          @ B_ANIM_ROCK_THROW
-	.4byte General_SafariReaction           @ B_ANIM_SAFARI_REACTION
+	.4byte General_StatsChange              @ B_ANIM_STATS_CHANGE (0)
+	.4byte General_SubstituteFade           @ B_ANIM_SUBSTITUTE_FADE (1)
+	.4byte General_SubstituteAppear         @ B_ANIM_SUBSTITUTE_APPEAR (2)
+	.4byte General_BaitThrow                @ B_ANIM_POKEBLOCK_THROW (3)
+	.4byte General_ItemKnockoff             @ B_ANIM_ITEM_KNOCKOFF (4)
+	.4byte General_TurnTrap                 @ B_ANIM_TURN_TRAP (5)
+	.4byte General_HeldItemEffect           @ B_ANIM_HELD_ITEM_EFFECT (6)
+	.4byte General_SmokeballEscape          @ B_ANIM_SMOKEBALL_ESCAPE (7)
+	.4byte General_FocusBand                @ B_ANIM_HANGED_ON (8)
+	.4byte General_Rain                     @ B_ANIM_RAIN_CONTINUES (9)
+	.4byte General_Sun                      @ B_ANIM_SUN_CONTINUES (10)
+	.4byte General_Sandstorm                @ B_ANIM_SANDSTORM_CONTINUES (11)
+	.4byte General_Hail                     @ B_ANIM_HAIL_CONTINUES (12)
+	.4byte General_LeechSeedDrain           @ B_ANIM_LEECH_SEED_DRAIN (13)
+	.4byte General_MonHit                   @ B_ANIM_MON_HIT (14)
+	.4byte General_ItemSteal                @ B_ANIM_ITEM_STEAL (15)
+	.4byte General_SnatchMove               @ B_ANIM_SNATCH_MOVE (16)
+	.4byte General_FutureSightHit           @ B_ANIM_FUTURE_SIGHT_HIT (17)
+	.4byte General_DoomDesireHit            @ B_ANIM_DOOM_DESIRE_HIT (18)
+	.4byte General_FocusPunchSetUp          @ B_ANIM_FOCUS_PUNCH_SETUP (19)
+	.4byte General_IngrainHeal              @ B_ANIM_INGRAIN_HEAL (20)
+	.4byte General_WishHeal                 @ B_ANIM_WISH_HEAL (21)
+	.4byte General_Stub                     @ B_ANIM_MEGA_EVOLUTION (22) — stub
+	.4byte General_Stub                     @ B_ANIM_ILLUSION_OFF (23) — stub
+	.4byte General_CastformChange           @ B_ANIM_FORM_CHANGE (24) — Castform uses this
+	.4byte General_Stub                     @ B_ANIM_SLIDE_OFFSCREEN (25) — stub
+	.4byte General_Stub                     @ B_ANIM_RESTORE_BG (26) — stub
+	.4byte General_Stub                     @ B_ANIM_TOTEM_FLARE (27) — stub
+	.4byte General_Stub                     @ B_ANIM_GULP_MISSILE (28) — stub
+	.4byte General_Stub                     @ B_ANIM_STRONG_WINDS (29) — stub
+	.4byte General_Stub                     @ B_ANIM_PRIMAL_REVERSION (30) — stub
+	.4byte General_Stub                     @ B_ANIM_AQUA_RING_HEAL (31) — stub
+	.4byte General_Stub                     @ B_ANIM_BEAK_BLAST_SETUP (32) — stub
+	.4byte General_Stub                     @ B_ANIM_SHELL_TRAP_SETUP (33) — stub
+	.4byte General_Stub                     @ B_ANIM_ZMOVE_ACTIVATE (34) — stub
+	.4byte General_Stub                     @ B_ANIM_AFFECTION_HANGED_ON (35) — stub
+	.4byte General_Stub                     @ B_ANIM_SNOW_CONTINUES (36) — stub
+	.4byte General_Stub                     @ B_ANIM_ULTRA_BURST (37) — stub
+	.4byte General_Stub                     @ B_ANIM_SALT_CURE_DAMAGE (38) — stub
+	.4byte General_Stub                     @ B_ANIM_DYNAMAX_GROWTH (39) — stub
+	.4byte General_Stub                     @ B_ANIM_MAX_SET_WEATHER (40) — stub
+	.4byte General_Stub                     @ B_ANIM_SYRUP_BOMB_SPEED_DROP (41) — stub
+	.4byte General_Stub                     @ B_ANIM_RAINBOW (42) — stub
+	.4byte General_Stub                     @ B_ANIM_SEA_OF_FIRE (43) — stub
+	.4byte General_Stub                     @ B_ANIM_SWAMP (44) — stub
+	.4byte General_Stub                     @ B_ANIM_TRICK_ROOM (45) — stub
+	.4byte General_Stub                     @ B_ANIM_WONDER_ROOM (46) — stub
+	.4byte General_Stub                     @ B_ANIM_MAGIC_ROOM (47) — stub
+	.4byte General_Stub                     @ B_ANIM_TAILWIND (48) — stub
+	.4byte General_Stub                     @ B_ANIM_FOG_CONTINUES (49) — stub
+	.4byte General_Stub                     @ B_ANIM_SIMPLE_HEAL (50) — stub
+	.4byte General_MonScared                @ B_ANIM_MON_SCARED (51)
+	.4byte General_GhostGetOut              @ B_ANIM_GHOST_GET_OUT (52)
+	.4byte General_SilphScoped              @ B_ANIM_SILPH_SCOPED (53)
+	.4byte General_SafariRockThrow          @ B_ANIM_ROCK_THROW (54)
+	.4byte General_SafariReaction           @ B_ANIM_SAFARI_REACTION (55)
 
 	.align 2
 gBattleAnims_Special::
@@ -10513,6 +10541,9 @@ Status_Nightmare:
 	createvisualtask AnimTask_ShakeMon2, 2, ANIM_TARGET, 2, 0, 14, 1
 	waitforvisualfinish
 	clearmonbg ANIM_DEF_PARTNER
+	end
+
+General_Stub:
 	end
 
 General_CastformChange:
