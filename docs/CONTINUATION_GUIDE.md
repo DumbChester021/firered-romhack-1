@@ -99,6 +99,34 @@ Merged `move_names.h`, `move_descriptions.c`, and `battle_moves.h` into a single
 
 Battle anim scripts remain in `data/battle_anim_scripts.s` (out of scope for Phase 5).
 
+### Phase 6: Animation Infrastructure — Complete
+
+Ported RHH battle animation infrastructure to support Gen 4+ moves:
+
+- **Opcodes 0x30–0x34**: Multi-target animation macros + C handlers
+- **`gBattleAnims_General` realigned**: 56 entries matching RHH indexing (was 28)
+- **Constants**: 116 new `ANIM_TAG_*` (289–404), 55 new `BG_*` (27–81)
+- **Graphics**: 928 files imported (sprites, backgrounds, stat_change)
+- **INCBINs**: 376 INCBIN + extern declarations in `graphics.c`/`graphics.h`
+- **Data tables**: 125 PicTable + 127 PaletteTable entries registered
+- **`battle_anim_new.c`**: 9,523 lines ported (Gen 4+ sprite templates + callbacks)
+
+Compat aliases added: `ANIM_TAG_POKEBLOCK` → `ANIM_TAG_SAFARI_BAIT`, `B_ANIM_BAIT_THROW`/`B_ANIM_FOCUS_BAND`.
+
+### Phase 7: Gen 4+ Moves — In Progress
+
+First Gen 4 move added: **MOVE_ROOST** (355). Pipeline for adding new moves:
+
+1. Add `MOVE_X` constant in `include/constants/moves.h`, bump `MOVES_COUNT`
+2. Add name entry in `moves_info.h` Section 1
+3. Add description string in `moves_info.h` Section 2
+4. Add description table pointer in `moves_info.h` Section 3
+5. Add battle data struct in `moves_info.h` Section 4
+6. Add animation script in `data/battle_anim_scripts.s`
+7. Add `.4byte Move_X` entry in `gBattleAnims_Moves` table
+
+New battle effects (like `EFFECT_ROOST`) require adding to `battle_move_effects.h` and implementing in `battle_script_commands.c` + `data/battle_scripts_1.s`.
+
 ---
 
 ## Key Files Reference
