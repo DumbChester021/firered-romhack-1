@@ -302,6 +302,12 @@
 #define ANIM_TARGET      1
 #define ANIM_ATK_PARTNER 2
 #define ANIM_DEF_PARTNER 3
+// Used by AnimTask_ShakeMon2, AnimTask_SetGrayscaleOrOriginalPal, and multi-target opcodes
+#define ANIM_PLAYER_LEFT      (MAX_BATTLERS_COUNT + 0)
+#define ANIM_OPPONENT_LEFT    (MAX_BATTLERS_COUNT + 1)
+#define ANIM_PLAYER_RIGHT     (MAX_BATTLERS_COUNT + 2)
+#define ANIM_OPPONENT_RIGHT   (MAX_BATTLERS_COUNT + 3)
+#define ANIM_ATTACKER_FORCE   (MAX_BATTLERS_COUNT + 4)
 
 // stereo panning constants [0-255]
 //

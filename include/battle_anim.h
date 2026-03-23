@@ -85,12 +85,15 @@ extern u8 gAnimFriendship;
 extern u16 gWeatherMoveAnim;
 extern s16 gBattleAnimArgs[ANIM_ARGS_COUNT];
 extern u8 gAnimMoveTurn;
+extern u16 gAnimMoveIndex;
 extern u8 gBattleAnimAttacker;
 extern u8 gBattleAnimTarget;
 extern u8 gBattlerSpriteIds[MAX_BATTLERS_COUNT];
 extern s32 gAnimMoveDmg;
 extern u16 gAnimBattlerSpecies[MAX_BATTLERS_COUNT];
 extern u8 gAnimCustomPanning;
+
+u8 GetAnimBattlerId(u8 wantedBattler);
 
 extern const struct OamData gOamData_AffineOff_ObjNormal_8x8;
 extern const struct OamData gOamData_AffineOff_ObjNormal_16x16;

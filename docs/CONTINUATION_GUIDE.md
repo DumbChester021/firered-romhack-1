@@ -27,7 +27,8 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Battle AI: C Port** | ✅ Done | ASM VM replaced with C dispatch table (9 flags) |
 | **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
-| **Move Engine Overhaul (Phase 1, 2, 3, 4)** | ✅ Done | See section below |
+| **Move Engine Overhaul (Phase 1–5)** | ✅ Done | See section below |
+| **Animation Infrastructure (Phase 1)** | ✅ Done | Opcodes 0x30–0x34, `GetAnimBattlerId`, `gAnimMoveIndex` |
 
 ---
 
@@ -90,9 +91,13 @@ for (i = 0; gLevelUpLearnsets[species][i].move != LEVEL_UP_END; i++) {
 LEVEL_UP_END_ENTRY   // expands to { LEVEL_UP_END, 0 }
 ```
 
-### What Remains (Optional / Future)
-- **Phase 3:** `additionalEffects[]` array for multi-secondary-effect moves
-- **Phase 5:** Unified `moves_info.h` (merge 4 files into 1 per RHH)
+### Phase 5: Unified `moves_info.h` — Complete
+
+Merged `move_names.h`, `move_descriptions.c`, and `battle_moves.h` into a single `src/data/moves_info.h` (6400+ lines). Adding a new move now requires editing only this one file (3 sections within it: name, description, stats).
+
+`src/move_descriptions.c` is now the sole compilation unit — it includes the necessary headers then `#include "data/moves_info.h"`. The old `#include` lines were removed from `src/data.c` and `src/pokemon.c`.
+
+Battle anim scripts remain in `data/battle_anim_scripts.s` (out of scope for Phase 5).
 
 ---
 
@@ -105,9 +110,8 @@ LEVEL_UP_END_ENTRY   // expands to { LEVEL_UP_END, 0 }
 | `include/constants/battle_move_effects.h` | `EFFECT_*` constants (214 effects, ends at `EFFECT_CAMOUFLAGE`) |
 | `include/constants/battle_ai.h` | AI flag constants (`AI_SCRIPT_*`) |
 | `include/constants/pokemon.h` | `LEVEL_UP_END` (0xFFFF), `LEVEL_UP_END_ENTRY`, `LEVEL_UP_MOVE` macro |
-| `src/data/battle_moves.h` | Move stats — uses named flag fields, not `FLAG_*` |
-| `src/data/text/move_names.h` | Move display names (ALLCAPS, max 13 chars) |
-| `src/move_descriptions.c` | Move description strings + pointer array |
+| `src/data/moves_info.h` | **Unified move data** — names, descriptions, stats (Phase 5) |
+| `src/move_descriptions.c` | Compilation unit for `moves_info.h` |
 | `src/data/pokemon/level_up_learnsets.h` | Level-up moves per species (`struct LevelUpMove[]`) |
 | `src/data/pokemon/egg_moves.h` | Egg moves per species |
 | `src/data/pokemon/tmhm_learnsets.h` | 64-bit TM/HM bitmask per species (6 slots left) |
@@ -115,6 +119,10 @@ LEVEL_UP_END_ENTRY   // expands to { LEVEL_UP_END, 0 }
 | `data/battle_scripts_1.s` | Battle effect scripts (ASM macro language) |
 | `src/battle_script_commands.c` | C handlers for battle script commands |
 | `data/battle_anim_scripts.s` | Move animation scripts + `gBattleAnims_Moves` table |
+| `asm/macros/battle_anim_script.inc` | Animation bytecode macros (53 opcodes, 0x00–0x34) |
+| `src/battle_anim.c` | Animation script interpreter + launch + opcode handlers |
+| `include/constants/battle_anim.h` | `ANIM_TAG_*`, `B_ANIM_*`, `BG_*` constants |
+| `src/data/battle_anim.h` | Sprite/palette/background registration tables |
 | `src/battle_ai_main.c` | All AI flag functions + `gAIFunctionTable` dispatch |
 | `src/battle_ai_util.c` | AI utilities: damage calc, switching logic |
 | `src/data/trainers.h` | Per-trainer `aiFlags` |
@@ -216,3 +224,4 @@ python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
 | `missing_items.md` | Gen 4+ items not yet in FireRed |
 | `missing_egg_moves.md` | Egg moves not yet in FireRed |
 | `battle_ai_migration_research.md` | AI ASM→C migration research log |
+| `battle_animation_systems.md` | FireRed vs RHH animation system comparison + porting guide |
