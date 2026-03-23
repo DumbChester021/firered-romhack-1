@@ -10,7 +10,7 @@ A **FireRed decompilation romhack** forked from [pret/pokefirered](https://githu
 
 Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Github/rh-hideout/pokeemerald-expansion`.
 
-**Active branch:** `feature-engine-overhaul` *(was `feature-AI-upgrade` — renamed for wider scope)*
+**Active branch:** `feature-AI-upgrade`
 
 ---
 
@@ -27,41 +27,71 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Battle AI: C Port** | ✅ Done | ASM VM replaced with C dispatch table (9 flags) |
 | **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
+| **Move Engine Overhaul (Phase 1+4)** | ✅ Done | See section below |
 
 ---
 
-## Current Goal: Move Engine Overhaul
+## Move Engine Overhaul — Completed
 
-**Branch:** `feature-engine-overhaul`
+**Branch:** `feature-AI-upgrade` (commits after `1ef3ccfb1`)
 
-The move engine must be upgraded before Gen 4+ moves, updated learnsets, or new abilities can be added at scale. The `struct BattleMove` has hard limits (u8 effect, 8-flag bitfield) that block everything downstream.
+### What Changed
 
-**Full plan:** `docs/research/move_engine_upgrade_research.md`  
-**Execution plan:** see implementation plan artifact in brain dir  
-**Audit tool:** `python3 tools/audit_move_engine.py`
+#### `struct BattleMove` (`include/pokemon.h`)
+- `effect`: `u8` → `u16` — allows >255 effect IDs
+- `flags` bitfield removed — replaced with 7 named fields:
+  - `makesContact`, `ignoresProtect`, `mirrorMoveAffected`, `ignoresKingsRock`
+  - `soundMove`, `snatchAffected`, `magicCoatAffected`
+- Added: `criticalHitStage` (u8:2), `strikeCount` (u8:4), `argument` (u32), `recoil` (u8%)
 
-### Audit Baseline (as of 2026-03-23)
+#### `struct LevelUpMove` (`include/pokemon.h`)
+- Was: packed 16-bit `(level << 9 | moveId)` — capped move IDs at 511
+- Now: `{ u16 move; u16 level; }` — no move ID limit
 
-```
-43 ERRORs — must resolve before struct expansion:
-  - 11 × .flags & FLAG_* bitfield access  → battle_script_commands.c, battle_util.c
-  - 7  × u8 effect local (truncation bug) → battle_ai_main.c
-  - 19 × LEVEL_UP_MOVE_LV/ID bitmask     → pokemon.c
-  - 6  × LEVEL_UP_END sentinel            → pokemon.c
-0 ASM BattleMove offset references        → safe
+#### Sentinel / Constants (`include/constants/pokemon.h`)
+- `LEVEL_UP_END`: `0xFF` → `0xFFFF`
+- `LEVEL_UP_END_ENTRY`: new macro `{ LEVEL_UP_END, 0 }` for array terminators
+- `FLAG_*` defines: **removed** — see comment block in `constants/pokemon.h` for mapping
+- `LEVEL_UP_MOVE_LV`, `LEVEL_UP_MOVE_ID`: **removed**
 
-Run: python3 tools/audit_move_engine.py
-Target: exit 0, all ERRORs resolved
-```
+#### Files Updated
+| File | Change |
+|---|---|
+| `src/data/battle_moves.h` | All 355 entries: `.flags`/`FLAG_*` → named fields |
+| `src/data/pokemon/level_up_learnsets.h` | All 386 arrays: `u16[]` → `struct LevelUpMove[]` |
+| `src/data/pokemon/level_up_learnset_pointers.h` | Pointer type: `u16*` → `struct LevelUpMove*` |
+| `src/pokemon.c` | All bitmask decode → `.move`/`.level` field access |
+| `src/battle_ai_main.c` | `u8` effect locals/tables → `u16`, `0xFFFF` sentinels |
+| `src/battle_script_commands.c` | `.flags` accesses → named fields |
+| `src/battle_util.c` | `.flags` accesses → named fields (6 sites) |
+| `src/data/text/move_names.h` | 7 move names corrected to Gen 4+ spelling |
 
-### Phase Sequence
-
-| Phase | What | Key Files |
+#### Move Name Corrections Applied
+| Move | Was | Now |
 |---|---|---|
-| **1** | Expand `struct BattleMove`: `u16 effect`, named flag fields, `argument`, `strikeCount`, `criticalHitStage`, `recoil` | `include/pokemon.h`, `src/data/battle_moves.h`, `battle_script_commands.c`, `battle_util.c`, `battle_ai_main.c` |
-| **4** | `LevelUpMove` encoding: packed u16 → `{u16 move; u16 level;}` | `include/pokemon.h`, `level_up_learnsets.h`, `pokemon.c` |
-| **3** | `additionalEffects[]` array for multi-secondary-effect moves | `include/pokemon.h`, `battle_script_commands.c` |
-| **5** | Unified `moves_info.h` (merge 4 files into 1) | New file, retire old ones |
+| Vise Grip | `VICEGRIP` | `VISE GRIP` |
+| Bubble Beam | `BUBBLEBEAM` | `BUBBLE BEAM` |
+| Poison Powder | `POISONPOWDER` | `POISON POWDER` |
+| Dragon Breath | `DRAGONBREATH` | `DRAGON BREATH` |
+| Ancient Power | `ANCIENTPOWER` | `ANCIENT POWER` |
+| Smelling Salt | `SMELLINGSALT` | `SMELLING SALT` |
+| Feather Dance | `FEATHERDANCE` | `FEATHER DANCE` |
+
+### How to Access Learnset Data (New Pattern)
+```c
+// Iteration
+for (i = 0; gLevelUpLearnsets[species][i].move != LEVEL_UP_END; i++) {
+    u16 move  = gLevelUpLearnsets[species][i].move;
+    u16 level = gLevelUpLearnsets[species][i].level;
+}
+
+// Array terminator in learnset data files
+LEVEL_UP_END_ENTRY   // expands to { LEVEL_UP_END, 0 }
+```
+
+### What Remains (Optional / Future)
+- **Phase 3:** `additionalEffects[]` array for multi-secondary-effect moves
+- **Phase 5:** Unified `moves_info.h` (merge 4 files into 1 per RHH)
 
 ---
 
@@ -73,11 +103,11 @@ Target: exit 0, all ERRORs resolved
 | `include/constants/moves.h` | Move ID `#defines` + `MOVES_COUNT` |
 | `include/constants/battle_move_effects.h` | `EFFECT_*` constants (214 effects, ends at `EFFECT_CAMOUFLAGE`) |
 | `include/constants/battle_ai.h` | AI flag constants (`AI_SCRIPT_*`) |
-| `include/constants/pokemon.h` | `FLAG_*` defines, `LEVEL_UP_MOVE_LV/ID`, `LEVEL_UP_END` |
-| `src/data/battle_moves.h` | Move stats (power, type, accuracy, PP, flags, category) |
-| `src/data/text/move_names.h` | Move display names (ALLCAPS, max 12 chars) |
+| `include/constants/pokemon.h` | `LEVEL_UP_END` (0xFFFF), `LEVEL_UP_END_ENTRY`, `LEVEL_UP_MOVE` macro |
+| `src/data/battle_moves.h` | Move stats — uses named flag fields, not `FLAG_*` |
+| `src/data/text/move_names.h` | Move display names (ALLCAPS, max 13 chars) |
 | `src/move_descriptions.c` | Move description strings + pointer array |
-| `src/data/pokemon/level_up_learnsets.h` | Level-up moves per species (packed u16 encoding) |
+| `src/data/pokemon/level_up_learnsets.h` | Level-up moves per species (`struct LevelUpMove[]`) |
 | `src/data/pokemon/egg_moves.h` | Egg moves per species |
 | `src/data/pokemon/tmhm_learnsets.h` | 64-bit TM/HM bitmask per species (6 slots left) |
 | `src/data/party_menu.h` | `sTMHMMoves[]` table mapping TM slot → move |
@@ -88,7 +118,18 @@ Target: exit 0, all ERRORs resolved
 | `src/battle_ai_util.c` | AI utilities: damage calc, switching logic |
 | `src/data/trainers.h` | Per-trainer `aiFlags` |
 | `tools/verify_data.py` | Data integrity checker (Fairy type, P/S split, TMs) |
-| `tools/audit_move_engine.py` | Pre-flight checker for struct expansion (run before any Phase) |
+| `tools/audit_move_engine.py` | Pre-flight checker for struct expansion |
+
+---
+
+## Current Hard Limits
+
+| Limit | Cap | Note |
+|---|---|---|
+| Move ID (learnsets) | **65534** (u16, -1 sentinel) | Effectively unlimited for Gen 1-3 |
+| TM slots | **64** (64-bit bitmask) | 6 slots remaining |
+| Move effects | **65535** (u16) | Phase 1 complete |
+| Move flags | **unlimited** (named fields) | Phase 1 complete |
 
 ---
 
@@ -103,23 +144,10 @@ Full switching logic: `docs/battle_ai_architecture.md`
 
 ---
 
-## Hard Limits (Current, Before Overhaul)
-
-| Limit | Cap | Note |
-|---|---|---|
-| Move ID | **511** (9-bit learnset encoding) | 157 moves remaining before Phase 4 needed |
-| TM slots | **64** (64-bit bitmask) | 6 slots remaining |
-| Move effects | **255** (`u8` in struct) | Phase 1 raises to `u16` |
-| Move flags | **8** (`u8` bitfield) | Phase 1 expands to named field bits |
-
----
-
 ## Build & Verify
 
 ```bash
 cd /mnt/data/Github/prototype/firered-romhack-1
-git checkout feature-engine-overhaul
-python3 tools/audit_move_engine.py        # must exit 0 before struct changes
 make -j$(nproc) 2>&1 | grep "error:"     # must be empty
 wc -c pokefirered_modern.gba             # must be 16777216 (exactly 16MB)
 python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
@@ -135,6 +163,7 @@ python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
 4. **No invented AI logic.** Trace to RHH or don't add it.
 5. **Build must stay clean.** `make -j$(nproc) 2>&1 | grep "error:"` returns nothing.
 6. **Active test/debug code** must be documented in `## Active Test/Debug Changes` in `README.md`.
+7. **Named fields, not FLAG_*.** `FLAG_*` constants are removed. Use struct field names directly.
 
 ---
 
