@@ -369,7 +369,9 @@ const u8 gMoveNames[MOVES_COUNT][MOVE_NAME_LENGTH + 1] = {
     [MOVE_SHOCK_WAVE]    = _("SHOCK WAVE"),
     [MOVE_WATER_PULSE]   = _("WATER PULSE"),
     [MOVE_DOOM_DESIRE]   = _("DOOM DESIRE"),
-    [MOVE_PSYCHO_BOOST]  = _("PSYCHO BOOST")
+    [MOVE_PSYCHO_BOOST]  = _("PSYCHO BOOST"),
+    // Gen 4 moves
+    [MOVE_ROOST]         = _("ROOST")
 };
 
 // ---------------------------------------------------------------------------
@@ -730,6 +732,8 @@ const u8 gMoveDescription_ShockWave[] = _("A rapid jolt of\nelectricity strikes\
 const u8 gMoveDescription_WaterPulse[] = _("An attack with a\npulsing blast of\nwater. It may also\nconfuse the foe.");
 const u8 gMoveDescription_DoomDesire[] = _("A move that attacks\nthe foe with a\nblast of light two\nturns after use.");
 const u8 gMoveDescription_PsychoBoost[] = _("An intense attack\nthat also sharply\nreduces the user's\nSP. ATK stat.");
+// Gen 4 moves
+const u8 gMoveDescription_Roost[] = _("Restores the user's\nHP by half of its\nmax HP.");
 
 // ---------------------------------------------------------------------------
 // Section 3: Move Description Pointer Table
@@ -1090,6 +1094,8 @@ const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] = {
     [MOVE_WATER_PULSE   - 1] = gMoveDescription_WaterPulse,
     [MOVE_DOOM_DESIRE   - 1] = gMoveDescription_DoomDesire,
     [MOVE_PSYCHO_BOOST  - 1] = gMoveDescription_PsychoBoost,
+    // Gen 4 moves
+    [MOVE_ROOST         - 1] = gMoveDescription_Roost,
 };
 
 // ---------------------------------------------------------------------------
@@ -6412,5 +6418,22 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
                 .priority = 0,
                 .mirrorMoveAffected = TRUE,
                 .category = SPLIT_SPECIAL,
+            },
+
+        // Gen 4 moves
+        [MOVE_ROOST] =
+            {
+                .effect = EFFECT_RESTORE_HP,
+                .power = 0,
+                .type = TYPE_FLYING,
+                .accuracy = 0,
+                .pp = 10,
+                .secondaryEffectChance = 0,
+                .target = MOVE_TARGET_USER,
+                .priority = 0,
+                .ignoresProtect = TRUE,
+                .ignoresKingsRock = TRUE,
+                .snatchAffected = TRUE,
+                .category = SPLIT_STATUS,
             },
 };
