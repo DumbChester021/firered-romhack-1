@@ -277,6 +277,30 @@ struct BattleMove
     u8  recoil;              // RHH: recoil:7 (unsigned %; drain vs recoil via effect ID)
 
     u32 argument;            // RHH: argument (two-turn: STRINGID | STATUS3_BIT<<16)
+
+    // Phase 3: multi-secondary-effect support.
+    // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo
+    // max 3 additional effects per move (2-bit field)
+    u8  numAdditionalEffects:2;
+    const struct AdditionalEffect *additionalEffects;
+};
+
+// RHH source: pokeemerald-expansion/include/pokemon.h
+// EFFECTS_ARR creates a compound-literal array; ADDITIONAL_EFFECTS sets both
+// the pointer and the count in a single designated-initialiser expression.
+#define EFFECTS_ARR(...)        (const struct AdditionalEffect[]){__VA_ARGS__}
+#define ADDITIONAL_EFFECTS(...) EFFECTS_ARR(__VA_ARGS__), \
+                                .numAdditionalEffects = ARRAY_COUNT(EFFECTS_ARR(__VA_ARGS__))
+
+// Per-effect descriptor inside gBattleMoves[move].additionalEffects[].
+// RHH source: pokeemerald-expansion/include/pokemon.h struct AdditionalEffect
+struct AdditionalEffect
+{
+    u16 moveEffect;              // MOVE_EFFECT_* constant
+    u8  self:1;                  // 1 = affects user; 0 = affects target
+    u8  onlyIfTargetRaisedStats:1; // only triggers if target raised a stat this turn (e.g. Burning Jealousy)
+    u8  onChargeTurnOnly:1;      // only triggers on the charge turn of a two-turn move
+    u8  chance;                  // 0 = guaranteed (primary); >0 = secondary chance %
 };
 
 

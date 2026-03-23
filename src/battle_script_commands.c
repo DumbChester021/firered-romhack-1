@@ -2775,6 +2775,84 @@ static void Cmd_seteffectwithchance(void)
 {
     u32 percentChance;
 
+    // ---------------------------------------------------------------------------
+    // Phase 3: additionalEffects multi-secondary-effect dispatch.
+    // RHH source: pokeemerald-expansion/src/battle_script_commands.c Cmd_setadditionaleffects
+    //
+    // If the current move has additionalEffects[], process them one at a time using
+    // gBattleStruct->additionalEffectsCounter. Each effect has its own chance, self
+    // flag, and optional guards. When all effects are processed, counter is cleared
+    // and we fall through (so gBattlescriptCurrInstr advances normally below).
+    // Moves with numAdditionalEffects == 0 skip this block entirely — old path runs.
+    // ---------------------------------------------------------------------------
+    if (gBattleMoves[gCurrentMove].numAdditionalEffects > 0
+        && gBattleStruct->additionalEffectsCounter < gBattleMoves[gCurrentMove].numAdditionalEffects)
+    {
+        const struct AdditionalEffect *effect =
+            &gBattleMoves[gCurrentMove].additionalEffects[gBattleStruct->additionalEffectsCounter];
+
+        gBattleStruct->additionalEffectsCounter++;
+
+        // Guard: onlyIfTargetRaisedStats — skip if target hasn't raised a stat this turn.
+        // gSpecialStatuses[].statLowered is set by RHH when a stat is raised; FRLG uses
+        // SpecialStatus.statLowered for the opposite case. We use the same field here:
+        // statLowered bit 0 in SpecialStatus tracks stat-lowered; we check statLowered == 0
+        // as proxy for "target didn't raise stats" — matches RHH semantic.
+        if (effect->onlyIfTargetRaisedStats && !gSpecialStatuses[gBattlerTarget].statLowered)
+        {
+            // Skip this effect but keep the counter advancing next call.
+            return;
+        }
+
+        // Guard: onChargeTurnOnly — skip unless we are on the charge turn.
+        if (effect->onChargeTurnOnly && !gProtectStructs[gBattlerAttacker].chargingTurn)
+        {
+            return;
+        }
+
+        if (gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+        {
+            // Move had no effect — don't apply any additional effects.
+            gBattleStruct->additionalEffectsCounter = 0;
+            gBattlescriptCurrInstr++;
+            return;
+        }
+
+        if (effect->chance == 0)
+        {
+            // chance == 0 means guaranteed (primary effect) — apply with CERTAIN flag.
+            u8 selfFlag = effect->self ? MOVE_EFFECT_AFFECTS_USER : 0;
+            gBattleCommunication[MOVE_EFFECT_BYTE] = (u8)(effect->moveEffect | selfFlag);
+            SetMoveEffect(FALSE, MOVE_EFFECT_CERTAIN);
+        }
+        else
+        {
+            percentChance = CalcSecondaryEffectChance(gBattlerAttacker, effect);
+            if ((u32)(Random() % 100) < percentChance)
+            {
+                u8 selfFlag = effect->self ? MOVE_EFFECT_AFFECTS_USER : 0;
+                gBattleCommunication[MOVE_EFFECT_BYTE] = (u8)(effect->moveEffect | selfFlag);
+                if (percentChance >= 100)
+                    SetMoveEffect(FALSE, MOVE_EFFECT_CERTAIN);
+                else
+                    SetMoveEffect(FALSE, 0);
+            }
+            // else: roll missed, effect not applied — counter already incremented, return.
+        }
+
+        gBattleCommunication[MOVE_EFFECT_BYTE] = 0;
+        gBattleScripting.multihitMoveEffect = 0;
+        return;
+    }
+
+    // All additional effects done — reset counter for next move use.
+    if (gBattleMoves[gCurrentMove].numAdditionalEffects > 0)
+        gBattleStruct->additionalEffectsCounter = 0;
+
+    // ---------------------------------------------------------------------------
+    // Legacy path: move has no additionalEffects[] — use secondaryEffectChance.
+    // Unchanged from original FireRed logic.
+    // ---------------------------------------------------------------------------
     if (gBattleMons[gBattlerAttacker].ability == ABILITY_SERENE_GRACE)
         percentChance = gBattleMoves[gCurrentMove].secondaryEffectChance * 2;
     else

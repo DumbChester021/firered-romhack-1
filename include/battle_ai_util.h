@@ -50,4 +50,9 @@ bool8 AI_IsTerrainActive(u8 terrainFlag);
 // GEN4_STUB: Returns TRUE if Trick Room is currently active on the field.
 bool8 AI_IsTrickRoomActive(void);
 
+// Phase 3: additionalEffects AI helper.
+// RHH source: pokeemerald-expansion/include/battle_ai_util.h
+// Returns TRUE if any of battlerId's moves have additionalEffects containing moveEffect.
+bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect);
+
 #endif // GUARD_BATTLE_AI_UTIL_H

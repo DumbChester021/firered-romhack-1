@@ -455,7 +455,10 @@ struct BattleStruct
         struct LinkBattlerHeader linkBattlerHeader;
         struct MultiBattlePokemonTx multiBattleMons[3];
     } multiBuffer;
-    u8 padding_1E4[0x1C];
+    // Phase 3: tracks which additionalEffects[] entry is currently being processed.
+    // RHH source: pokeemerald-expansion/include/battle.h BattleStruct.additionalEffectsCounter
+    u8 additionalEffectsCounter;
+    u8 padding_1E4[0x1B];
 }; // size == 0x200 bytes
 
 extern struct BattleStruct *gBattleStruct;

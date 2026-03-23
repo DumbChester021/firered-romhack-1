@@ -27,7 +27,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Battle AI: C Port** | ✅ Done | ASM VM replaced with C dispatch table (9 flags) |
 | **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
-| **Move Engine Overhaul (Phase 1+4)** | ✅ Done | See section below |
+| **Move Engine Overhaul (Phase 1, 2, 3, 4)** | ✅ Done | See section below |
 
 ---
 
@@ -43,6 +43,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
   - `makesContact`, `ignoresProtect`, `mirrorMoveAffected`, `ignoresKingsRock`
   - `soundMove`, `snatchAffected`, `magicCoatAffected`
 - Added: `criticalHitStage` (u8:2), `strikeCount` (u8:4), `argument` (u32), `recoil` (u8%)
+- **Phase 3:** Added `numAdditionalEffects` (u8:2) + `additionalEffects[]` pointer for multi-secondary-effect support
 
 #### `struct LevelUpMove` (`include/pokemon.h`)
 - Was: packed 16-bit `(level << 9 | moveId)` — capped move IDs at 511
@@ -130,6 +131,37 @@ LEVEL_UP_END_ENTRY   // expands to { LEVEL_UP_END, 0 }
 | TM slots | **64** (64-bit bitmask) | 6 slots remaining |
 | Move effects | **65535** (u16) | Phase 1 complete |
 | Move flags | **unlimited** (named fields) | Phase 1 complete |
+| Additional effects per move | **3** (2-bit field) | Phase 3 complete |
+
+### Phase 3: additionalEffects Usage
+
+To give a move multiple secondary effects, use the `ADDITIONAL_EFFECTS(...)` macro in `src/data/battle_moves.h`. The old `secondaryEffectChance` field becomes `0` on converted moves to avoid double-triggering.
+
+```c
+[MOVE_LAVA_PLUME] = {
+    .effect = EFFECT_HIT,
+    .power  = 80,
+    // ...other fields...
+    .secondaryEffectChance = 0,  // must be 0 when additionalEffects is used
+    ADDITIONAL_EFFECTS(
+        {
+            .moveEffect = MOVE_EFFECT_BURN,
+            .chance     = 30,
+        }
+    ),
+},
+
+// Self-targeting effect (e.g. Overheat's SpAtk drop on the user):
+ADDITIONAL_EFFECTS(
+    {
+        .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_2,
+        .self       = TRUE,
+        .chance     = 0,  // guaranteed
+    }
+),
+```
+
+New helpers available: `MoveHasAdditionalEffect(move, effect)`, `MoveHasAdditionalEffectSelf(move, effect)`, `CalcSecondaryEffectChance(battler, &effect)`, `HasMoveWithAdditionalEffect(battlerId, effect)` (AI).
 
 ---
 

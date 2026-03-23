@@ -3,6 +3,7 @@
 #include "battle_anim.h"
 #include "battle_ai_util.h"
 #include "battle_script_commands.h"
+#include "battle_util.h"
 #include "pokemon.h"
 #include "random.h"
 #include "constants/battle.h"
@@ -716,3 +717,20 @@ bool8 AI_IsTrickRoomActive(void)
     return FALSE;
 }
 
+// =============================================================================
+// Phase 3: additionalEffects AI helper
+// RHH source: pokeemerald-expansion/src/battle_ai_util.c
+// Returns TRUE if any of battlerId's moves have an additionalEffects entry
+// matching moveEffect (targeting the foe).
+// =============================================================================
+bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect)
+{
+    u8 i;
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u16 move = gBattleMons[battlerId].moves[i];
+        if (move != MOVE_NONE && MoveHasAdditionalEffect(move, moveEffect))
+            return TRUE;
+    }
+    return FALSE;
+}

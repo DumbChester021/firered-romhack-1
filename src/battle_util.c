@@ -3250,3 +3250,60 @@ u8 IsMonDisobedient(void)
         }
     }
 }
+
+// =============================================================================
+// Phase 3: additionalEffects query helpers
+// RHH source: pokeemerald-expansion/src/battle_util.c
+// =============================================================================
+
+// Returns the effective secondary-effect chance for one AdditionalEffect entry,
+// doubling for Serene Grace. Mirrors RHH CalcSecondaryEffectChance.
+u8 CalcSecondaryEffectChance(u8 battler, const struct AdditionalEffect *additionalEffect)
+{
+    u32 chance = additionalEffect->chance;
+    if (gBattleMons[battler].ability == ABILITY_SERENE_GRACE)
+        chance *= 2;
+    if (chance > 100)
+        chance = 100;
+    return (u8)chance;
+}
+
+// Returns TRUE if move has an additionalEffect with the given moveEffect targeting the foe.
+bool8 MoveHasAdditionalEffect(u16 move, u16 moveEffect)
+{
+    u8 i;
+    for (i = 0; i < gBattleMoves[move].numAdditionalEffects; i++)
+    {
+        if (gBattleMoves[move].additionalEffects[i].moveEffect == moveEffect
+            && !gBattleMoves[move].additionalEffects[i].self)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// Returns TRUE if move has an additionalEffect with the given moveEffect and exact chance.
+bool8 MoveHasAdditionalEffectWithChance(u16 move, u16 moveEffect, u8 chance)
+{
+    u8 i;
+    for (i = 0; i < gBattleMoves[move].numAdditionalEffects; i++)
+    {
+        if (gBattleMoves[move].additionalEffects[i].moveEffect == moveEffect
+            && gBattleMoves[move].additionalEffects[i].chance == chance
+            && !gBattleMoves[move].additionalEffects[i].self)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// Returns TRUE if move has an additionalEffect with the given moveEffect targeting the user.
+bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect)
+{
+    u8 i;
+    for (i = 0; i < gBattleMoves[move].numAdditionalEffects; i++)
+    {
+        if (gBattleMoves[move].additionalEffects[i].moveEffect == moveEffect
+            && gBattleMoves[move].additionalEffects[i].self)
+            return TRUE;
+    }
+    return FALSE;
+}

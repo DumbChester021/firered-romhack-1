@@ -94,4 +94,11 @@ void HandleAction_RunBattleScript(void);
 u8 GetMoveTarget(u16 move, u8 setTarget);
 u8 IsMonDisobedient(void);
 
+// Phase 3: additionalEffects query helpers.
+// RHH source: pokeemerald-expansion/include/battle_util.h
+bool8 MoveHasAdditionalEffect(u16 move, u16 moveEffect);
+bool8 MoveHasAdditionalEffectWithChance(u16 move, u16 moveEffect, u8 chance);
+bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect);
+u8    CalcSecondaryEffectChance(u8 battler, const struct AdditionalEffect *additionalEffect);
+
 #endif // GUARD_BATTLE_UTIL_H
