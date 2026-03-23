@@ -201,11 +201,13 @@
 
 // Learning moves
 #define MON_ALREADY_KNOWS_MOVE 0xFFFE
-#define MON_HAS_MAX_MOVES 0xFFFF
+#define MON_HAS_MAX_MOVES      0xFFFF
 
-#define LEVEL_UP_MOVE_ID 0x01FF
-#define LEVEL_UP_MOVE_LV 0xFE00
-#define LEVEL_UP_END 0xFFFF
+// LevelUpMove sentinel — check entry.move == LEVEL_UP_END to detect end of learnset.
+// Replaces old packed encoding (level << 9) | move with struct { u16 move; u16 level; }.
+// Old LEVEL_UP_MOVE_ID / LEVEL_UP_MOVE_LV bitmask constants are removed.
+#define LEVEL_UP_END      0xFFFF  // sentinel value for LevelUpMove.move
+#define LEVEL_UP_MOVE(lvl, move) { (move), (lvl) }  // struct initializer
 
 #define MAX_LEVEL_UP_MOVES 20
 
@@ -235,18 +237,22 @@
 #define MAX_TOTAL_EVS 510
 #define EV_ITEM_RAISE_LIMIT 100
 
-// Battle move flags
-#define FLAG_MAKES_CONTACT (1 << 0)
-#define FLAG_PROTECT_AFFECTED (1 << 1)
-#define FLAG_MAGIC_COAT_AFFECTED (1 << 2)
-#define FLAG_SNATCH_AFFECTED (1 << 3)
-#define FLAG_MIRROR_MOVE_AFFECTED (1 << 4)
-#define FLAG_KINGS_ROCK_AFFECTED (1 << 5)
+// Battle move flags — these are now struct fields in BattleMove, not bitfield flags.
+// Access as: gBattleMoves[move].makesContact, .ignoresProtect, etc.
+// These defines are REMOVED. Do not add new FLAG_* constants here.
+//
+// Old → New field mapping:
+//   FLAG_MAKES_CONTACT         → .makesContact
+//   FLAG_PROTECT_AFFECTED      → .ignoresProtect == 0  (inverted)
+//   FLAG_MAGIC_COAT_AFFECTED   → .magicCoatAffected
+//   FLAG_SNATCH_AFFECTED       → .snatchAffected
+//   FLAG_MIRROR_MOVE_AFFECTED  → .mirrorMoveAffected
+//   FLAG_KINGS_ROCK_AFFECTED   → .ignoresKingsRock == 0  (inverted)
 
 // Battle move category (physical/special split)
 #define SPLIT_PHYSICAL 0
-#define SPLIT_SPECIAL 1
-#define SPLIT_STATUS 2
+#define SPLIT_SPECIAL  1
+#define SPLIT_STATUS   2
 
 // Growth rates
 #define GROWTH_MEDIUM_FAST 0

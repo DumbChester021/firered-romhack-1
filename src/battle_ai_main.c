@@ -74,7 +74,7 @@ static bool8 IsMoveTypeMatchingAbsorb(u16 move, u8 ability)
 // ============================================================================
 static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    u8 effect = gBattleMoves[move].effect;
+    u16 effect = gBattleMoves[move].effect;
     u8 atkAbility = gBattleMons[battlerAtk].ability;
     u8 defAbility = gBattleMons[battlerDef].ability;
     u8 moveType = gBattleMoves[move].type;
@@ -637,7 +637,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 // ============================================================================
 static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    u8 effect      = gBattleMoves[move].effect;
+    u16 effect      = gBattleMoves[move].effect;
     u8 atkHpPct    = gBattleMons[battlerAtk].hp * 100 / gBattleMons[battlerAtk].maxHP;
     u8 defHpPct    = gBattleMons[battlerDef].hp * 100 / gBattleMons[battlerDef].maxHP;
     u8 atkAbility  = gBattleMons[battlerAtk].ability;
@@ -1013,7 +1013,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             u16 lastMove = gLastMoves[battlerDef];
             if (lastMove != MOVE_NONE)
             {
-                u8 lastEffect = gBattleMoves[lastMove].effect;
+                u16 lastEffect = gBattleMoves[lastMove].effect;
                 if (lastEffect == EFFECT_SLEEP || lastEffect == EFFECT_TOXIC ||
                     lastEffect == EFFECT_POISON || lastEffect == EFFECT_PARALYZE ||
                     lastEffect == EFFECT_WILL_O_WISP)
@@ -1429,7 +1429,7 @@ static s32 AI_TryToFaint(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 // ============================================================================
 static s32 AI_SetupFirstTurn(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    static const u8 sSetupEffects[] = {
+    static const u16 sSetupEffects[] = {
         EFFECT_ATTACK_UP, EFFECT_DEFENSE_UP, EFFECT_SPEED_UP,
         EFFECT_SPECIAL_ATTACK_UP, EFFECT_SPECIAL_DEFENSE_UP,
         EFFECT_ACCURACY_UP, EFFECT_EVASION_UP,
@@ -1449,15 +1449,15 @@ static s32 AI_SetupFirstTurn(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_TORMENT, EFFECT_FLATTER, EFFECT_WILL_O_WISP, EFFECT_INGRAIN,
         EFFECT_IMPRISON, EFFECT_TEETER_DANCE, EFFECT_TICKLE,
         EFFECT_COSMIC_POWER, EFFECT_BULK_UP, EFFECT_CALM_MIND, EFFECT_CAMOUFLAGE,
-        EFFECT_DRAGON_DANCE, 0xFF
+        EFFECT_DRAGON_DANCE, 0xFFFF
     };
-    u8 effect = gBattleMoves[move].effect;
+    u16 effect = gBattleMoves[move].effect;
     u8 i;
 
     if (gBattleResults.battleTurnCounter != 0)
         return score;
 
-    for (i = 0; sSetupEffects[i] != 0xFF; i++)
+    for (i = 0; sSetupEffects[i] != 0xFFFF; i++)
     {
         if (effect == sSetupEffects[i])
         {
@@ -1476,18 +1476,18 @@ static s32 AI_SetupFirstTurn(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 // ============================================================================
 static s32 AI_Risky(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    static const u8 sRiskyEffects[] = {
+    static const u16 sRiskyEffects[] = {
         EFFECT_SLEEP, EFFECT_EXPLOSION, EFFECT_MIRROR_MOVE, EFFECT_OHKO,
         EFFECT_HIGH_CRITICAL, EFFECT_CONFUSE, EFFECT_METRONOME,
         EFFECT_PSYWAVE, EFFECT_COUNTER, EFFECT_DESTINY_BOND,
         EFFECT_SWAGGER, EFFECT_ATTRACT, EFFECT_PRESENT,
         EFFECT_ALL_STATS_UP_HIT, EFFECT_BELLY_DRUM, EFFECT_MIRROR_COAT,
-        EFFECT_FOCUS_PUNCH, EFFECT_REVENGE, EFFECT_TEETER_DANCE, 0xFF
+        EFFECT_FOCUS_PUNCH, EFFECT_REVENGE, EFFECT_TEETER_DANCE, 0xFFFF
     };
-    u8 effect = gBattleMoves[move].effect;
+    u16 effect = gBattleMoves[move].effect;
     u8 i;
 
-    for (i = 0; sRiskyEffects[i] != 0xFF; i++)
+    for (i = 0; sRiskyEffects[i] != 0xFFFF; i++)
     {
         if (effect == sRiskyEffects[i])
         {
@@ -1559,7 +1559,7 @@ static s32 AI_DoubleBattle(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 // ============================================================================
 static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    u8 effect = gBattleMoves[move].effect;
+    u16 effect = gBattleMoves[move].effect;
     u8 atkHpPct = gBattleMons[battlerAtk].hp * 100 / gBattleMons[battlerAtk].maxHP;
     u8 defHpPct = gBattleMons[battlerDef].hp * 100 / gBattleMons[battlerDef].maxHP;
 

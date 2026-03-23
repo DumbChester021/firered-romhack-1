@@ -237,17 +237,48 @@ struct SpeciesInfo
 
 struct BattleMove
 {
-    u8 effect;
-    u8 power;
-    u8 type;
-    u8 accuracy;
-    u8 pp;
-    u8 secondaryEffectChance;
-    u8 target;
-    s8 priority;
-    u8 flags;
-    u8 category;
+    // Core stats — match RHH MoveInfo layout (include/pokemon.h)
+    u16 effect;               // was u8; RHH: u16 effect
+    u8  power;
+    u8  type;
+    u8  accuracy;
+    u8  pp;
+    u8  secondaryEffectChance;
+    u8  target;
+    s8  priority;
+    u8  category;
+
+    // Named flag fields — port of RHH MoveInfo boolean flags.
+    // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo, flags block.
+    // All existing Gen 1-3 moves: only set fields matching original game behavior.
+    // New capability flags (punch/bite/etc.) default 0 until relevant abilities are added.
+    u8  makesContact:1;          // RHH: makesContact
+    u8  ignoresProtect:1;        // RHH: ignoresProtect
+    u8  magicCoatAffected:1;     // RHH: magicCoatAffected
+    u8  snatchAffected:1;        // RHH: snatchAffected
+    u8  mirrorMoveAffected:1;    // RHH: ~mirrorMoveBanned (inverted: 1=affected)
+    u8  ignoresKingsRock:1;      // RHH: ignoresKingsRock
+    u8  soundMove:1;             // RHH: soundMove
+    u8  punchingMove:1;          // RHH: punchingMove
+
+    u8  bitingMove:1;            // RHH: bitingMove
+    u8  pulseMove:1;             // RHH: pulseMove
+    u8  powderMove:1;            // RHH: powderMove — STUB (no Overcoat/Grass immunity yet)
+    u8  danceMove:1;             // RHH: danceMove — STUB (no Dancer ability yet)
+    u8  slicingMove:1;           // RHH: slicingMove — STUB (no Sharpness yet)
+    u8  ballisticMove:1;         // RHH: ballisticMove — STUB (no Bulletproof yet)
+    u8  windMove:1;              // RHH: windMove — STUB (no Wind Rider yet)
+    u8  healingMove:1;           // RHH: healingMove — STUB (no Heal Block yet)
+
+    // Effect-based hack replacements — port of RHH MoveInfo fields.
+    // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.
+    u8  criticalHitStage:2;  // RHH: criticalHitStage (0=normal 1=high 2=always)
+    u8  strikeCount:4;       // RHH: strikeCount (0=effect-driven; N=fixed N hits)
+    u8  recoil;              // RHH: recoil:7 (unsigned %; drain vs recoil via effect ID)
+
+    u32 argument;            // RHH: argument (two-turn: STRINGID | STATUS3_BIT<<16)
 };
+
 
 #define SPINDA_SPOT_WIDTH 16
 #define SPINDA_SPOT_HEIGHT 16
@@ -258,10 +289,14 @@ struct SpindaSpot
     u16 image[SPINDA_SPOT_HEIGHT];
 };
 
-struct __attribute__((packed)) LevelUpMove
+// Replaced packed 9-bit encoding with plain struct fields.
+// Encoding was: (level << 9) | move — max move ID 511.
+// New encoding: separate u16 fields — no move ID limit.
+// Sentinel: { .move = 0xFFFF, .level = 0 }
+struct LevelUpMove
 {
-    u16 move:9;
-    u16 level:7;
+    u16 move;
+    u16 level;
 };
 
 struct Evolution
@@ -293,7 +328,7 @@ extern const u8 gStatStageRatios[][2];
 extern struct SpriteTemplate gMultiuseSpriteTemplate;
 extern struct PokemonStorage* gPokemonStoragePtr;
 extern const u32 gExperienceTables[][MAX_LEVEL + 1];
-extern const u16 *const gLevelUpLearnsets[];
+extern const struct LevelUpMove *const gLevelUpLearnsets[];
 extern const u8 gFacilityClassToPicIndex[];
 extern const u8 gFacilityClassToTrainerClass[];
 extern const struct SpriteTemplate gSpriteTemplates_Battlers[];
