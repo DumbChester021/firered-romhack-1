@@ -79,8 +79,6 @@ static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
 static u8 GetLevelFromMonExp(struct Pokemon *mon);
 static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon);
 
-#include "data/battle_moves.h"
-
 // Used in an unreferenced function in RS.
 // Unreferenced here and in Emerald.
 struct CombinedMove
