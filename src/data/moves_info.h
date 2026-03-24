@@ -6423,7 +6423,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         // Gen 4 moves
         [MOVE_ROOST] =
             {
-                .effect = EFFECT_RESTORE_HP,
+                .effect = EFFECT_ROOST,
                 .power = 0,
                 .type = TYPE_FLYING,
                 .accuracy = 0,

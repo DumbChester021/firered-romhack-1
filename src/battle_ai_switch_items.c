@@ -475,8 +475,8 @@ u8 GetMostSuitableMonToSwitchInto(void)
                 u8 type1 = gSpeciesInfo[species].types[0];
                 u8 type2 = gSpeciesInfo[species].types[1];
                 u8 typeDmg = 10;
-                ModulateByTypeEffectiveness(gBattleMons[opposingBattler].type1, type1, type2, &typeDmg);
-                ModulateByTypeEffectiveness(gBattleMons[opposingBattler].type2, type1, type2, &typeDmg);
+                ModulateByTypeEffectiveness(GetBattlerType1(opposingBattler), type1, type2, &typeDmg);
+                ModulateByTypeEffectiveness(GetBattlerType2(opposingBattler), type1, type2, &typeDmg);
                 if (bestDmg < typeDmg)
                 {
                     bestDmg = typeDmg;

@@ -153,8 +153,8 @@ static u8 AI_GetTypeEffectivenessForPartyMon(u16 move, struct Pokemon *targetMon
     // We save and restore the species+types fields so no persistent mutation occurs.
     // This is the cleanest pre-AI_DATA approach available in FRLG.
     u16 savedSpecies = gBattleMons[2].species;
-    u8  savedType1   = gBattleMons[2].type1;
-    u8  savedType2   = gBattleMons[2].type2;
+    u8  savedType1   = GetBattlerType1(2);
+    u8  savedType2   = GetBattlerType2(2);
     u16 candSpecies  = GetMonData(targetMon, MON_DATA_SPECIES, NULL);
     u8  flags;
 
@@ -201,10 +201,10 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
 
     {
         // RHH lines 91-95: get types of both mons.
-        u8 atkType1 = gBattleMons[opposingBattler].type1;
-        u8 atkType2 = gBattleMons[opposingBattler].type2;
-        u8 defType1 = gBattleMons[battler].type1;
-        u8 defType2 = gBattleMons[battler].type2;
+        u8 atkType1 = GetBattlerType1(opposingBattler);
+        u8 atkType2 = GetBattlerType2(opposingBattler);
+        u8 defType1 = GetBattlerType1(battler);
+        u8 defType2 = GetBattlerType2(battler);
         s32 i;
         s32 damageDealt = 0, maxDamageDealt = 0;
         s32 damageTaken = 0, maxDamageTaken = 0;
@@ -482,8 +482,8 @@ static bool8 ShouldSwitchIfEncored(u8 battler)
 static bool8 IsAbilityPreventingEscape(u8 battler, u8 opposingBattler)
 {
     u8 oppAbility = gBattleMons[opposingBattler].ability;
-    u8 battlerType1 = gBattleMons[battler].type1;
-    u8 battlerType2 = gBattleMons[battler].type2;
+    u8 battlerType1 = GetBattlerType1(battler);
+    u8 battlerType2 = GetBattlerType2(battler);
 
     if (oppAbility == ABILITY_SHADOW_TAG)
         return TRUE; // traps all non-Ghost mons (Ghost immunity handled by game engine)
@@ -554,8 +554,8 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 battler, u8 opposingBattler,
                 // We need the flag to be set (immune or NVE) for requiredFlag.
                 // Temporarily borrow slot 2 as scratch for the candidate's types.
                 u16 savedSpecies = gBattleMons[2].species;
-                u8  savedT1      = gBattleMons[2].type1;
-                u8  savedT2      = gBattleMons[2].type2;
+                u8  savedT1      = GetBattlerType1(2);
+                u8  savedT2      = GetBattlerType2(2);
                 u16 candSpecies  = GetMonData(&party[i], MON_DATA_SPECIES, NULL);
 
                 gBattleMons[2].species = candSpecies;

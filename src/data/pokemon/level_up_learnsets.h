@@ -206,6 +206,7 @@ static const struct LevelUpMove sBeedrillLevelUpLearnset[] = {
 
 static const struct LevelUpMove sPidgeyLevelUpLearnset[] = {
     LEVEL_UP_MOVE(1, MOVE_TACKLE),
+    LEVEL_UP_MOVE(1, MOVE_ROOST),
     LEVEL_UP_MOVE(5, MOVE_SAND_ATTACK),
     LEVEL_UP_MOVE(9, MOVE_GUST),
     LEVEL_UP_MOVE(13, MOVE_QUICK_ATTACK),

@@ -284,8 +284,8 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_TOXIC:
     case EFFECT_POISON:
     {
-        u8 type1 = gBattleMons[battlerDef].type1;
-        u8 type2 = gBattleMons[battlerDef].type2;
+        u8 type1 = GetBattlerType1(battlerDef);
+        u8 type2 = GetBattlerType2(battlerDef);
         if (type1 == TYPE_STEEL || type1 == TYPE_POISON || type2 == TYPE_STEEL || type2 == TYPE_POISON)
             return score - 10;
         if (defAbility == ABILITY_IMMUNITY)
@@ -654,10 +654,10 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     u8 defStatus2  = gBattleMons[battlerDef].status2;
     u8 atkStatus1  = gBattleMons[battlerAtk].status1;
     u8 atkStatus2  = gBattleMons[battlerAtk].status2;
-    u8 defType1    = gBattleMons[battlerDef].type1;
-    u8 defType2    = gBattleMons[battlerDef].type2;
-    u8 atkType1    = gBattleMons[battlerAtk].type1;
-    u8 atkType2    = gBattleMons[battlerAtk].type2;
+    u8 defType1    = GetBattlerType1(battlerDef);
+    u8 defType2    = GetBattlerType2(battlerDef);
+    u8 atkType1    = GetBattlerType1(battlerAtk);
+    u8 atkType2    = GetBattlerType2(battlerAtk);
     bool8 faster   = AI_IsFaster(battlerAtk, battlerDef, move);
     u8 typeFlags   = TypeCalc(move, battlerAtk, battlerDef);
     bool8 superEff = (typeFlags & MOVE_RESULT_SUPER_EFFECTIVE) != 0;
@@ -925,6 +925,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     // ---- Recovery ----
     case EFFECT_RESTORE_HP:
+    case EFFECT_ROOST:
     case EFFECT_MORNING_SUN:
     case EFFECT_SYNTHESIS:
     case EFFECT_MOONLIGHT:
@@ -1564,7 +1565,7 @@ static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     u8 defHpPct = gBattleMons[battlerDef].hp * 100 / gBattleMons[battlerDef].maxHP;
 
     static const u8 sHighHPDiscouraged[] = {
-        EFFECT_EXPLOSION, EFFECT_RESTORE_HP, EFFECT_REST, EFFECT_DESTINY_BOND,
+        EFFECT_EXPLOSION, EFFECT_RESTORE_HP, EFFECT_ROOST, EFFECT_REST, EFFECT_DESTINY_BOND,
         EFFECT_FLAIL, EFFECT_ENDURE, EFFECT_MORNING_SUN, EFFECT_SYNTHESIS,
         EFFECT_MOONLIGHT, EFFECT_SOFTBOILED, EFFECT_MEMENTO, EFFECT_GRUDGE,
         EFFECT_OVERHEAT, 0xFF

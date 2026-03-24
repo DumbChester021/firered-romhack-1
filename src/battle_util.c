@@ -3307,3 +3307,27 @@ bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect)
     }
     return FALSE;
 }
+
+u8 GetBattlerType1(u8 battlerId)
+{
+    u8 type = gBattleMons[battlerId].type1;
+    if ((gStatuses3[battlerId] & STATUS3_ROOST) && type == TYPE_FLYING)
+    {
+        if (gBattleMons[battlerId].type2 == TYPE_FLYING)
+            return TYPE_NORMAL;
+        return TYPE_MYSTERY;
+    }
+    return type;
+}
+
+u8 GetBattlerType2(u8 battlerId)
+{
+    u8 type = gBattleMons[battlerId].type2;
+    if ((gStatuses3[battlerId] & STATUS3_ROOST) && type == TYPE_FLYING)
+    {
+        if (gBattleMons[battlerId].type1 == TYPE_FLYING)
+            return TYPE_NORMAL;
+        return TYPE_MYSTERY;
+    }
+    return type;
+}

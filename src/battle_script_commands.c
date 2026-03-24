@@ -308,6 +308,7 @@ static void Cmd_subattackerhpbydmg(void);
 static void Cmd_removeattackerstatus1(void);
 static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
+static void Cmd_setroost(void);
 
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
@@ -559,6 +560,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_removeattackerstatus1,                   //0xF5
     Cmd_finishaction,                            //0xF6
     Cmd_finishturn,                              //0xF7
+    Cmd_setroost,                                //0xF8
 };
 
 struct StatFractions
@@ -1314,11 +1316,11 @@ static void Cmd_typecalc(void)
             else if (TYPE_EFFECT_ATK_TYPE(i) == moveType)
             {
                 // check type1
-                if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type1)
+                if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType1(gBattlerTarget))
                     ModulateDmgByType(TYPE_EFFECT_MULTIPLIER(i));
                 // check type2
-                if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2 &&
-                    gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2)
+                if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget) &&
+                    GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget))
                     ModulateDmgByType(TYPE_EFFECT_MULTIPLIER(i));
             }
             i += 3;
@@ -1373,14 +1375,14 @@ static void CheckWonderGuardAndLevitate(void)
         if (TYPE_EFFECT_ATK_TYPE(i) == moveType)
         {
             // check no effect
-            if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type1
+            if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType1(gBattlerTarget)
                 && TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_NO_EFFECT)
             {
                 gMoveResultFlags |= MOVE_RESULT_DOESNT_AFFECT_FOE;
                 gProtectStructs[gBattlerAttacker].targetNotAffected = 1;
             }
-            if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2 &&
-                gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2 &&
+            if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget) &&
+                GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget) &&
                 TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_NO_EFFECT)
             {
                 gMoveResultFlags |= MOVE_RESULT_DOESNT_AFFECT_FOE;
@@ -1388,18 +1390,18 @@ static void CheckWonderGuardAndLevitate(void)
             }
 
             // check super effective
-            if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type1 && TYPE_EFFECT_MULTIPLIER(i) == 20)
+            if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType1(gBattlerTarget) && TYPE_EFFECT_MULTIPLIER(i) == 20)
                 flags |= 1;
-            if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2
-             && gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2
+            if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget)
+             && GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget)
              && TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_SUPER_EFFECTIVE)
                 flags |= 1;
 
             // check not very effective
-            if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type1 && TYPE_EFFECT_MULTIPLIER(i) == 5)
+            if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType1(gBattlerTarget) && TYPE_EFFECT_MULTIPLIER(i) == 5)
                 flags |= 2;
-            if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2
-             && gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2
+            if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget)
+             && GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget)
              && TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_NOT_EFFECTIVE)
                 flags |= 2;
         }
@@ -1489,11 +1491,11 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
             else if (TYPE_EFFECT_ATK_TYPE(i) == moveType)
             {
                 // check type1
-                if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[defender].type1)
+                if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType1(defender))
                     ModulateDmgByType2(TYPE_EFFECT_MULTIPLIER(i), move, &flags);
                 // check type2
-                if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[defender].type2 &&
-                    gBattleMons[defender].type1 != gBattleMons[defender].type2)
+                if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(defender) &&
+                    GetBattlerType1(defender) != GetBattlerType2(defender))
                     ModulateDmgByType2(TYPE_EFFECT_MULTIPLIER(i), move, &flags);
             }
             i += 3;
@@ -3905,7 +3907,7 @@ static void Cmd_jumpiftype2(void)
 {
     u8 battlerId = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
 
-    if (gBattlescriptCurrInstr[2] == gBattleMons[battlerId].type1 || gBattlescriptCurrInstr[2] == gBattleMons[battlerId].type2)
+    if (gBattlescriptCurrInstr[2] == GetBattlerType1(battlerId) || gBattlescriptCurrInstr[2] == GetBattlerType2(battlerId))
         gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 3);
     else
         gBattlescriptCurrInstr += 7;
@@ -4455,7 +4457,7 @@ static void Cmd_typecalc2(void)
             if (TYPE_EFFECT_ATK_TYPE(i) == moveType)
             {
                 // check type1
-                if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type1)
+                if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType1(gBattlerTarget))
                 {
                     if (TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_NO_EFFECT)
                     {
@@ -4472,22 +4474,22 @@ static void Cmd_typecalc2(void)
                     }
                 }
                 // check type2
-                if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2)
+                if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget))
                 {
-                    if (gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2
+                    if (GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget)
                         && TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_NO_EFFECT)
                     {
                         gMoveResultFlags |= MOVE_RESULT_DOESNT_AFFECT_FOE;
                         break;
                     }
-                    if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2
-                        && gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2
+                    if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget)
+                        && GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget)
                         && TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_NOT_EFFECTIVE)
                     {
                         flags |= MOVE_RESULT_NOT_VERY_EFFECTIVE;
                     }
-                    if (TYPE_EFFECT_DEF_TYPE(i) == gBattleMons[gBattlerTarget].type2
-                        && gBattleMons[gBattlerTarget].type1 != gBattleMons[gBattlerTarget].type2
+                    if (TYPE_EFFECT_DEF_TYPE(i) == GetBattlerType2(gBattlerTarget)
+                        && GetBattlerType1(gBattlerTarget) != GetBattlerType2(gBattlerTarget)
                         && TYPE_EFFECT_MULTIPLIER(i) == TYPE_MUL_SUPER_EFFECTIVE)
                     {
                         flags |= MOVE_RESULT_SUPER_EFFECTIVE;
@@ -7103,8 +7105,8 @@ static void Cmd_tryconversiontypechange(void)
             else
                 moveType = TYPE_NORMAL;
         }
-        if (moveType != gBattleMons[gBattlerAttacker].type1
-            && moveType != gBattleMons[gBattlerAttacker].type2)
+        if (moveType != GetBattlerType1(gBattlerAttacker)
+            && moveType != GetBattlerType2(gBattlerAttacker))
         {
             break;
         }
@@ -7130,7 +7132,7 @@ static void Cmd_tryconversiontypechange(void)
                     moveType = TYPE_NORMAL;
             }
         }
-        while (moveType == gBattleMons[gBattlerAttacker].type1 || moveType == gBattleMons[gBattlerAttacker].type2);
+        while (moveType == GetBattlerType1(gBattlerAttacker) || moveType == GetBattlerType2(gBattlerAttacker));
 
         SET_BATTLER_TYPE(gBattlerAttacker, moveType);
         PREPARE_TYPE_BUFFER(gBattleTextBuff1, moveType);
@@ -7304,12 +7306,12 @@ static void Cmd_weatherdamage(void)
     {
         if (gBattleWeather & B_WEATHER_SANDSTORM)
         {
-            if (gBattleMons[gBattlerAttacker].type1 != TYPE_ROCK
-                && gBattleMons[gBattlerAttacker].type1 != TYPE_STEEL
-                && gBattleMons[gBattlerAttacker].type1 != TYPE_GROUND
-                && gBattleMons[gBattlerAttacker].type2 != TYPE_ROCK
-                && gBattleMons[gBattlerAttacker].type2 != TYPE_STEEL
-                && gBattleMons[gBattlerAttacker].type2 != TYPE_GROUND
+            if (GetBattlerType1(gBattlerAttacker) != TYPE_ROCK
+                && GetBattlerType1(gBattlerAttacker) != TYPE_STEEL
+                && GetBattlerType1(gBattlerAttacker) != TYPE_GROUND
+                && GetBattlerType2(gBattlerAttacker) != TYPE_ROCK
+                && GetBattlerType2(gBattlerAttacker) != TYPE_STEEL
+                && GetBattlerType2(gBattlerAttacker) != TYPE_GROUND
                 && gBattleMons[gBattlerAttacker].ability != ABILITY_SAND_VEIL
                 && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERGROUND)
                 && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERWATER))
@@ -9961,4 +9963,10 @@ static void Cmd_finishturn(void)
 {
     gCurrentActionFuncId = B_ACTION_FINISHED;
     gCurrentTurnActionNumber = gBattlersCount;
+}
+
+static void Cmd_setroost(void)
+{
+    gStatuses3[gBattlerAttacker] |= STATUS3_ROOST;
+    gBattlescriptCurrInstr++;
 }

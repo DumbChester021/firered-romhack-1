@@ -480,12 +480,15 @@ extern struct BattleStruct *gBattleStruct;
 
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 
-#define IS_BATTLER_OF_TYPE(battlerId, type)((gBattleMons[battlerId].type1 == type || gBattleMons[battlerId].type2 == type))
+#define IS_BATTLER_OF_TYPE(battlerId, type)((GetBattlerType1(battlerId) == type || GetBattlerType2(battlerId) == type))
 #define SET_BATTLER_TYPE(battlerId, type)   \
 {                                           \
     gBattleMons[battlerId].type1 = type;    \
     gBattleMons[battlerId].type2 = type;    \
 }
+
+u8 GetBattlerType1(u8 battlerId);
+u8 GetBattlerType2(u8 battlerId);
 
 #define GET_STAT_BUFF_ID(n)((n & 0xF))              // first four bits 0x1, 0x2, 0x4, 0x8
 #define GET_STAT_BUFF_VALUE2(n)((n & 0xF0))

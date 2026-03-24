@@ -3190,8 +3190,8 @@ static void HandleTurnActionSelectionState(void)
                         struct ChooseMoveStruct moveInfo;
 
                         moveInfo.species = gBattleMons[gActiveBattler].species;
-                        moveInfo.monType1 = gBattleMons[gActiveBattler].type1;
-                        moveInfo.monType2 = gBattleMons[gActiveBattler].type2;
+                        moveInfo.monType1 = GetBattlerType1(gActiveBattler);
+                        moveInfo.monType2 = GetBattlerType2(gActiveBattler);
                         for (i = 0; i < MAX_MON_MOVES; i++)
                         {
                             moveInfo.moves[i] = gBattleMons[gActiveBattler].moves[i];
@@ -3653,6 +3653,8 @@ static void TurnValuesCleanUp(bool8 var0)
 
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
     {
+        gStatuses3[gActiveBattler] &= ~STATUS3_ROOST;
+        
         if (var0)
         {
             gProtectStructs[gActiveBattler].protected = FALSE;
