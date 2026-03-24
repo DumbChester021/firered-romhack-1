@@ -77,9 +77,9 @@
 	.2byte \id
 	.endm
 
-	.macro waitmessage param0:req
+	.macro waitmessage time:req
 	.byte 0x12
-	.2byte \param0
+	.2byte \time
 	.endm
 
 	.macro printfromtable ptr:req
@@ -116,11 +116,11 @@
 	.4byte NULL
 	.endm
 
-	.macro tryfaintmon_spikes battler:req, ptr:req
+	.macro tryfaintmon_spikes battler:req, instr:req
 	.byte 0x19
 	.byte \battler
 	.byte TRUE
-	.4byte \ptr
+	.4byte \instr
 	.endm
 
 	.macro dofaintanimation battler:req
@@ -133,11 +133,11 @@
 	.byte \battler
 	.endm
 
-	.macro jumpifstatus battler:req, status1:req, ptr:req
+	.macro jumpifstatus battler:req, flags:req, jumpInstr:req
 	.byte 0x1c
 	.byte \battler
-	.4byte \status1
-	.4byte \ptr
+	.4byte \flags
+	.4byte \jumpInstr
 	.endm
 
 	.macro jumpifstatus2 battler:req, status2:req, ptr:req
@@ -147,27 +147,27 @@
 	.4byte \ptr
 	.endm
 
-	.macro jumpifability param0:req, ability:req, ptr:req
+	.macro jumpifability battler:req, ability:req, jumpInstr:req
 	.byte 0x1e
-	.byte \param0
+	.byte \battler
 	.byte \ability
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
-	.macro jumpifsideaffecting battler:req, sidestatus:req, ptr:req
+	.macro jumpifsideaffecting battler:req, flags:req, jumpInstr:req
 	.byte 0x1f
 	.byte \battler
-	.2byte \sidestatus
-	.4byte \ptr
+	.2byte \flags
+	.4byte \jumpInstr
 	.endm
 
-	.macro jumpifstat battler:req, ifflag:req, stat:req, value:req, ptr
+	.macro jumpifstat battler:req, comparison:req, stat:req, value:req, jumpInstr:req
 	.byte 0x20
 	.byte \battler
-	.byte \ifflag
+	.byte \comparison
 	.byte \stat
 	.byte \value
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
 	.macro jumpifstatus3condition battler:req, status3:req, param2:req, ptr:req
@@ -178,11 +178,11 @@
 	.4byte \ptr
 	.endm
 
-	.macro jumpiftype battler:req, type:req, ptr:req
+	.macro jumpiftype battler:req, type:req, jumpInstr:req
 	.byte 0x22
 	.byte \battler
 	.byte \type
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
 	.macro getexp battler:req
@@ -190,9 +190,9 @@
 	.byte \battler
 	.endm
 
-	.macro checkteamslost ptr:req
+	.macro checkteamslost jumpInstr:req
 	.byte 0x24
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
 	.macro movevaluescleanup
@@ -204,128 +204,128 @@
 	.byte \value
 	.endm
 
-	.macro decrementmultihit value:req
+	.macro decrementmultihit loopInstr:req
 	.byte 0x27
+	.4byte \loopInstr
+	.endm
+
+	.macro goto instr:req
+	.byte 0x28
+	.4byte \instr
+	.endm
+
+	.macro jumpifbyte comparison:req, bytePtr:req, value:req, jumpInstr:req
+	.byte 0x29
+	.byte \comparison
+	.4byte \bytePtr
+	.byte \value
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifhalfword comparison:req, halfwordPtr:req, value:req, jumpInstr:req
+	.byte 0x2a
+	.byte \comparison
+	.4byte \halfwordPtr
+	.2byte \value
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifword comparison:req, wordPtr:req, value:req, jumpInstr:req
+	.byte 0x2b
+	.byte \comparison
+	.4byte \wordPtr
+	.4byte \value
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifarrayequal array1:req, array2:req, size:req, jumpInstr:req
+	.byte 0x2c
+	.4byte \array1
+	.4byte \array2
+	.byte \size
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifarraynotequal array1:req, array2:req, size:req, jumpInstr:req
+	.byte 0x2d
+	.4byte \array1
+	.4byte \array2
+	.byte \size
+	.4byte \jumpInstr
+	.endm
+
+	.macro setbyte bytePtr:req, value:req
+	.byte 0x2e
+	.4byte \bytePtr
+	.byte \value
+	.endm
+
+	.macro addbyte bytePtr:req, value:req
+	.byte 0x2f
+	.4byte \bytePtr
+	.byte \value
+	.endm
+
+	.macro subbyte bytePtr:req, value:req
+	.byte 0x30
+	.4byte \bytePtr
+	.byte \value
+	.endm
+
+	.macro copyarray dest:req, src:req, size:req
+	.byte 0x31
+	.4byte \dest
+	.4byte \src
+	.byte \size
+	.endm
+
+	.macro copyarraywithindex dest:req, src:req, indexPtr:req, size:req
+	.byte 0x32
+	.4byte \dest
+	.4byte \src
+	.4byte \indexPtr
+	.byte \size
+	.endm
+
+	.macro orbyte bytePtr:req, value:req
+	.byte 0x33
+	.4byte \bytePtr
+	.byte \value
+	.endm
+
+	.macro orhalfword halfwordPtr:req, value:req
+	.byte 0x34
+	.4byte \halfwordPtr
+	.2byte \value
+	.endm
+
+	.macro orword wordPtr:req, value:req
+	.byte 0x35
+	.4byte \wordPtr
 	.4byte \value
 	.endm
 
-	.macro goto ptr:req
-	.byte 0x28
-	.4byte \ptr
-	.endm
-
-	.macro jumpifbyte ifflag:req, param1:req, param2:req, param3:req
-	.byte 0x29
-	.byte \ifflag
-	.4byte \param1
-	.byte \param2
-	.4byte \param3
-	.endm
-
-	.macro jumpifhalfword ifflag:req, param1:req, param2:req, param3:req
-	.byte 0x2a
-	.byte \ifflag
-	.4byte \param1
-	.2byte \param2
-	.4byte \param3
-	.endm
-
-	.macro jumpifword ifflag:req, param1:req, param2:req, param3:req
-	.byte 0x2b
-	.byte \ifflag
-	.4byte \param1
-	.4byte \param2
-	.4byte \param3
-	.endm
-
-	.macro jumpifarrayequal param0:req, param1:req, param2:req, param3:req
-	.byte 0x2c
-	.4byte \param0
-	.4byte \param1
-	.byte \param2
-	.4byte \param3
-	.endm
-
-	.macro jumpifarraynotequal param0:req, param1:req, param2:req, param3:req
-	.byte 0x2d
-	.4byte \param0
-	.4byte \param1
-	.byte \param2
-	.4byte \param3
-	.endm
-
-	.macro setbyte ptr:req, param1:req
-	.byte 0x2e
-	.4byte \ptr
-	.byte \param1
-	.endm
-
-	.macro addbyte ptr:req, param1:req
-	.byte 0x2f
-	.4byte \ptr
-	.byte \param1
-	.endm
-
-	.macro subbyte ptr:req, param1:req
-	.byte 0x30
-	.4byte \ptr
-	.byte \param1
-	.endm
-
-	.macro copyarray param0:req, param1:req, param2:req
-	.byte 0x31
-	.4byte \param0
-	.4byte \param1
-	.byte \param2
-	.endm
-
-	.macro copyarraywithindex param0:req, param1:req, param2:req, param3:req
-	.byte 0x32
-	.4byte \param0
-	.4byte \param1
-	.4byte \param2
-	.byte \param3
-	.endm
-
-	.macro orbyte ptr:req, param1:req
-	.byte 0x33
-	.4byte \ptr
-	.byte \param1
-	.endm
-
-	.macro orhalfword ptr:req, param1:req
-	.byte 0x34
-	.4byte \ptr
-	.2byte \param1
-	.endm
-
-	.macro orword ptr:req, param1:req
-	.byte 0x35
-	.4byte \ptr
-	.4byte \param1
-	.endm
-
-	.macro bicbyte ptr:req, param1:req
+	.macro bicbyte bytePtr:req, value:req
 	.byte 0x36
-	.4byte \ptr
-	.byte \param1
+	.4byte \bytePtr
+	.byte \value
 	.endm
 
-	.macro bichalfword ptr:req, param1:req
+	.macro bichalfword halfwordPtr:req, value:req
 	.byte 0x37
-	.4byte \ptr
-	.2byte \param1
+	.4byte \halfwordPtr
+	.2byte \value
 	.endm
 
-	.macro bicword ptr:req, param1:req
+	.macro bicword wordPtr:req, value:req
 	.byte 0x38
-	.4byte \ptr
-	.4byte \param1
+	.4byte \wordPtr
+	.4byte \value
 	.endm
 
-	.macro pause param0:req
+	.macro pause frames:req
 	.byte 0x39
-	.2byte \param0
+	.2byte \frames
 	.endm
 
 	.macro waitstate
@@ -358,9 +358,9 @@
 	.4byte \ptr
 	.endm
 
-	.macro call ptr:req
+	.macro call instr:req
 	.byte 0x41
-	.4byte \ptr
+	.4byte \instr
 	.endm
 
 	.macro jumpiftype2 battler:req, type:req, ptr:req
@@ -370,28 +370,28 @@
 	.4byte \ptr
 	.endm
 
-	.macro jumpifabilitypresent ability:req, ptr:req
+	.macro jumpifabilitypresent ability:req, jumpInstr:req
 	.byte 0x43
 	.byte \ability
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
 	.macro endselectionscript
 	.byte 0x44
 	.endm
 
-	.macro playanimation battler:req, animType:req, arg=NULL
+	.macro playanimation battler:req, animId:req, argPtr=NULL
 	.byte 0x45
 	.byte \battler
-	.byte \animType
-	.4byte \arg
+	.byte \animId
+	.4byte \argPtr
 	.endm
 
-	.macro playanimation_var battler:req, animType:req, arg=NULL
+	.macro playanimation_var battler:req, animIdPtr:req, argPtr=NULL
 	.byte 0x46
 	.byte \battler
-	.4byte \animType
-	.4byte \arg
+	.4byte \animIdPtr
+	.4byte \argPtr
 	.endm
 
 	.macro setgraphicalstatchangevalues
@@ -405,10 +405,10 @@
 	.byte \param2
 	.endm
 
-	.macro moveend param0:req, param1:req
+	.macro moveend endMode:req, endState:req
 	.byte 0x49
-	.byte \param0
-	.byte \param1
+	.byte \endMode
+	.byte \endState
 	.endm
 
 	@ Help macros for 5 uses of moveend command
@@ -467,22 +467,22 @@
 	.byte \dontclearsubstitutebit
 	.endm
 
-	.macro jumpifcantswitch battler:req, ptr:req
+	.macro jumpifcantswitch battler:req, jumpInstr:req
 	.byte 0x4f
 	.byte \battler
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
-	.macro openpartyscreen param0:req, param1:req
+	.macro openpartyscreen battler:req, failInstr:req
 	.byte 0x50
-	.byte \param0
-	.4byte \param1
+	.byte \battler
+	.4byte \failInstr
 	.endm
 
-	.macro switchhandleorder battler:req, param1:req
+	.macro switchhandleorder battler:req, state:req
 	.byte 0x51
 	.byte \battler
-	.byte \param1
+	.byte \state
 	.endm
 
 	.macro switchineffects battler:req
@@ -490,9 +490,9 @@
 	.byte \battler
 	.endm
 
-	.macro trainerslidein battler:req
+	.macro trainerslidein position:req
 	.byte 0x53
-	.byte \battler
+	.byte \position
 	.endm
 
 	.macro playse song:req
@@ -519,21 +519,21 @@
 	.byte \battler
 	.endm
 
-	.macro handlelearnnewmove param0:req, param1:req, param2:req
+	.macro handlelearnnewmove learnedMoveInstr:req, nothingToLearnInstr:req, isFirstMove:req
 	.byte 0x59
-	.4byte \param0
-	.4byte \param1
-	.byte \param2
+	.4byte \learnedMoveInstr
+	.4byte \nothingToLearnInstr
+	.byte \isFirstMove
 	.endm
 
-	.macro yesnoboxlearnmove param0:req
+	.macro yesnoboxlearnmove forgotMoveInstr:req
 	.byte 0x5a
-	.4byte \param0
+	.4byte \forgotMoveInstr
 	.endm
 
-	.macro yesnoboxstoplearningmove param0:req
+	.macro yesnoboxstoplearningmove noInstr:req
 	.byte 0x5b
-	.4byte \param0
+	.4byte \noInstr
 	.endm
 
 	.macro hitanimation battler:req
@@ -555,9 +555,9 @@
 	.byte 0x5f
 	.endm
 
-	.macro incrementgamestat param0:req
+	.macro incrementgamestat stat:req
 	.byte 0x60
-	.byte \param0
+	.byte \stat
 	.endm
 
 	.macro drawpartystatussummary battler:req
@@ -570,9 +570,9 @@
 	.byte \battler
 	.endm
 
-	.macro jumptocalledmove param0:req
+	.macro jumptocalledmove notChosenMove:req
 	.byte 0x63
-	.byte \param0
+	.byte \notChosenMove
 	.endm
 
 	.macro statusanimation battler:req
@@ -640,9 +640,9 @@
 	.byte 0x71
 	.endm
 
-	.macro jumpifplayerran ptr:req
+	.macro jumpifplayerran jumpInstr:req
 	.byte 0x72
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
 	.macro hpthresholds battler:req
@@ -677,15 +677,15 @@
 	.byte 0x79
 	.endm
 
-	.macro jumpifnexttargetvalid ptr:req
+	.macro jumpifnexttargetvalid jumpInstr:req
 	.byte 0x7a
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
-	.macro tryhealhalfhealth param0:req, battler:req
+	.macro tryhealhalfhealth battler:req, failInstr:req
 	.byte 0x7b
-	.4byte \param0
 	.byte \battler
+	.4byte \failInstr
 	.endm
 
 	.macro trymirrormove
@@ -704,9 +704,9 @@
 	.byte 0x7f
 	.endm
 
-	.macro manipulatedamage param0:req
+	.macro manipulatedamage mode:req
 	.byte 0x80
-	.byte \param0
+	.byte \mode
 	.endm
 
 	.macro trysetrest param0:req
@@ -737,9 +737,9 @@
 	.4byte \param0
 	.endm
 
-	.macro stockpiletohpheal param0:req
+	.macro stockpiletohpheal failInstr:req
 	.byte 0x87
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro negativedamage
@@ -773,14 +773,14 @@
 	.byte 0x8e
 	.endm
 
-	.macro forcerandomswitch param0:req
+	.macro forcerandomswitch failInstr:req
 	.byte 0x8f
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro tryconversiontypechange param0:req
+	.macro tryconversiontypechange failInstr:req
 	.byte 0x90
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro givepaydaymoney
@@ -791,9 +791,9 @@
 	.byte 0x92
 	.endm
 
-	.macro tryKO param0:req
+	.macro tryKO failInstr:req
 	.byte 0x93
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro damagetohalftargethp
@@ -808,9 +808,9 @@
 	.byte 0x96
 	.endm
 
-	.macro tryinfatuating param0:req
+	.macro tryinfatuating failInstr:req
 	.byte 0x97
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro updatestatusicon battler:req
@@ -834,9 +834,9 @@
 	.byte 0x9c
 	.endm
 
-	.macro mimicattackcopy param0:req
+	.macro mimicattackcopy failInstr:req
 	.byte 0x9d
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro metronome
@@ -861,33 +861,33 @@
 	.4byte \param0
 	.endm
 
-	.macro disablelastusedattack param0:req
+	.macro disablelastusedattack failInstr:req
 	.byte 0xa3
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro trysetencore param0:req
+	.macro trysetencore failInstr:req
 	.byte 0xa4
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro painsplitdmgcalc param0:req
+	.macro painsplitdmgcalc failInstr:req
 	.byte 0xa5
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro settypetorandomresistance param0:req
+	.macro settypetorandomresistance failInstr:req
 	.byte 0xa6
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro setalwayshitflag
 	.byte 0xa7
 	.endm
 
-	.macro copymovepermanently param0:req
+	.macro copymovepermanently failInstr:req
 	.byte 0xa8
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro trychoosesleeptalkmove param0:req
@@ -907,42 +907,42 @@
 	.byte 0xac
 	.endm
 
-	.macro tryspiteppreduce param0:req
+	.macro tryspiteppreduce failInstr:req
 	.byte 0xad
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro healpartystatus
 	.byte 0xae
 	.endm
 
-	.macro cursetarget param0:req
+	.macro cursetarget failInstr:req
 	.byte 0xaf
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro trysetspikes param0:req
+	.macro trysetspikes failInstr:req
 	.byte 0xb0
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro setforesight
 	.byte 0xb1
 	.endm
 
-	.macro trysetperishsong param0:req
+	.macro trysetperishsong failInstr:req
 	.byte 0xb2
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro rolloutdamagecalculation
 	.byte 0xb3
 	.endm
 
-	.macro jumpifconfusedandstatmaxed stat:req, ptr:req
+	.macro jumpifconfusedandstatmaxed stat:req, jumpInstr:req
 	.byte 0xb4
 	.byte \stat
-	.4byte \ptr
+	.4byte \jumpInstr
 	.endm
 
 	.macro furycuttercalc
@@ -965,9 +965,9 @@
 	.byte 0xb9
 	.endm
 
-	.macro jumpifnopursuitswitchdmg param0:req
+	.macro jumpifnopursuitswitchdmg jumpInstr:req
 	.byte 0xba
-	.4byte \param0
+	.4byte \jumpInstr
 	.endm
 
 	.macro setsunny
@@ -992,9 +992,9 @@
 	.byte 0xbf
 	.endm
 
-	.macro recoverbasedonsunlight param0:req
+	.macro recoverbasedonsunlight failInstr:req
 	.byte 0xc0
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro hiddenpowercalc
@@ -1010,10 +1010,10 @@
 	.4byte \param0
 	.endm
 
-	.macro trydobeatup param0:req, param1:req
+	.macro trydobeatup endInstr:req, failInstr:req
 	.byte 0xc4
-	.4byte \param0
-	.4byte \param1
+	.4byte \endInstr
+	.4byte \failInstr
 	.endm
 
 	.macro setsemiinvulnerablebit
@@ -1032,9 +1032,9 @@
 	.byte 0xc8
 	.endm
 
-	.macro trymemento ptr:req
+	.macro trymemento failInstr:req
 	.byte 0xc9
-	.4byte \ptr
+	.4byte \failInstr
 	.endm
 
 	.macro setforcedtarget
@@ -1054,9 +1054,9 @@
 	.4byte \param0
 	.endm
 
-	.macro settorment param0:req
+	.macro settorment failInstr:req
 	.byte 0xce
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro jumpifnodamage param0:req
@@ -1064,19 +1064,19 @@
 	.4byte \param0
 	.endm
 
-	.macro settaunt param0:req
+	.macro settaunt failInstr:req
 	.byte 0xd0
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro trysethelpinghand param0:req
+	.macro trysethelpinghand failInstr:req
 	.byte 0xd1
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro tryswapitems param0:req
+	.macro tryswapitems failInstr:req
 	.byte 0xd2
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro trycopyability param0:req
@@ -1099,9 +1099,9 @@
 	.byte 0xd6
 	.endm
 
-	.macro setyawn param0:req
+	.macro setyawn failInstr:req
 	.byte 0xd7
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro setdamagetohealthdifference param0:req
@@ -1113,14 +1113,14 @@
 	.byte 0xd9
 	.endm
 
-	.macro tryswapabilities param0:req
+	.macro tryswapabilities failInstr:req
 	.byte 0xda
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro tryimprison param0:req
+	.macro tryimprison failInstr:req
 	.byte 0xdb
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro trysetgrudge param0:req
@@ -1137,14 +1137,14 @@
 	.4byte \param0
 	.endm
 
-	.macro trysetmagiccoat param0:req
+	.macro trysetmagiccoat failInstr:req
 	.byte 0xdf
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
-	.macro trysetsnatch param0:req
+	.macro trysetsnatch failInstr:req
 	.byte 0xe0
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro trygetintimidatetarget param0:req
@@ -1157,10 +1157,10 @@
 	.byte \battler
 	.endm
 
-	.macro jumpifhasnohp battler:req, param1:req
+	.macro jumpifhasnohp battler:req, jumpInstr:req
 	.byte 0xe3
 	.byte \battler
-	.4byte \param1
+	.4byte \jumpInstr
 	.endm
 
 	.macro getsecretpowereffect
@@ -1179,18 +1179,18 @@
 	.byte 0xe7
 	.endm
 
-	.macro settypebasedhalvers param0:req
+	.macro settypebasedhalvers failInstr:req
 	.byte 0xe8
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro setweatherballtype
 	.byte 0xe9
 	.endm
 
-	.macro tryrecycleitem param0:req
+	.macro tryrecycleitem failInstr:req
 	.byte 0xea
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro settypetoterrain param0:req
@@ -1219,9 +1219,9 @@
 	.byte 0xf0
 	.endm
 
-	.macro trysetcaughtmondexflags param0:req
+	.macro trysetcaughtmondexflags failInstr:req
 	.byte 0xf1
-	.4byte \param0
+	.4byte \failInstr
 	.endm
 
 	.macro displaydexinfo
@@ -1347,20 +1347,20 @@
 	copyarray \dst, \src, 0x4
 	.endm
 
-	.macro jumpifbytenotequal byte1:req, byte2:req, jumpptr:req
-	jumpifarraynotequal \byte1, \byte2, 0x1, \jumpptr
+	.macro jumpifbytenotequal byte1:req, byte2:req, jumpInstr:req
+	jumpifarraynotequal \byte1, \byte2, 0x1, \jumpInstr
 	.endm
 
-	.macro jumpifbyteequal byte1:req, byte2:req, jumpptr:req
-	jumpifarrayequal \byte1, \byte2, 0x1, \jumpptr
+	.macro jumpifbyteequal byte1:req, byte2:req, jumpInstr:req
+	jumpifarrayequal \byte1, \byte2, 0x1, \jumpInstr
 	.endm
 
-	.macro jumpifmove move:req, jumpptr:req
-	jumpifhalfword CMP_EQUAL, gCurrentMove, \move, \jumpptr
+	.macro jumpifmove move:req, jumpInstr:req
+	jumpifhalfword CMP_EQUAL, gCurrentMove, \move, \jumpInstr
 	.endm
 
-	.macro jumpifnotmove move:req, jumpptr:req
-	jumpifhalfword CMP_NOT_EQUAL, gCurrentMove, \move, \jumpptr
+	.macro jumpifnotmove move:req, jumpInstr:req
+	jumpifhalfword CMP_NOT_EQUAL, gCurrentMove, \move, \jumpInstr
 	.endm
 
 	.macro jumpifstatus3 battler:req, status:req, jumpptr:req
@@ -1371,14 +1371,14 @@
 	jumpifstatus3condition \battler, \status, 0x1, \jumpptr
 	.endm
 
-	.macro jumpifmovehadnoeffect jumpptr:req
-	jumpifbyte CMP_COMMON_BITS, gMoveResultFlags, MOVE_RESULT_NO_EFFECT, \jumpptr
+	.macro jumpifmovehadnoeffect jumpInstr:req
+	jumpifbyte CMP_COMMON_BITS, gMoveResultFlags, MOVE_RESULT_NO_EFFECT, \jumpInstr
 	.endm
 
-	.macro jumpifbattletype flags:req, jumpptr:req
-	jumpifword CMP_COMMON_BITS, gBattleTypeFlags, \flags, \jumpptr
+	.macro jumpifbattletype flags:req, jumpInstr:req
+	jumpifword CMP_COMMON_BITS, gBattleTypeFlags, \flags, \jumpInstr
 	.endm
 
-	.macro jumpifnotbattletype flags:req, jumpptr:req
-	jumpifword CMP_NO_COMMON_BITS, gBattleTypeFlags, \flags, \jumpptr
+	.macro jumpifnotbattletype flags:req, jumpInstr:req
+	jumpifword CMP_NO_COMMON_BITS, gBattleTypeFlags, \flags, \jumpInstr
 	.endm

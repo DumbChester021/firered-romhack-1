@@ -128,12 +128,12 @@ Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.
 
 New battle effects (like `EFFECT_ROOST`) require adding to `battle_move_effects.h` and implementing in `battle_script_commands.c` + `data/battle_scripts_1.s`.
 
-### Phase 8: `CMD_ARGS()` Macro Refactor — Pending
+### Phase 8: `CMD_ARGS()` Macro Refactor — Complete
 
-To correctly port exact RHH macro syntax (e.g. `tryhealhalfhealth BS_TARGET, BattleScript_AlreadyAtFullHp` instead of `tryhealhalfhealth BattleScript_AlreadyAtFullHp, BS_ATTACKER`), the battle script command interpreter needs to be upgraded.
-1. Rewrite `asm/macros/battle_script.inc` definitions to match RHH's `battler` first conventions.
-2. Port RHH's `CMD_ARGS()` struct unpacking into `src/battle_script_commands.c`.
-3. Manually physically update every single existing battle script in `data/battle_scripts_1.s` to use the flipped arguments to prevent silent memory crashes.
+The battle script command interpreter has been upgraded to properly accept exact RHH macro syntax (e.g. `tryhealhalfhealth BS_TARGET, BattleScript_AlreadyAtFullHp` instead of `tryhealhalfhealth BattleScript_AlreadyAtFullHp, BS_ATTACKER`).
+- `asm/macros/battle_script.inc` definitions rewritten to closely match RHH's `battler` first conventions.
+- `src/battle_script_commands.c` now has RHH's `CMD_ARGS()` struct unpacking infrastructure.
+- `data/battle_scripts_1.s` physical updates completed for applicable swapped argument macros (`tryhealhalfhealth`).
 
 ---
 
