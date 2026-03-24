@@ -116,7 +116,7 @@ Compat aliases added: `ANIM_TAG_POKEBLOCK` → `ANIM_TAG_SAFARI_BAIT`, `B_ANIM_B
 
 ### Phase 7: Gen 4+ Moves — In Progress
 
-First Gen 4 move added: **MOVE_ROOST** (355). Pipeline for adding new moves:
+Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First Gen 4 move added: **MOVE_ROOST** (355). Pipeline for adding new moves:
 
 1. Add `MOVE_X` constant in `include/constants/moves.h`, bump `MOVES_COUNT`
 2. Add name entry in `moves_info.h` Section 1

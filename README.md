@@ -104,7 +104,7 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 - Transparent Textboxes
 - Updated Sprites
 - Removal of Last Events replay
-- New Moves
+- New Moves (See [docs/NEW_MOVES_LIST.md](docs/NEW_MOVES_LIST.md))
 - Items
 - Abilities
 
