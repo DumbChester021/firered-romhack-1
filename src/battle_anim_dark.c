@@ -8,9 +8,9 @@
 
 static void AnimUnusedBagSteal(struct Sprite *sprite);
 static void AnimUnusedBagSteal_Step(struct Sprite *sprite);
-static void AnimBite(struct Sprite *sprite);
-static void AnimTearDrop(struct Sprite *sprite);
-static void AnimClawSlash(struct Sprite *sprite);
+void AnimBite(struct Sprite *sprite);
+void AnimTearDrop(struct Sprite *sprite);
+void AnimClawSlash(struct Sprite *sprite);
 static void AnimTask_AttackerFadeToInvisible_Step(u8 taskId);
 static void AnimTask_AttackerFadeFromInvisible_Step(u8 taskId);
 static void AnimBite_Step1(struct Sprite *sprite);
@@ -130,7 +130,7 @@ static const union AffineAnimCmd sAffineAnim_TearDrop_1[] =
     AFFINEANIMCMD_END,
 };
 
-static const union AffineAnimCmd *const sAffineAnims_TearDrop[] =
+const union AffineAnimCmd *const gAffineAnims_TearDrop[] =
 {
     sAffineAnim_TearDrop_0,
     sAffineAnim_TearDrop_1,
@@ -143,7 +143,7 @@ const struct SpriteTemplate gTearDropSpriteTemplate =
     .oam = &gOamData_AffineNormal_ObjNormal_16x16,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
-    .affineAnims = sAffineAnims_TearDrop,
+    .affineAnims = gAffineAnims_TearDrop,
     .callback = AnimTearDrop,
 };
 
@@ -167,7 +167,7 @@ static const union AnimCmd sAnim_ClawSlash_1[] =
     ANIMCMD_END,
 };
 
-static const union AnimCmd *const sAnims_ClawSlash[] =
+const union AnimCmd *const gAnims_ClawSlash[] =
 {
     sAnim_ClawSlash_0,
     sAnim_ClawSlash_1,
@@ -178,7 +178,7 @@ const struct SpriteTemplate gClawSlashSpriteTemplate =
     .tileTag = ANIM_TAG_CLAW_SLASH,
     .paletteTag = ANIM_TAG_CLAW_SLASH,
     .oam = &gOamData_AffineOff_ObjNormal_32x32,
-    .anims = sAnims_ClawSlash,
+    .anims = gAnims_ClawSlash,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = AnimClawSlash,
@@ -308,7 +308,7 @@ static void AnimUnusedBagSteal_Step(struct Sprite *sprite)
 }
 
 // Move sprite inward for Bite/Crunch and Clamp
-static void AnimBite(struct Sprite *sprite)
+void AnimBite(struct Sprite *sprite)
 {
     sprite->x += gBattleAnimArgs[0];
     sprite->y += gBattleAnimArgs[1];
@@ -340,7 +340,7 @@ static void AnimBite_Step2(struct Sprite *sprite)
 }
 
 // Launches a tear drop away from the battler. Used by Fake Tears
-static void AnimTearDrop(struct Sprite *sprite)
+void AnimTearDrop(struct Sprite *sprite)
 {
     u8 battler;
     s8 xOffset;
@@ -751,7 +751,7 @@ void AnimTask_MementoHandleBg(u8 taskId)
 }
 
 // Animates a deep slash from a claw. Used by Metal Claw, Dragon Claw, and Crush Claw
-static void AnimClawSlash(struct Sprite *sprite)
+void AnimClawSlash(struct Sprite *sprite)
 {
     sprite->x += gBattleAnimArgs[0];
     sprite->y += gBattleAnimArgs[1];

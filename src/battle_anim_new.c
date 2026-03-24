@@ -9520,3 +9520,38 @@ static void AnimMakingItRain(struct Sprite *sprite)
     sprite->callback = TranslateSpriteInEllipse;
     sprite->callback(sprite);
 }
+
+// --- Ported missing references for Dreepy and Luster Purge ---
+static const union AnimCmd sAnim_DreepyMissileOpponent_0[] =
+{
+    ANIMCMD_FRAME(0, 0, .hFlip = TRUE),
+    ANIMCMD_END,
+};
+
+const union AnimCmd *const gAnims_DreepyMissileOpponent[] =
+{
+    sAnim_DreepyMissileOpponent_0,
+};
+
+static const union AnimCmd sAnim_DreepyMissilePlayer_0[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END,
+};
+
+const union AnimCmd *const gAnims_DreepyMissilePlayer[] =
+{
+    sAnim_DreepyMissilePlayer_0,
+};
+
+static const union AffineAnimCmd sAffineAnim_LusterPurgeCircle[] =
+{
+    AFFINEANIMCMD_FRAME(0x20, 0x20, 0, 0),
+    AFFINEANIMCMD_FRAME(0x4, 0x4, 0, 120),
+    AFFINEANIMCMD_END_ALT(1),
+};
+
+const union AffineAnimCmd *const gAffineAnims_LusterPurgeCircle[] =
+{
+    sAffineAnim_LusterPurgeCircle,
+};

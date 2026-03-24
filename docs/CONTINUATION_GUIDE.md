@@ -110,6 +110,7 @@ Ported RHH battle animation infrastructure to support Gen 4+ moves:
 - **INCBINs**: 376 INCBIN + extern declarations in `graphics.c`/`graphics.h`
 - **Data tables**: 125 PicTable + 127 PaletteTable entries registered
 - **`battle_anim_new.c`**: 9,523 lines ported (Gen 4+ sprite templates + callbacks)
+- **Global Anim Refs**: Un-static'd 154 animation handlers/arrays across `battle_anim_*.c` and manually stubbed 3 missing arrays for Gen 8 (DreepyMissile) and Gen 3 (LusterPurge) to satisfy linker requirements.
 
 Compat aliases added: `ANIM_TAG_POKEBLOCK` → `ANIM_TAG_SAFARI_BAIT`, `B_ANIM_BAIT_THROW`/`B_ANIM_FOCUS_BAND`.
 
