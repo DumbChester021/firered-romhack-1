@@ -26,6 +26,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **pret Bug Fixes** | ✅ Done | All `#ifdef BUGFIX` / `#ifdef UBFIX` enabled (~25 bugs) |
 | **Battle AI: C Port** | ✅ Done | ASM VM replaced with C dispatch table (9 flags) |
 | **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
+| **Wild AI Initialization Fix** | ✅ Done | Ported RHH scaling AI logic to fix empty trainer flags for wild battles |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
 | **Move Engine Overhaul (Phase 1–5)** | ✅ Done | See section below |
 | **Animation Infrastructure (Phase 1)** | ✅ Done | Opcodes 0x30–0x34, `GetAnimBattlerId`, `gAnimMoveIndex` |

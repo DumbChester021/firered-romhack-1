@@ -11,6 +11,7 @@
 #include "constants/battle_ai.h"
 #include "constants/battle_move_effects.h"
 #include "constants/moves.h"
+#include "pokemon.h"
 
 #define AI_ACTION_DONE          0x0001
 #define AI_ACTION_FLEE          0x0002
@@ -145,6 +146,22 @@ void BattleAI_SetupAIData(void)
         else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY_FRLG)
         {
             AI_THINKING_STRUCT->aiFlags = (AI_SCRIPT_CHECK_BAD_MOVE | AI_SCRIPT_TRY_TO_FAINT | AI_SCRIPT_CHECK_VIABILITY);
+            return;
+        }
+        else if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER))
+        {
+            u32 avgLevel = GetMonData(&gEnemyParty[0], MON_DATA_LEVEL);
+            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+                avgLevel = (GetMonData(&gEnemyParty[0], MON_DATA_LEVEL) + GetMonData(&gEnemyParty[1], MON_DATA_LEVEL)) / 2;
+
+            AI_THINKING_STRUCT->aiFlags = AI_SCRIPT_CHECK_BAD_MOVE;
+            if (avgLevel >= 20)
+                AI_THINKING_STRUCT->aiFlags |= AI_SCRIPT_CHECK_VIABILITY;
+            if (avgLevel >= 60)
+                AI_THINKING_STRUCT->aiFlags |= AI_SCRIPT_TRY_TO_FAINT;
+            if (avgLevel >= 80)
+                AI_THINKING_STRUCT->aiFlags |= AI_SCRIPT_HP_AWARE;
+
             return;
         }
     }
