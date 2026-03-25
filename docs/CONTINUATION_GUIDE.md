@@ -30,7 +30,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
 | **Move Engine Overhaul (Phase 1–9)** | ✅ Done | Structural arrays, additionalEffects, modern flags |
 | **Animation Infrastructure (Phase 1)** | ✅ Done | Opcodes 0x30–0x34, `GetAnimBattlerId`, `gAnimMoveIndex` |
-| **Gen 4+ Moves (Batch 1)** | ✅ Done | Roost, Confide, Round, Captivate, Tera Blast, Giga Impact |
+| **Gen 4+ Moves (Batches 1 & 2)** | ✅ Done | Roost, Confide, Round, Captivate, Tera Blast, Giga Impact, Bulldoze, Trailblaze, Work Up, Power-Up Punch, Zen Headbutt |
 | **preproc Tool Upgrade** | ✅ Done | C++ compiler tool upgraded for keyword args (`x=0`) |
 
 ---
@@ -120,13 +120,13 @@ Compat aliases added: `ANIM_TAG_POKEBLOCK` → `ANIM_TAG_SAFARI_BAIT`, `B_ANIM_B
 
 ### Phase 7: Gen 4+ Moves — In Progress
 
-Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First batch of Gen 4+ moves added (Roost, Confide, Round, Captivate, Tera Blast, Giga Impact). Moves up to **MOVE_POISON_JAB** (364) have had their base animations ported to prevent crashes.
+Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First and second batches of Gen 4+ moves added (Roost, Confide, Round, Captivate, Tera Blast, Giga Impact, Bulldoze, Trailblaze, Work Up, Power-Up Punch, Zen Headbutt). Moves up to **MOVE_POISON_JAB** (364) have had their base animations ported to prevent crashes.
 
 Pipeline for adding new moves:
 1. Ensure the `preproc` tool parses any new `.s` keywords.
 2. Add move effect handler in `battle_script_commands.c` / `data/battle_scripts_*.s`
 3. Add AI logic in `battle_ai_main.c`
-4. Add animation in `data/battle_anim_scripts.s`
+4. Port native animation from RHH to `data/battle_anim_scripts.s` (including porting missed macros to `asm/macros/battle_anim_script.inc` and `SpriteTemplate`s to `src/battle_anim_new.c`).
 5. Mark move as implemented in `docs/MISSING_GEN4_MOVES.md`
 
 ### Phase 8: `CMD_ARGS()` Macro Refactor — Complete

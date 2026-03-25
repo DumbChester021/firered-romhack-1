@@ -214,6 +214,16 @@ The `gBattleAnims_Moves` table is a `.4byte` pointer array indexed by move ID. E
 2. Potentially adding sprite sheets under `graphics/battle_anims/`
 3. Adding sprite/palette entries in `src/data/battle_anim.h` or the relevant `battle_anim_*.c` type file
 
+**Porting RHH (pokeemerald-expansion) animations natively:**
+Thanks to the upgraded compiler, you can directly 1:1 port Gen 9 animations from RHH to FireRed:
+1. Locate the target move's animation script in RHH's `data/battle_anim_scripts.s` (e.g., `gBattleAnimMove_ZenHeadbutt`).
+2. Copy it exactly to `firered-romhack-1/data/battle_anim_scripts.s` and link it in the `gBattleAnims_Moves` array.
+3. If the script uses unknown macros (e.g., `create_basic_hitsplat_sprite`, `simple_palette_blend`), copy those macro text definitions from RHH's `asm/macros/battle_anim_script.inc` into FireRed's `asm/macros/battle_anim_script.inc` to wrap the standard `createsprite` opcode.
+4. Run `make` to catch missing linker dependencies (SpriteTemplates, AnimTasks, AffineAnims).
+5. Search RHH's `src/battle_anim_*.c` files for the missing components (e.g., `gZenHeadbuttSpriteTemplate`, `AnimAquaTail`) and port them into FireRed's `src/battle_anim_new.c` (or a relevant file).
+6. Ensure any imported `SpriteTemplate`s have `.anims = gDummySpriteAnimTable` and `.images = NULL` added if they weren't explicitly defined in Emerald, to properly match FireRed's struct shape.
+7. Recompile. The FireRed `preproc` compiler natively parses RHH's Python-style kwargs (`x=0, y=0`), enabling perfectly 1:1 visual ports!
+
 > [!TIP]
 > For initial implementation, reuse an existing animation. Custom animations can be added later and are the most time-consuming part.
 

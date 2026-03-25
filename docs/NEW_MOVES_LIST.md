@@ -19,6 +19,11 @@ This document tracks all Generation 4+ moves that have been fully ported into th
 | 496 | **Round** | Normal | Special | 15 | 60 | 100 | Uses `EFFECT_ROUND` primary effect and `TryUpdateRoundTurnOrder`. Animation `Move_ROUND` ported. | TBD |
 | 590 | **Confide** | Normal | Status | 20 | — | — | Uses `EFFECT_SPECIAL_ATTACK_DOWN`. Animation `Move_CONFIDE` ported. | TBD |
 | 779 | **Tera Blast** | Normal | Special | 10 | 80 | 100 | Uses `EFFECT_TERA_BLAST`. Fallbacks to `Move_HIDDEN_POWER` animation to avoid massive engine bloat from Terastallization branches. | TBD |
+| 428 | **Zen Headbutt** | Psychic | Physical | 15 | 80 | 90 | Uses `EFFECT_HIT` with additionalEffect for flinch. Assumes `Move_HEADBUTT` animation. | TBD |
+| 523 | **Bulldoze** | Ground | Physical | 20 | 60 | 100 | Uses `EFFECT_EARTHQUAKE`. Lowers speed via additionalEffect. Assumes `Move_EARTHQUAKE` animation. | TBD |
+| 526 | **Work Up** | Normal | Status | 30 | — | — | Uses `EFFECT_ATTACK_SPATK_UP`. Assumes `Move_HOWL` animation. | TBD |
+| 612 | **Power-Up Punch** | Fighting | Physical | 20 | 40 | 100 | Uses `EFFECT_HIT` with additionalEffect for attack up. Assumes `Move_MACH_PUNCH` animation. | TBD |
+| 811 | **Trailblaze** | Grass | Physical | 20 | 50 | 100 | Uses `EFFECT_HIT` with additionalEffect for speed up. Assumes `Move_BULLET_SEED` animation. | TBD |
 
 ***Note:** All moves from Gen 4 to Gen 9 have been ported into the `moves_info.h` table and their `MOVE_` constants defined in `include/constants/moves.h` to align perfectly with `pokeemerald-expansion`. Unimplemented moves are functionally stubbed as 0-power `EFFECT_HIT` moves with `Move_NONE` animations.*
 

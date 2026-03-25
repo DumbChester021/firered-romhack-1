@@ -31,6 +31,7 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - Native configuration flags like `.thawsUser`, `.onChargeTurnOnly`, and `.criticalHitStage` adopted natively over hacky legacy macros.
 - Upgraded `CMD_ARGS` macro pipeline to parse RHH syntax exactly (e.g. `tryhealhalfhealth BS_TARGET, BattleScript_AlreadyAtFullHp`).
 - Assembly `preproc` compiler tool upgraded to fully support RHH's Python-style named keyword arguments (`x=0, y=0`), enabling 1:1 animation script ports.
+- RHH Gen 4+ battle animation scripts (alongside their missing C-engine SpriteTemplates and AffineAnims) can be perfectly ported 1:1 natively into FireRed without visual compromise.
 
 ### Running Shoes
 - Running shoes enabled from the start (no item pickup required)

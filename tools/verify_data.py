@@ -166,8 +166,8 @@ def verify_species():
 # ─── 5. Move categories ──────────────────────────────────────────────────────
 
 def verify_move_categories():
-    print("\n── Move categories (src/data/battle_moves.h) ──")
-    src = read_file("src/data/battle_moves.h")
+    print("\n── Move categories (src/data/moves_info.h) ──")
+    src = read_file("src/data/moves_info.h")
 
     move_blocks = re.findall(r'\[(MOVE_\w+)\]\s*=\s*\{(.*?)\}', src, re.DOTALL)
     total = len(move_blocks)
@@ -236,7 +236,7 @@ def verify_ui():
 
 def verify_move_types():
     print("\n── Move type reclassifications (informational) ──")
-    src = read_file("src/data/battle_moves.h")
+    src = read_file("src/data/moves_info.h")
 
     moves_to_check = {
         "MOVE_SWEET_KISS": "TYPE_FAIRY",

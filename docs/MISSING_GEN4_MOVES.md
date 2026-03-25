@@ -10,11 +10,11 @@ This list contains all unimplemented Gen 4+ moves (Move ID > 364) that are learn
 | 4 | ✅ **Tera Blast** (`MOVE_TERA_BLAST`) | 779 | 244 |
 | 5 | ✅ **Giga Impact** (`MOVE_GIGA_IMPACT`) | 416 | 189 |
 | 6 | **Fling** (`MOVE_FLING`) | 374 | 147 |
-| 7 | **Bulldoze** (`MOVE_BULLDOZE`) | 523 | 137 |
-| 8 | **Trailblaze** (`MOVE_TRAILBLAZE`) | 811 | 115 |
-| 9 | **Work Up** (`MOVE_WORK_UP`) | 526 | 111 |
-| 10 | **Power Up Punch** (`MOVE_POWER_UP_PUNCH`) | 612 | 111 |
-| 11 | **Zen Headbutt** (`MOVE_ZEN_HEADBUTT`) | 428 | 108 |
+| 7 | ✅ **Bulldoze** (`MOVE_BULLDOZE`) | 523 | 137 |
+| 8 | ✅ **Trailblaze** (`MOVE_TRAILBLAZE`) | 811 | 115 |
+| 9 | ✅ **Work Up** (`MOVE_WORK_UP`) | 526 | 111 |
+| 10 | ✅ **Power Up Punch** (`MOVE_POWER_UP_PUNCH`) | 612 | 111 |
+| 11 | ✅ **Zen Headbutt** (`MOVE_ZEN_HEADBUTT`) | 428 | 108 |
 | 12 | **Echoed Voice** (`MOVE_ECHOED_VOICE`) | 497 | 103 |
 | 13 | **Grass Knot** (`MOVE_GRASS_KNOT`) | 447 | 97 |
 | 14 | **Incinerate** (`MOVE_INCINERATE`) | 510 | 92 |
