@@ -11,22 +11,17 @@ PROJECT CONTEXT
 This project is a PRET-based Pokémon FireRed decompilation modification project.
 
 Primary reference implementation:
-
 * /mnt/data/Github/prototype/pokeemerald-expansion
 
 This repository represents the feature baseline and architectural reference target.
 Behavior, architecture patterns, file organization, naming conventions, and feature implementation style should follow the reference repository as closely as possible unless explicitly instructed otherwise.
 
 This project must remain RHH-faithful:
-
-* Simple
-* Practical
-* Minimal abstractions
-* Convention over configuration
-* No unnecessary architecture
-* No premature optimization
-* No overengineering
-* No speculative systems
+* Port natively rather than writing hacky fallbacks.
+* If a C dependency (e.g., `SpriteTemplate`, callback function, or macro) is missing in FireRed, DO NOT fallback. Extrapolate and natively port that missing dependency from the reference repo into FireRed.
+* Simple & Practical
+* Minimal abstractions (Convention over configuration)
+* No unnecessary architecture or speculative systems
 * Direct, readable C code
 * Match existing engine patterns
 
@@ -40,19 +35,11 @@ When uncertain about implementation:
 MANDATORY NO-ASSUMPTION RULE
 
 The model must NEVER assume:
-
-* Function behavior
-* Struct layouts
-* Memory layout
-* Engine systems
-* Feature flags
-* Build system behavior
-* Script engine behavior
-* Battle engine behavior
-* Save structure
-* Repo structure
-* Existing helper functions
-* Macro behavior
+* Function behavior, Struct layouts, Memory layout
+* Engine systems, Feature flags, Build system behavior
+* Script engine behavior, Battle engine behavior
+* Save structure, Repo structure
+* Existing helper functions, Macro behavior
 
 If something is unknown:
 → Search project files
@@ -68,170 +55,95 @@ Do NOT fabricate code to fill gaps.
 DOCUMENTATION PRIORITY ORDER
 
 When working on tasks, always consult in this order:
-
-1. Continuation Document (PRIMARY STATE FILE)
-2. Docs Folder (Design, Research, Workflow)
-3. Project Source Code
+1. `docs/CONTINUATION_GUIDE.md` (PRIMARY STATE FILE)
+2. `docs/research/` folder (Specific workflows like `adding_new_moves_workflow.md`)
+3. Project Source Code (`firered-romhack-1/`)
 4. pokeemerald-expansion Reference Repo
-5. README
-6. Only then implement changes
+5. `README.md`
+6. Only then implement changes.
 
-The Continuation Document is the single source of truth for:
-
-* Current progress
-* Completed features
-* Pending tasks
-* Current branch work
-* Implementation notes
-* Decisions made
-* Known issues
-* Next tasks
-
-Always update the Continuation Document after:
-
+The Continuation Document is the single source of truth. Always update it after:
 * Completing a feature
 * Fixing a bug
 * Changing architecture
 * Adding systems
-* Discovering engine behavior
 * Making decisions affecting future work
 
-Purpose:
-Next no-context LLM session must be able to resume work without repeating work.
+Purpose: The next no-context LLM session must be able to resume work without repeating work.
 
 ---
 
 WORKFLOW RULES
 
 Before starting any task:
+1. Read Continuation Document & relevant workflow docs (e.g., `adding_new_moves_workflow.md`).
+2. Identify current task & verify it's not already completed.
+3. Check reference repo implementation for exactly how they did it.
+4. Locate relevant files in project.
+5. Plan modification.
+6. Implement minimal change. Port missing dependencies 1:1 if necessary.
+7. Verify build logic (`make -j$(nproc)`).
+8. Verify data integrity (`python3 tools/verify_data.py`).
+9. Update Continuation Document & Docs.
+10. Commit & Push changes.
 
-1. Read Continuation Document
-2. Identify current task
-3. Verify task not already completed
-4. Check Docs folder for design/spec
-5. Check reference repo implementation
-6. Locate relevant files in project
-7. Plan modification
-8. Implement minimal change
-9. Verify build logic
-10. Update Continuation Document
-
-Never start coding without checking Continuation Document first.
+Never start coding without checking the Continuation Document first.
 
 ---
 
 IMPLEMENTATION RULES (IMPORTANT)
 
 When adding features:
-
-* Follow existing file structure
-* Follow existing naming conventions
-* Reuse existing systems
-* Do not duplicate systems
-* Do not create new managers/controllers unless necessary
-* Do not introduce new architecture layers
-* Prefer modifying existing systems
-* Keep functions small and simple
-* Match reference repo patterns
-* Prefer static functions where appropriate
-* Avoid global state unless engine already uses it
-* Avoid macros unless project already uses similar ones
-* Do not refactor unrelated code
-* Do not move files unless necessary
-* Do not rename large systems
-* Make minimal diffs
+* Follow existing file structure and naming conventions.
+* Reuse existing systems. Do not duplicate systems.
+* Match reference repo patterns perfectly.
+* Missing macro? Port it from `asm/macros/`
+* Missing C struct (e.g., SpriteTemplate)? Port it from `src/battle_anim_*.c` to `src/battle_anim_new.c`.
+* The `preproc` compiler supports native Python kwargs (e.g., `x=0, y=0`), enabling perfectly 1:1 ASM ports. USE THIS. Do not invent legacy fallbacks. 
+* Avoid global state unless the engine already uses it.
+* Do not refactor unrelated code or redesign architecture.
+* Keep commits logically grouped. One feature per commit group.
 
 Think like maintaining a legacy C engine, not building a new engine.
-
----
-
-BRANCH SAFETY RULE
-
-We are working in a feature branch.
-
-This means:
-
-* Safe to modify
-* Safe to experiment
-* Still avoid unnecessary large refactors
-* Keep commits logically grouped
-* One feature per commit group
-* Update Continuation Doc per feature
-
----
-
-TASK EXECUTION PROTOCOL
-
-For every task:
-
-1. Read Continuation Doc
-2. Define task
-3. Locate related code
-4. Check reference repo implementation
-5. Identify minimal change needed
-6. Plan steps
-7. Modify code
-8. Ensure no duplicate systems created
-9. Ensure style matches existing code
-10. Update Continuation Doc
-11. List next steps
 
 ---
 
 ANTI-REPEAT PROTECTION RULE
 
 Before implementing anything, always verify:
-
 * Does this system already exist?
 * Was this already implemented?
 * Is this already in Continuation Doc?
-* Is this already in reference repo?
 * Are we duplicating functionality?
-* Are we redoing completed work?
 
 If unsure → search first, implement second.
 
 ---
 
+TASK EXECUTION PROTOCOL
+
+1. Read Continuation Doc & `docs/research/` guides.
+2. Define task.
+3. Locate related code in `firered-romhack-1`.
+4. Locate reference code in `pokeemerald-expansion`.
+5. Port code 1:1 exactly. Include missing sub-dependencies natively.
+6. Build (`make -j$(nproc)`) and Verify (`python3 tools/verify_data.py`).
+7. Update Continuation Doc.
+8. Commit and provide next steps.
+
+---
+
 OUTPUT STYLE FOR THIS PROJECT
 
-When assisting with this project, responses should be:
-
-* Direct
-* Technical
-* File-oriented
-* Function-oriented
-* Minimal explanation
-* Focus on implementation steps
-* Reference files and functions
-* Avoid long theory explanations
-* Avoid unrelated improvements
-* Avoid architecture redesign unless requested
+Responses should be:
+* Direct, Technical, File & Function-oriented.
+* Minimal explanation. Focus on implementation steps.
+* Avoid long theory explanations and speculative redesigns.
 
 Preferred response structure:
-
 1. Current Task
 2. Files Involved
-3. Functions Involved
-4. What To Change
-5. Implementation Steps
-6. Risks / Engine Constraints
-7. Update Continuation Doc Note
-
----
-
-PRIMARY PROJECT GOALS
-
-High-level goal:
-Bring PokéFireRed toward feature parity / architecture similarity with pokeemerald-expansion where feasible, while maintaining FireRed base compatibility and PRET-style codebase integrity.
-
-Key philosophy:
-Not rewrite.
-Not redesign.
-Incrementally expand.
-Match reference behavior.
-Maintain engine stability.
-
----
-
-END OF PROJECT OPERATING PROMPT
+3. What To Change
+4. Implementation Steps
+5. Build Verification
+6. Documentation Update
