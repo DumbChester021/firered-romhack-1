@@ -268,20 +268,20 @@ clean-generated:
 	@echo "rm -f <AUTO_GEN_TARGETS>"
 
 ifeq ($(MODERN),0)
-$(C_BUILDDIR)/agb_flash.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/agb_flash_1m.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/agb_flash_mx.o: CFLAGS := -O -mthumb-interwork
+$(C_BUILDDIR)/agb_flash.o: CFLAGS := -save-temps -O -mthumb-interwork
+$(C_BUILDDIR)/agb_flash_1m.o: CFLAGS := -save-temps -O -mthumb-interwork
+$(C_BUILDDIR)/agb_flash_mx.o: CFLAGS := -save-temps -O -mthumb-interwork
 
 $(C_BUILDDIR)/m4a.o: CC1 := $(TOOLS_DIR)/agbcc/bin/old_agbcc$(EXE)
 
 $(C_BUILDDIR)/isagbprn.o: CC1 := $(TOOLS_DIR)/agbcc/bin/old_agbcc$(EXE)
-$(C_BUILDDIR)/isagbprn.o: CFLAGS := -mthumb-interwork
+$(C_BUILDDIR)/isagbprn.o: CFLAGS := -save-temps -mthumb-interwork
 
 $(C_BUILDDIR)/trainer_tower.o: CFLAGS += -ffreestanding
 $(C_BUILDDIR)/battle_anim_flying.o: CFLAGS += -ffreestanding
 
 $(C_BUILDDIR)/librfu_intr.o: CC1 := $(TOOLS_DIR)/agbcc/bin/agbcc_arm$(EXE)
-$(C_BUILDDIR)/librfu_intr.o: CFLAGS := -O2 -mthumb-interwork -quiet
+$(C_BUILDDIR)/librfu_intr.o: CFLAGS := -save-temps -O2 -mthumb-interwork -quiet
 else
 $(C_BUILDDIR)/berry_crush_2.o: CFLAGS += -Wno-address-of-packed-member
 $(C_BUILDDIR)/berry_crush_3.o: CFLAGS += -Wno-address-of-packed-member

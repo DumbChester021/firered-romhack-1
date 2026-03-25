@@ -43,6 +43,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 
 #### `struct BattleMove` (`include/pokemon.h`)
 - `effect`: `u8` → `u16` — allows >255 effect IDs
+- `target`: `u8` → `u16` — expanded to fit Gen 9 flags (e.g. `MOVE_TARGET_ALL_BATTLERS` = 288)
 - `flags` bitfield removed — replaced with 7 named fields:
   - `makesContact`, `ignoresProtect`, `mirrorMoveAffected`, `ignoresKingsRock`
   - `soundMove`, `snatchAffected`, `magicCoatAffected`
@@ -228,6 +229,8 @@ New helpers available: `MoveHasAdditionalEffect(move, effect)`, `MoveHasAddition
 ## Battle AI — Current State
 
 ASM AI VM fully removed. C-based RHH-faithful dispatch table.
+
+**Type Effectiveness:** Use the `0, 1, 2, 3` multiplier enums defined in `include/battle_ai_util.h`. The legacy FRLG `AI_EFFECTIVENESS_x2` (80/40/20) macros have been permanently deleted to match the `pokeemerald-expansion` architecture.
 
 **Smart switching:** add `AI_SCRIPT_SMART_SWITCHING` to trainer `aiFlags` in `src/data/trainers.h`.  
 **New move effect AI:** add `case EFFECT_XYZ:` in `AI_CheckBadMove()` / `AI_CheckViability()` in `src/battle_ai_main.c`.
