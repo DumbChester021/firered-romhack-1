@@ -1220,7 +1220,7 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
             }
             else
             {
-                ballIconSpritesIds[5 - i] += 0;
+                // ballIconSpritesIds[5 - i] += 0;
                 if (i >= nValidMons)
                 {
                     gSprites[ballIconSpritesIds[5 - i]].oam.tileNum += 1;
@@ -1236,7 +1236,7 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
                     } while (0);
                 }
             }
-            ballIconSpritesIds[5 - ++i] += 0; i--;
+            // ballIconSpritesIds[5 - ++i] += 0; i--;
         }
     }
 

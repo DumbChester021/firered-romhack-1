@@ -1,0 +1,16 @@
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+libpng warning: bKGD: invalid index
+src/image_processing_effects.c:3535:21: warning: iteration 32 invokes undefined behavior [-Waggressive-loop-optimizations]
+src/pokemon.c:2964:5: warning: 'GetMonData2' alias between functions of incompatible types 'u32(struct Pokemon *, s32)' {aka 'long unsigned int(struct Pokemon *, long int)'} and 'u32(struct Pokemon *, s32,  u8 *)' {aka 'long unsigned int(struct Pokemon *, long int,  unsigned char *)'} [-Wattribute-alias=]
+src/pokemon.c:3326:5: warning: 'GetBoxMonData2' alias between functions of incompatible types 'u32(struct BoxPokemon *, s32)' {aka 'long unsigned int(struct BoxPokemon *, long int)'} and 'u32(struct BoxPokemon *, s32,  u8 *)' {aka 'long unsigned int(struct BoxPokemon *, long int,  unsigned char *)'} [-Wattribute-alias=]
+src/pokemon.c:3502:38: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+src/battle_interface.c:1239:31: warning: iteration 5 invokes undefined behavior [-Waggressive-loop-optimizations]
+arm-none-eabi-ld: warning: ../../pokefirered_modern.elf has a LOAD segment with RWX permissions

@@ -152,6 +152,12 @@ Upgraded the FireRed `preproc` compiler tool using RHH's extended `preproc` sour
 - This allows 1:1 copy-pasting of complex animation macros (like `create_basic_hitsplat_sprite`) from Emerald to FireRed.
 - **Bug Fix Note**: Applied custom regex word-boundary checks (`IsIdentifierChar`) to the `CFile::CheckIdentifier` scanner inside `tools/preproc/c_file.cpp` to prevent it from maliciously slicing identifiers like `BP_ACTION_DUMMY` during C compilation.
 
+### Phase 11: Modern Compiler Syntax and UB Fixes — Complete
+The codebase has been updated to perfectly compile with zero warnings under modern `arm-none-eabi-gcc` 15+ by natively porting fixes from RHH.
+- **`-Waggressive-loop-optimizations`**: Flattened `gCanvasPixels` in `image_processing_effects.c` to a 1D pointer matrix to fix bounds checking errors. Stripped decompilation artifacts triggering index `-1` OOB access in `battle_interface.c` (`ballIconSpritesIds`).
+- **`-Wattribute-alias`**: Resolved incompatible 2-arg to 3-arg type signature aliases (`GetMonData2`, `GetBoxMonData2`) in `pokemon.c` by writing explicit wrapper functions.
+- **`-Wstringop-overflow`**: Safely guarded struct bounds in `SetBoxMonData` (`MON_DATA_PP1`...`PP4`) natively without pragmas.
+
 ---
 
 ## Key Files Reference
