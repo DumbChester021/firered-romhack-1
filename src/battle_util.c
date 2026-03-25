@@ -1312,7 +1312,7 @@ u8 AtkCanceller_UnableToUseMove(void)
             {
                 if (Random() % 5)
                 {
-                    if (gBattleMoves[gCurrentMove].effect != EFFECT_THAW_HIT) // unfreezing via a move effect happens in case 13
+                    if (!gBattleMoves[gCurrentMove].thawsUser) // unfreezing via a move effect happens in case 13
                     {
                         gBattlescriptCurrInstr = BattleScript_MoveUsedIsFrozen;
                         gHitMarker |= HITMARKER_NO_ATTACKSTRING;
@@ -1513,7 +1513,7 @@ u8 AtkCanceller_UnableToUseMove(void)
         case CANCELLER_THAW: // move thawing
             if (gBattleMons[gBattlerAttacker].status1 & STATUS1_FREEZE)
             {
-                if (gBattleMoves[gCurrentMove].effect == EFFECT_THAW_HIT)
+                if (gBattleMoves[gCurrentMove].thawsUser)
                 {
                     gBattleMons[gBattlerAttacker].status1 &= ~STATUS1_FREEZE;
                     BattleScriptPushCursor();
@@ -3249,6 +3249,19 @@ u8 IsMonDisobedient(void)
             return 1;
         }
     }
+}
+
+bool32 AreBattlersOfOppositeGender(u8 battler1, u8 battler2)
+{
+    u8 gender1 = GetGenderFromSpeciesAndPersonality(gBattleMons[battler1].species, gBattleMons[battler1].personality);
+    u8 gender2 = GetGenderFromSpeciesAndPersonality(gBattleMons[battler2].species, gBattleMons[battler2].personality);
+
+    return (gender1 != MON_GENDERLESS && gender2 != MON_GENDERLESS && gender1 != gender2);
+}
+
+u16 GetBattlerAbility(u8 battlerId)
+{
+    return gBattleMons[battlerId].ability;
 }
 
 // =============================================================================

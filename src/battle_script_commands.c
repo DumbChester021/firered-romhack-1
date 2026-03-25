@@ -41,7 +41,7 @@
 #define CMD_ARGS(...) const struct __attribute__((packed)) { u8 opcode; RECURSIVELY(R_FOR_EACH(APPEND_SEMICOLON, __VA_ARGS__)) const u8 nextInstr[0]; } *const cmd UNUSED = (const void *)gBattlescriptCurrInstr
 #define NATIVE_ARGS(...) CMD_ARGS(void (*func)(void), ##__VA_ARGS__)
 
-extern const u8 *const gBattleScriptsForMoveEffects[];
+#include "data/battle_scripts_for_move_effects.h"
 
 #define DEFENDER_IS_PROTECTED ((gProtectStructs[gBattlerTarget].protected) && (gBattleMoves[gCurrentMove].ignoresProtect == FALSE))
 
@@ -313,6 +313,7 @@ static void Cmd_removeattackerstatus1(void);
 static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
 static void Cmd_setroost(void);
+static void Cmd_jumpifcaptivateaffected(void);
 
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
@@ -565,6 +566,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_finishaction,                            //0xF6
     Cmd_finishturn,                              //0xF7
     Cmd_setroost,                                //0xF8
+    Cmd_jumpifcaptivateaffected,                 //0xF9
 };
 
 struct StatFractions
@@ -997,7 +999,7 @@ static bool8 AccuracyCalcHelper(u16 move)
     gHitMarker &= ~HITMARKER_IGNORE_UNDERWATER;
 
     if ((WEATHER_HAS_EFFECT && (gBattleWeather & B_WEATHER_RAIN) && gBattleMoves[move].effect == EFFECT_THUNDER)
-     || (gBattleMoves[move].effect == EFFECT_ALWAYS_HIT || gBattleMoves[move].effect == EFFECT_VITAL_THROW))
+     || (gBattleMoves[move].accuracy == 0))
     {
         JumpIfMoveFailed(7, move);
         return TRUE;
@@ -1188,10 +1190,7 @@ static void Cmd_critcalc(void)
     gPotentialItemEffectBattler = gBattlerAttacker;
 
     critChance  = 2 * ((gBattleMons[gBattlerAttacker].status2 & STATUS2_FOCUS_ENERGY) != 0)
-                + (gBattleMoves[gCurrentMove].effect == EFFECT_HIGH_CRITICAL)
-                + (gBattleMoves[gCurrentMove].effect == EFFECT_SKY_ATTACK)
-                + (gBattleMoves[gCurrentMove].effect == EFFECT_BLAZE_KICK)
-                + (gBattleMoves[gCurrentMove].effect == EFFECT_POISON_TAIL)
+                + (gBattleMoves[gCurrentMove].criticalHitStage)
                 + (holdEffect == HOLD_EFFECT_SCOPE_LENS)
                 + 2 * (holdEffect == HOLD_EFFECT_LUCKY_PUNCH && gBattleMons[gBattlerAttacker].species == SPECIES_CHANSEY)
                 + 2 * (holdEffect == HOLD_EFFECT_STICK && gBattleMons[gBattlerAttacker].species == SPECIES_FARFETCHD);
@@ -2855,35 +2854,7 @@ static void Cmd_seteffectwithchance(void)
     if (gBattleMoves[gCurrentMove].numAdditionalEffects > 0)
         gBattleStruct->additionalEffectsCounter = 0;
 
-    // ---------------------------------------------------------------------------
-    // Legacy path: move has no additionalEffects[] — use secondaryEffectChance.
-    // Unchanged from original FireRed logic.
-    // ---------------------------------------------------------------------------
-    if (gBattleMons[gBattlerAttacker].ability == ABILITY_SERENE_GRACE)
-        percentChance = gBattleMoves[gCurrentMove].secondaryEffectChance * 2;
-    else
-        percentChance = gBattleMoves[gCurrentMove].secondaryEffectChance;
-
-    if (gBattleCommunication[MOVE_EFFECT_BYTE] & MOVE_EFFECT_CERTAIN
-        && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
-    {
-        gBattleCommunication[MOVE_EFFECT_BYTE] &= ~MOVE_EFFECT_CERTAIN;
-        SetMoveEffect(FALSE, MOVE_EFFECT_CERTAIN);
-    }
-    else if (Random() % 100 <= percentChance
-             && gBattleCommunication[MOVE_EFFECT_BYTE]
-             && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
-    {
-        if (percentChance >= 100)
-            SetMoveEffect(FALSE, MOVE_EFFECT_CERTAIN);
-        else
-            SetMoveEffect(FALSE, 0);
-    }
-    else
-    {
-        gBattlescriptCurrInstr++;
-    }
-
+    gBattlescriptCurrInstr++;
     gBattleCommunication[MOVE_EFFECT_BYTE] = 0;
     gBattleScripting.multihitMoveEffect = 0;
 }
@@ -4368,7 +4339,7 @@ static void Cmd_moveend(void)
         case MOVEEND_MIRROR_MOVE: // mirror move
             if (!(gAbsentBattlerFlags & gBitTable[gBattlerAttacker])
                 && !(gBattleStruct->absentBattlerFlags & gBitTable[gBattlerAttacker])
-                && gBattleMoves[originallyUsedMove].mirrorMoveAffected
+                && !gBattleMoves[originallyUsedMove].mirrorMoveBanned
                 && gHitMarker & HITMARKER_OBEYS
                 && gBattlerAttacker != gBattlerTarget
                 && !(gHitMarker & HITMARKER_FAINTED(gBattlerTarget))
@@ -7904,10 +7875,7 @@ static void Cmd_copymovepermanently(void)
 
 static bool8 IsTwoTurnsMove(u16 move)
 {
-    if (gBattleMoves[move].effect == EFFECT_SKULL_BASH
-     || gBattleMoves[move].effect == EFFECT_RAZOR_WIND
-     || gBattleMoves[move].effect == EFFECT_SKY_ATTACK
-     || gBattleMoves[move].effect == EFFECT_SOLAR_BEAM
+    if (gBattleMoves[move].effect == EFFECT_TWO_TURNS_ATTACK
      || gBattleMoves[move].effect == EFFECT_SEMI_INVULNERABLE
      || gBattleMoves[move].effect == EFFECT_BIDE)
         return TRUE;
@@ -7934,10 +7902,7 @@ static u8 AttacksThisTurn(u8 battlerId, u16 move) // Note: returns 1 if it's a c
         && (gBattleWeather & B_WEATHER_SUN))
         return 2;
 
-    if (gBattleMoves[move].effect == EFFECT_SKULL_BASH
-     || gBattleMoves[move].effect == EFFECT_RAZOR_WIND
-     || gBattleMoves[move].effect == EFFECT_SKY_ATTACK
-     || gBattleMoves[move].effect == EFFECT_SOLAR_BEAM
+    if (gBattleMoves[move].effect == EFFECT_TWO_TURNS_ATTACK
      || gBattleMoves[move].effect == EFFECT_SEMI_INVULNERABLE
      || gBattleMoves[move].effect == EFFECT_BIDE)
     {
@@ -8344,6 +8309,26 @@ static void Cmd_presentdamagecalculation(void)
     {
         gMoveResultFlags &= ~MOVE_RESULT_DOESNT_AFFECT_FOE;
         gBattlescriptCurrInstr = BattleScript_PresentHealTarget;
+    }
+}
+
+static void Cmd_jumpifcaptivateaffected(void)
+{
+    CMD_ARGS(const u8 *jumpInstr);
+
+    if (GetBattlerAbility(gBattlerTarget) == ABILITY_OBLIVIOUS)
+    {
+        gBattlescriptCurrInstr = BattleScript_NotAffectedAbilityPopUp;
+        gLastUsedAbility = ABILITY_OBLIVIOUS;
+        RecordAbilityBattle(gBattlerTarget, ABILITY_OBLIVIOUS);
+    }
+    else if (AreBattlersOfOppositeGender(gBattlerAttacker, gBattlerTarget))
+    {
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+    }
+    else
+    {
+        gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }
 

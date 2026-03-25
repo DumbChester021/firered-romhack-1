@@ -243,7 +243,6 @@ struct BattleMove
     u8  type;
     u8  accuracy;
     u8  pp;
-    u8  secondaryEffectChance;
     u8  target;
     s8  priority;
     u8  category;
@@ -256,7 +255,7 @@ struct BattleMove
     u8  ignoresProtect:1;        // RHH: ignoresProtect
     u8  magicCoatAffected:1;     // RHH: magicCoatAffected
     u8  snatchAffected:1;        // RHH: snatchAffected
-    u8  mirrorMoveAffected:1;    // RHH: ~mirrorMoveBanned (inverted: 1=affected)
+    u8  mirrorMoveBanned:1;      // RHH: mirrorMoveBanned
     u8  ignoresKingsRock:1;      // RHH: ignoresKingsRock
     u8  soundMove:1;             // RHH: soundMove
     u8  punchingMove:1;          // RHH: punchingMove
@@ -269,6 +268,7 @@ struct BattleMove
     u8  ballisticMove:1;         // RHH: ballisticMove — STUB (no Bulletproof yet)
     u8  windMove:1;              // RHH: windMove — STUB (no Wind Rider yet)
     u8  healingMove:1;           // RHH: healingMove — STUB (no Heal Block yet)
+    u8  thawsUser:1;             // RHH: thawsUser
 
     // Effect-based hack replacements — port of RHH MoveInfo fields.
     // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.
@@ -289,7 +289,7 @@ struct BattleMove
 // EFFECTS_ARR creates a compound-literal array; ADDITIONAL_EFFECTS sets both
 // the pointer and the count in a single designated-initialiser expression.
 #define EFFECTS_ARR(...)        (const struct AdditionalEffect[]){__VA_ARGS__}
-#define ADDITIONAL_EFFECTS(...) EFFECTS_ARR(__VA_ARGS__), \
+#define ADDITIONAL_EFFECTS(...) .additionalEffects = EFFECTS_ARR(__VA_ARGS__), \
                                 .numAdditionalEffects = ARRAY_COUNT(EFFECTS_ARR(__VA_ARGS__))
 
 // Per-effect descriptor inside gBattleMoves[move].additionalEffects[].

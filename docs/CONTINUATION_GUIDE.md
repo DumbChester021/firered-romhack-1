@@ -117,7 +117,7 @@ Compat aliases added: `ANIM_TAG_POKEBLOCK` → `ANIM_TAG_SAFARI_BAIT`, `B_ANIM_B
 
 ### Phase 7: Gen 4+ Moves — In Progress
 
-Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First Gen 4 move added: **MOVE_ROOST** (355). Pipeline for adding new moves:
+Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First Gen 4 move added: **MOVE_ROOST** (355). Moves up to **MOVE_POISON_JAB** (364) have had their animations ported. Pipeline for adding new moves:
 
 1. Add `MOVE_X` constant in `include/constants/moves.h`, bump `MOVES_COUNT`
 2. Add name entry in `moves_info.h` Section 1
@@ -135,6 +135,16 @@ The battle script command interpreter has been upgraded to properly accept exact
 - `asm/macros/battle_script.inc` definitions rewritten to closely match RHH's `battler` first conventions.
 - `src/battle_script_commands.c` now has RHH's `CMD_ARGS()` struct unpacking infrastructure.
 - `data/battle_scripts_1.s` physical updates completed for applicable swapped argument macros (`tryhealhalfhealth`).
+
+### Phase 8.5: Gen 4-9 Moves Data Synchronization — Complete
+All 927 Moves from Generation 9 (up to Tera Starstorm) are now perfectly imported into `include/constants/moves.h` and `src/data/moves_info.h` with their RHH baseline properties (Power, Accuracy, PP, Target, Category, Priority, Type) to ensure global index consistency. Unimplemented functional effects are safely stubbed to `EFFECT_HIT` with structurally padded placeholders in `data/battle_anim_scripts.s`. 
+
+### Phase 9: Legacy Effect Macro Purge and Array Finalization — Complete
+The move engine has been completely decoupled from FireRed's legacy switch-case structure and synced 100% with the RHH Gen 9 `.additionalEffects` array system.
+- Replaced dead heuristic dependencies (`EFFECT_HIGH_CRITICAL`, `EFFECT_RECHARGE`, `EFFECT_FAKE_OUT`, `EFFECT_ALWAYS_HIT`) inside `battle_ai_main.c` and `battle_script_commands.c` with native evaluations like `criticalHitStage` and `accuracy == 0`.
+- Upgraded `struct BattleMove` configuration with `thawsUser`, `onChargeTurnOnly`, and `criticalHitStage` inside `include/pokemon.h`.
+- Perfectly synced `include/constants/battle_move_effects.h` with RHH.
+- Decoupled `gBattleScriptsForMoveEffects` from `data/battle_scripts_1.s` into a highly scalable C table: `src/data/battle_scripts_for_move_effects.h`.
 
 ---
 

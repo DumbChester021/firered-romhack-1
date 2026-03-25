@@ -223,6 +223,18 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             return score - 10;
         break;
 
+    case EFFECT_CAPTIVATE:
+        if (defAbility == ABILITY_OBLIVIOUS)
+            return score - 10;
+        {
+            u8 genderAtk = GetGenderFromSpeciesAndPersonality(gBattleMons[battlerAtk].species, gBattleMons[battlerAtk].personality);
+            u8 genderDef = GetGenderFromSpeciesAndPersonality(gBattleMons[battlerDef].species, gBattleMons[battlerDef].personality);
+            if (genderAtk == MON_GENDERLESS || genderDef == MON_GENDERLESS)
+                return score - 10;
+            if (genderAtk == genderDef)
+                return score - 10;
+        }
+        // Fall through
     case EFFECT_SPECIAL_ATTACK_DOWN:
     case EFFECT_SPECIAL_ATTACK_DOWN_2:
         if (gBattleMons[battlerDef].statStages[STAT_SPATK] == MIN_STAT_STAGE)
@@ -325,7 +337,6 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     // HighRiskForDamage group: just check type effectiveness
     case EFFECT_BIDE:
-    case EFFECT_RAZOR_WIND:
     case EFFECT_SUPER_FANG:
     case EFFECT_LEVEL_DAMAGE:
     case EFFECT_PSYWAVE:
@@ -334,13 +345,9 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_RETURN:
     case EFFECT_PRESENT:
     case EFFECT_FRUSTRATION:
-    case EFFECT_SONICBOOM:
     case EFFECT_MIRROR_COAT:
-    case EFFECT_SKULL_BASH:
     case EFFECT_LOW_KICK:
-    case EFFECT_RECHARGE:
     case EFFECT_FOCUS_PUNCH:
-    case EFFECT_SUPERPOWER:
     case EFFECT_ENDEAVOR:
         if (typeFlags & MOVE_RESULT_DOESNT_AFFECT_FOE)
             return score - 10;
@@ -509,10 +516,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_TELEPORT:
         return score - 10;
 
-    case EFFECT_FAKE_OUT:
-        if (!gDisableStructs[battlerAtk].isFirstTurn)
-            return score - 10;
-        break;
+
 
     case EFFECT_STOCKPILE:
         if (gDisableStructs[battlerAtk].stockpileCounter >= 3)
@@ -796,6 +800,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         else if ((Random() % 100) >= 70) score += 2;
         break;
 
+    case EFFECT_CAPTIVATE:
     case EFFECT_SPECIAL_ATTACK_DOWN:
     case EFFECT_SPECIAL_ATTACK_DOWN_2:
         if (defStgSpAtk == DEFAULT_STAT_STAGE)
@@ -1063,12 +1068,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         }
         break;
 
-    case EFFECT_HIGH_CRITICAL:
-        if (!superEff && !notVeryEff && (Random() % 256) >= 128)
-            score += 1;
-        else if ((superEff) && (Random() % 256) >= 128)
-            score += 1;
-        break;
+
 
     case EFFECT_CONFUSE:
     case EFFECT_FLATTER:
@@ -1119,16 +1119,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         }
         break;
 
-    case EFFECT_RECHARGE:
-        if (notVeryEff) score -= 1;
-        if (!faster)
-        {
-            if (atkHpPct <= 40) break;
-            score -= 1;
-        }
-        else if (atkHpPct >= 60)
-            score -= 1;
-        break;
+
 
     case EFFECT_DISABLE:
         if (!faster)
@@ -1151,7 +1142,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
                              lastEffect == EFFECT_SPEED_UP  || lastEffect == EFFECT_SPECIAL_ATTACK_UP ||
                              lastEffect == EFFECT_HAZE || lastEffect == EFFECT_PROTECT ||
                              lastEffect == EFFECT_REST || lastEffect == EFFECT_TOXIC ||
-                             lastEffect == EFFECT_SLEEP || lastEffect == EFFECT_SPLASH)))
+                             lastEffect == EFFECT_SLEEP)))
             {
                 if ((Random() % 256) >= 30) score += 3;
             }
@@ -1207,13 +1198,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         if (defHpPct <= 50) score -= 1;
         break;
 
-    case EFFECT_TRAP:
-        if (defStatus1 & STATUS1_TOXIC_POISON || defStatus2 & STATUS2_CURSED ||
-            gStatuses3[battlerDef] & STATUS3_PERISH_SONG || defStatus2 & STATUS2_INFATUATION)
-        {
-            if ((Random() % 256) >= 128) score += 1;
-        }
-        break;
+
 
     case EFFECT_OHKO:
         // neutral score — AI_CheckBadMove already filtered impossible cases
@@ -1245,7 +1230,6 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     // EFFECT_SOLAR_BEAM and EFFECT_SKULL_BASH are used for two-turn moves.
     case EFFECT_SOLAR_BEAM:
-    case EFFECT_SKULL_BASH:
         if (notVeryEff) score -= 2;
         if (AI_HasMoveEffect(battlerDef, EFFECT_PROTECT)) score -= 2;
         if (atkHpPct <= 38) score -= 1;
@@ -1260,9 +1244,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         }
         break;
 
-    case EFFECT_FAKE_OUT:
-        score += 2;
-        break;
+
 
     case EFFECT_SPIT_UP:
         if (gDisableStructs[battlerAtk].stockpileCounter >= 2 && (Random() % 256) >= 80)
@@ -1323,13 +1305,6 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             if (!gDisableStructs[battlerAtk].isFirstTurn && (Random() % 100) >= 100)
                 score += 1;
         }
-        break;
-
-    case EFFECT_SUPERPOWER:
-        if (notVeryEff || atkStgAtk <= 6) score -= 1;
-        else if (!faster && atkHpPct <= 40) score += 0;
-        else if (faster && atkHpPct < 60) break;
-        else score -= 1;
         break;
 
     case EFFECT_COUNTER:
@@ -1442,13 +1417,13 @@ static s32 AI_SetupFirstTurn(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_ATTACK_UP_2, EFFECT_DEFENSE_UP_2, EFFECT_SPEED_UP_2,
         EFFECT_SPECIAL_ATTACK_UP_2, EFFECT_ACCURACY_UP_2, EFFECT_EVASION_UP_2,
         EFFECT_ATTACK_DOWN_2, EFFECT_DEFENSE_DOWN_2, EFFECT_SPEED_DOWN_2,
-        EFFECT_SPECIAL_ATTACK_DOWN_2, EFFECT_SPECIAL_DEFENSE_DOWN_2,
+        EFFECT_CAPTIVATE, EFFECT_SPECIAL_ATTACK_DOWN_2, EFFECT_SPECIAL_DEFENSE_DOWN_2,
         EFFECT_ACCURACY_DOWN_2, EFFECT_EVASION_DOWN_2,
-        EFFECT_REFLECT, EFFECT_POISON, EFFECT_PARALYZE, EFFECT_SUBSTITUTE,
+        EFFECT_ABSORB, EFFECT_DREAM_EATER, EFFECT_SUBSTITUTE,
         EFFECT_LEECH_SEED, EFFECT_MINIMIZE, EFFECT_CURSE,
         EFFECT_SWAGGER, EFFECT_YAWN, EFFECT_DEFENSE_CURL,
         EFFECT_TORMENT, EFFECT_FLATTER, EFFECT_WILL_O_WISP, EFFECT_INGRAIN,
-        EFFECT_IMPRISON, EFFECT_TEETER_DANCE, EFFECT_TICKLE,
+        EFFECT_IMPRISON, EFFECT_TICKLE,
         EFFECT_COSMIC_POWER, EFFECT_BULK_UP, EFFECT_CALM_MIND, EFFECT_CAMOUFLAGE,
         EFFECT_DRAGON_DANCE, 0xFFFF
     };
@@ -1479,11 +1454,11 @@ static s32 AI_Risky(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
     static const u16 sRiskyEffects[] = {
         EFFECT_SLEEP, EFFECT_EXPLOSION, EFFECT_MIRROR_MOVE, EFFECT_OHKO,
-        EFFECT_HIGH_CRITICAL, EFFECT_CONFUSE, EFFECT_METRONOME,
+        EFFECT_CONFUSE, EFFECT_METRONOME,
         EFFECT_PSYWAVE, EFFECT_COUNTER, EFFECT_DESTINY_BOND,
         EFFECT_SWAGGER, EFFECT_ATTRACT, EFFECT_PRESENT,
-        EFFECT_ALL_STATS_UP_HIT, EFFECT_BELLY_DRUM, EFFECT_MIRROR_COAT,
-        EFFECT_FOCUS_PUNCH, EFFECT_REVENGE, EFFECT_TEETER_DANCE, 0xFFFF
+        EFFECT_BELLY_DRUM, EFFECT_MIRROR_COAT,
+        EFFECT_FOCUS_PUNCH, EFFECT_REVENGE, 0xFFFF
     };
     u16 effect = gBattleMoves[move].effect;
     u8 i;
@@ -1565,10 +1540,10 @@ static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     u8 defHpPct = gBattleMons[battlerDef].hp * 100 / gBattleMons[battlerDef].maxHP;
 
     static const u8 sHighHPDiscouraged[] = {
-        EFFECT_EXPLOSION, EFFECT_RESTORE_HP, EFFECT_ROOST, EFFECT_REST, EFFECT_DESTINY_BOND,
+        EFFECT_EXPLOSION, EFFECT_ROOST, EFFECT_REST, EFFECT_DESTINY_BOND,
         EFFECT_FLAIL, EFFECT_ENDURE, EFFECT_MORNING_SUN, EFFECT_SYNTHESIS,
         EFFECT_MOONLIGHT, EFFECT_SOFTBOILED, EFFECT_MEMENTO, EFFECT_GRUDGE,
-        EFFECT_OVERHEAT, 0xFF
+        0xFF
     };
     static const u8 sMediumHPDiscouraged[] = {
         EFFECT_EXPLOSION,
@@ -1586,7 +1561,7 @@ static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_ATTACK_DOWN_2, EFFECT_DEFENSE_DOWN_2, EFFECT_SPEED_DOWN_2,
         EFFECT_SPECIAL_ATTACK_DOWN_2, EFFECT_SPECIAL_DEFENSE_DOWN_2,
         EFFECT_ACCURACY_DOWN_2, EFFECT_EVASION_DOWN_2,
-        EFFECT_CONVERSION_2, EFFECT_SAFEGUARD, EFFECT_BELLY_DRUM,
+        EFFECT_SAFEGUARD, EFFECT_BELLY_DRUM,
         EFFECT_TICKLE, EFFECT_COSMIC_POWER, EFFECT_BULK_UP,
         EFFECT_CALM_MIND, EFFECT_DRAGON_DANCE, 0xFF
     };
@@ -1597,15 +1572,16 @@ static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_ATTACK_DOWN, EFFECT_DEFENSE_DOWN, EFFECT_SPEED_DOWN,
         EFFECT_SPECIAL_ATTACK_DOWN, EFFECT_SPECIAL_DEFENSE_DOWN,
         EFFECT_ACCURACY_DOWN, EFFECT_EVASION_DOWN,
-        EFFECT_BIDE, EFFECT_CONVERSION, EFFECT_LIGHT_SCREEN, EFFECT_MIST,
-        EFFECT_FOCUS_ENERGY,
+        EFFECT_BIDE, EFFECT_CONVERSION, EFFECT_TOXIC, EFFECT_LIGHT_SCREEN,
+        EFFECT_OHKO, EFFECT_SUPER_FANG, EFFECT_MIST, EFFECT_FOCUS_ENERGY,
+        EFFECT_CONFUSE,
         EFFECT_ATTACK_UP_2, EFFECT_DEFENSE_UP_2, EFFECT_SPEED_UP_2,
         EFFECT_SPECIAL_ATTACK_UP_2, EFFECT_SPECIAL_DEFENSE_UP_2,
         EFFECT_ACCURACY_UP_2, EFFECT_EVASION_UP_2,
         EFFECT_ATTACK_DOWN_2, EFFECT_DEFENSE_DOWN_2, EFFECT_SPEED_DOWN_2,
         EFFECT_SPECIAL_ATTACK_DOWN_2, EFFECT_SPECIAL_DEFENSE_DOWN_2,
         EFFECT_ACCURACY_DOWN_2, EFFECT_EVASION_DOWN_2,
-        EFFECT_RAGE, EFFECT_CONVERSION_2, EFFECT_LOCK_ON,
+        EFFECT_CHARGE, EFFECT_LOCK_ON,
         EFFECT_SAFEGUARD, EFFECT_BELLY_DRUM, EFFECT_PSYCH_UP,
         EFFECT_MIRROR_COAT, EFFECT_SOLAR_BEAM, EFFECT_ERUPTION,
         EFFECT_TICKLE, EFFECT_COSMIC_POWER, EFFECT_BULK_UP,
@@ -1647,7 +1623,7 @@ static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_SPECIAL_ATTACK_DOWN_2, EFFECT_SPECIAL_DEFENSE_DOWN_2,
         EFFECT_ACCURACY_DOWN_2, EFFECT_EVASION_DOWN_2,
         EFFECT_POISON, EFFECT_PARALYZE, EFFECT_PAIN_SPLIT,
-        EFFECT_CONVERSION_2, EFFECT_LOCK_ON, EFFECT_SAFEGUARD,
+        EFFECT_LOCK_ON, EFFECT_SAFEGUARD,
         EFFECT_TICKLE, EFFECT_COSMIC_POWER, EFFECT_BULK_UP,
         EFFECT_CALM_MIND, EFFECT_DRAGON_DANCE, 0xFF
     };

@@ -101,4 +101,8 @@ bool8 MoveHasAdditionalEffectWithChance(u16 move, u16 moveEffect, u8 chance);
 bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect);
 u8    CalcSecondaryEffectChance(u8 battler, const struct AdditionalEffect *additionalEffect);
 
+// Modern RHH Wrappers
+bool32 AreBattlersOfOppositeGender(u8 battler1, u8 battler2);
+u16 GetBattlerAbility(u8 battlerId);
+
 #endif // GUARD_BATTLE_UTIL_H

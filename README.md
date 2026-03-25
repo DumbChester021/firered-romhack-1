@@ -24,6 +24,12 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - Physical/Special/Status category icons displayed on summary screen
 - Battle accuracy (Hustle) and damage tracking use per-move category
 
+### Modern Move Engine (Gen 9 Synced)
+- `gBattleMoves` structural array fully synchronized with the `pokeemerald-expansion` Gen 9 architecture, dropping legacy bitfields for explicit struct fields.
+- 927 moves up to `Tera Starstorm` populated with strictly accurate modern configurations (Power, Accuracy, PP, Priority, Type, and target constants).
+- Complete decoupling of AI heuristics and effect handlers from the rigid FireRed `EFFECT_` switch-cases in favor of dynamic `.additionalEffects` parsing logic!
+- Native configuration flags like `.thawsUser`, `.onChargeTurnOnly`, and `.criticalHitStage` adopted natively over hacky legacy macros.
+
 ### Running Shoes
 - Running shoes enabled from the start (no item pickup required)
 - Running allowed indoors
