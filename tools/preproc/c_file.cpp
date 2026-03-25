@@ -230,11 +230,17 @@ bool CFile::CheckIdentifier(const std::string& ident)
 {
     unsigned int i;
 
+    if (m_pos > 0 && IsIdentifierChar(m_buffer[m_pos - 1]))
+        return false;
+
     for (i = 0; i < ident.length() && m_pos + i < (unsigned)m_size; i++)
         if (ident[i] != m_buffer[m_pos + i])
             return false;
 
-    return (i == ident.length());
+    if (m_pos + i < (unsigned)m_size && IsIdentifierChar(m_buffer[m_pos + i]))
+        return false;
+
+    return true;
 }
 
 std::unique_ptr<unsigned char[]> CFile::ReadWholeFile(const std::string& path, int& size)
@@ -281,10 +287,10 @@ int ExtractData(const std::unique_ptr<unsigned char[]>& buffer, int offset, int 
 
 void CFile::TryConvertIncbin()
 {
-    std::string idents[6] = { "INCBIN_S8", "INCBIN_U8", "INCBIN_S16", "INCBIN_U16", "INCBIN_S32", "INCBIN_U32" };
+    std::string idents[8] = { "INCBIN_S8", "INCBIN_U8", "INCBIN_S16", "INCBIN_U16", "INCBIN_S32", "INCBIN_U32", "DUMMY", "INCBIN_COMP"};
     int incbinType = -1;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 8; i++)
     {
         if (CheckIdentifier(idents[i]))
         {
@@ -297,6 +303,8 @@ void CFile::TryConvertIncbin()
         return;
 
     int size = 1 << (incbinType / 2);
+    if (size > 4)
+        size = 4;
     bool isSigned = ((incbinType % 2) == 0);
 
     long oldPos = m_pos;
@@ -348,6 +356,10 @@ void CFile::TryConvertIncbin()
         }
 
         std::string path(&m_buffer[startPos], m_pos - startPos);
+
+        // INCBIN_COMP; include *compressed* version of file
+        if (incbinType == 7)
+            path = path.append(".smol");
 
         m_pos++;
 

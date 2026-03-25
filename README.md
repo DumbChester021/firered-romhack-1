@@ -29,6 +29,8 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - 927 moves up to `Tera Starstorm` populated with strictly accurate modern configurations (Power, Accuracy, PP, Priority, Type, and target constants).
 - Complete decoupling of AI heuristics and effect handlers from the rigid FireRed `EFFECT_` switch-cases in favor of dynamic `.additionalEffects` parsing logic!
 - Native configuration flags like `.thawsUser`, `.onChargeTurnOnly`, and `.criticalHitStage` adopted natively over hacky legacy macros.
+- Upgraded `CMD_ARGS` macro pipeline to parse RHH syntax exactly (e.g. `tryhealhalfhealth BS_TARGET, BattleScript_AlreadyAtFullHp`).
+- Assembly `preproc` compiler tool upgraded to fully support RHH's Python-style named keyword arguments (`x=0, y=0`), enabling 1:1 animation script ports.
 
 ### Running Shoes
 - Running shoes enabled from the start (no item pickup required)
@@ -110,7 +112,7 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 - Transparent Textboxes
 - Updated Sprites
 - Removal of Last Events replay
-- New Moves (See [docs/NEW_MOVES_LIST.md](docs/NEW_MOVES_LIST.md))
+- New Moves (See [docs/NEW_MOVES_LIST.md](docs/NEW_MOVES_LIST.md)) - ✅ Batch 1 Implemented
 - Items
 - Abilities
 

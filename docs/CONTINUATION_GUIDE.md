@@ -28,8 +28,10 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
 | **Wild AI Initialization Fix** | ✅ Done | Ported RHH scaling AI logic to fix empty trainer flags for wild battles |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
-| **Move Engine Overhaul (Phase 1–5)** | ✅ Done | See section below |
+| **Move Engine Overhaul (Phase 1–9)** | ✅ Done | Structural arrays, additionalEffects, modern flags |
 | **Animation Infrastructure (Phase 1)** | ✅ Done | Opcodes 0x30–0x34, `GetAnimBattlerId`, `gAnimMoveIndex` |
+| **Gen 4+ Moves (Batch 1)** | ✅ Done | Roost, Confide, Round, Captivate, Tera Blast, Giga Impact |
+| **preproc Tool Upgrade** | ✅ Done | C++ compiler tool upgraded for keyword args (`x=0`) |
 
 ---
 
@@ -117,17 +119,14 @@ Compat aliases added: `ANIM_TAG_POKEBLOCK` → `ANIM_TAG_SAFARI_BAIT`, `B_ANIM_B
 
 ### Phase 7: Gen 4+ Moves — In Progress
 
-Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First Gen 4 move added: **MOVE_ROOST** (355). Moves up to **MOVE_POISON_JAB** (364) have had their animations ported. Pipeline for adding new moves:
+Currently ported moves are tracked in [`docs/NEW_MOVES_LIST.md`](NEW_MOVES_LIST.md). First batch of Gen 4+ moves added (Roost, Confide, Round, Captivate, Tera Blast, Giga Impact). Moves up to **MOVE_POISON_JAB** (364) have had their base animations ported to prevent crashes.
 
-1. Add `MOVE_X` constant in `include/constants/moves.h`, bump `MOVES_COUNT`
-2. Add name entry in `moves_info.h` Section 1
-3. Add description string in `moves_info.h` Section 2
-4. Add description table pointer in `moves_info.h` Section 3
-5. Add battle data struct in `moves_info.h` Section 4
-6. Add animation script in `data/battle_anim_scripts.s`
-7. Add `.4byte Move_X` entry in `gBattleAnims_Moves` table
-
-New battle effects (like `EFFECT_ROOST`) require adding to `battle_move_effects.h` and implementing in `battle_script_commands.c` + `data/battle_scripts_1.s`.
+Pipeline for adding new moves:
+1. Ensure the `preproc` tool parses any new `.s` keywords.
+2. Add move effect handler in `battle_script_commands.c` / `data/battle_scripts_*.s`
+3. Add AI logic in `battle_ai_main.c`
+4. Add animation in `data/battle_anim_scripts.s`
+5. Mark move as implemented in `docs/MISSING_GEN4_MOVES.md`
 
 ### Phase 8: `CMD_ARGS()` Macro Refactor — Complete
 
@@ -145,6 +144,12 @@ The move engine has been completely decoupled from FireRed's legacy switch-case 
 - Upgraded `struct BattleMove` configuration with `thawsUser`, `onChargeTurnOnly`, and `criticalHitStage` inside `include/pokemon.h`.
 - Perfectly synced `include/constants/battle_move_effects.h` with RHH.
 - Decoupled `gBattleScriptsForMoveEffects` from `data/battle_scripts_1.s` into a highly scalable C table: `src/data/battle_scripts_for_move_effects.h`.
+
+### Phase 10: preproc Compiler Upgrade — Complete
+Upgraded the FireRed `preproc` compiler tool using RHH's extended `preproc` source.
+- FireRed assembly files can now natively parse RHH's Python-style named keyword arguments (e.g. `x=-10`, `y=0`).
+- This allows 1:1 copy-pasting of complex animation macros (like `create_basic_hitsplat_sprite`) from Emerald to FireRed.
+- **Bug Fix Note**: Applied custom regex word-boundary checks (`IsIdentifierChar`) to the `CFile::CheckIdentifier` scanner inside `tools/preproc/c_file.cpp` to prevent it from maliciously slicing identifiers like `BP_ACTION_DUMMY` during C compilation.
 
 ---
 
