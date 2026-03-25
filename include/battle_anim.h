@@ -248,6 +248,13 @@ void SetSpritePrimaryCoordsFromSecondaryCoords(struct Sprite *sprite);
 void InitSpritePosToAnimTarget(struct Sprite *sprite, bool8 respectMonPicOffsets);
 void InitSpritePosToAnimAttacker(struct Sprite *sprite, bool8 respectMonPicOffsets);
 u8 GetBattlerSide(u8 battlerId);
+
+// Ported from RHH battle.h
+static inline bool8 IsOnPlayerSide(u8 battlerId)
+{
+    return GetBattlerSide(battlerId) == B_SIDE_PLAYER;
+}
+
 u8 GetBattlerPosition(u8 battlerId);
 u8 GetBattlerAtPosition(u8 position);
 bool8 IsBattlerSpritePresent(u8 battlerId);

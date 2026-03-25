@@ -314,6 +314,7 @@ static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
 static void Cmd_setroost(void);
 static void Cmd_jumpifcaptivateaffected(void);
+static void Cmd_tryoverwriteability(void);
 
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
@@ -567,6 +568,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_finishturn,                              //0xF7
     Cmd_setroost,                                //0xF8
     Cmd_jumpifcaptivateaffected,                 //0xF9
+    Cmd_tryoverwriteability,                     //0xFA
 };
 
 struct StatFractions
@@ -9959,3 +9961,29 @@ static void Cmd_setroost(void)
     gStatuses3[gBattlerAttacker] |= STATUS3_ROOST;
     gBattlescriptCurrInstr++;
 }
+
+// RHH port: Cmd_tryoverwriteability — used by EFFECT_WORRY_SEED (Worry Seed, Simple Beam, etc.)
+// Reads the replacement ability from gBattleMoves[gCurrentMove].argument.
+// Gen 3 simplification: no Ability Shield, no Neutralizing Gas, no overwrittenAbility volatile.
+// cantBeOverwritten abilities in Gen 3 FireRed: only ABILITY_TRUANT.
+static void Cmd_tryoverwriteability(void)
+{
+    const u8 *failInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
+    u8 newAbility = (u8)gBattleMoves[gCurrentMove].argument;
+    u8 targetAbility = gBattleMons[gBattlerTarget].ability;
+
+    // Fail if target's ability can't be overwritten (Truant in Gen 3)
+    // or target already has the replacement ability
+    if (targetAbility == ABILITY_TRUANT || targetAbility == newAbility)
+    {
+        gBattlescriptCurrInstr = failInstr;
+    }
+    else
+    {
+        gBattleMons[gBattlerTarget].ability = newAbility;
+        gLastUsedAbility = newAbility;
+        RecordAbilityBattle(gBattlerTarget, newAbility);
+        gBattlescriptCurrInstr += 5;
+    }
+}
+

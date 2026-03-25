@@ -129,7 +129,43 @@ If the move needs new battle logic:
 
 Then implement the battle script in [data/battle_scripts_1.s](file:///mnt/data/Github/prototype/firered-romhack-1/data/battle_scripts_1.s) and/or the C handler in [src/battle_script_commands.c](file:///mnt/data/Github/prototype/firered-romhack-1/src/battle_script_commands.c). This is the most complex part — it requires understanding the battle engine scripting system.
 
+#### Step 5b — Porting Complex Battle Script Commands from RHH
+
+When a move needs a **new opcode/command** (e.g., `tryoverwriteability` for Worry Seed), follow this exact sequence. All 7 files must be touched in order:
+
+| # | File | What to add |
+|---|------|-------------|
+| 1 | [battle_string_ids.h](file:///mnt/data/Github/prototype/firered-romhack-1/include/constants/battle_string_ids.h) | New `STRINGID_*` constant + bump `BATTLESTRINGS_COUNT` |
+| 2 | [battle_message.c](file:///mnt/data/Github/prototype/firered-romhack-1/src/battle_message.c) | String text (`static const u8 sText_*`) + `gBattleStringsTable` entry |
+| 3 | [battle_script.inc](file:///mnt/data/Github/prototype/firered-romhack-1/asm/macros/battle_script.inc) | New `.macro` with next available opcode |
+| 4 | [battle_script_commands.c](file:///mnt/data/Github/prototype/firered-romhack-1/src/battle_script_commands.c) | Forward decl + `gBattleScriptingCommandsTable` entry + function body |
+| 5 | [battle_scripts_for_move_effects.h](file:///mnt/data/Github/prototype/firered-romhack-1/src/data/battle_scripts_for_move_effects.h) | `extern const u8` declaration + effect→script wiring |
+| 6 | [battle_scripts_1.s](file:///mnt/data/Github/prototype/firered-romhack-1/data/battle_scripts_1.s) | Battle script (faithful port from RHH) |
+| 7 | [moves_info.h](file:///mnt/data/Github/prototype/firered-romhack-1/src/data/moves_info.h) | `.effect` + `.argument` fields |
+
+**Concrete example — Worry Seed (`tryoverwriteability`, opcode 0xFA):**
+
+1. **String ID:** `STRINGID_PKMNACQUIREDABILITY` = 386, `BATTLESTRINGS_COUNT` → 387
+2. **String text:** `sText_PkmnAcquiredAbility` = `"{B_DEF_NAME_WITH_PREFIX} acquired\n{B_LAST_ABILITY}!"`
+3. **Macro:** `.byte 0xfa` + `.4byte \failInstr`
+4. **C handler:** `Cmd_tryoverwriteability` — reads `gBattleMoves[gCurrentMove].argument` for the replacement ability, checks `ABILITY_TRUANT` as cantBeOverwritten, sets `gLastUsedAbility` + `RecordAbilityBattle` on success
+5. **Effect wiring:** `[EFFECT_WORRY_SEED] = BattleScript_EffectWorrySeed` (was stubbed as `BattleScript_EffectHit`)
+6. **Battle script:** Faithful port of RHH's `BattleScript_EffectOverwriteAbility` — omit only FRLG-absent Gen 5+/6+/8+ commands (ability popups, primal weather, neutralizing gas)
+7. **Move data:** `.effect = EFFECT_WORRY_SEED`, `.argument = ABILITY_INSOMNIA`
+
+> [!IMPORTANT]
+> **Finding available opcodes:** The command table in `gBattleScriptingCommandsTable` ends at the last entry. Count from 0x00 to find the next slot. Current last opcode: **0xFA** (`tryoverwriteability`).
+>
+> **FireRed string placeholders:** Use `{B_LAST_ABILITY}` (resolves via `gAbilityNames[gLastUsedAbility]`), NOT `{B_BUFF1}` for ability names. Set `gLastUsedAbility` in your C handler or use `recordlastability` in the battle script.
+>
+> **FireRed vs RHH command mapping:**
+> - `recordability BS_TARGET` → `recordlastability BS_TARGET` (set `gLastUsedAbility` in C handler first)
+> - `flushtextbox` → `call BattleScript_FlushMessageBox`
+> - `copybyte` ✓ exists natively
+> - Ability popups, `trytoclearprimalweather`, `tryrevertweatherform`, `tryendneutralizinggas` → omit (FRLG-absent)
+
 ---
+
 
 ### Step 6 — Assign to Pokémon Learnsets
 

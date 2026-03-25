@@ -6,7 +6,7 @@
 #include "trig.h"
 
 static void AnimBonemerangProjectile(struct Sprite *sprite);
-static void AnimBoneHitProjectile(struct Sprite *sprite);
+void AnimBoneHitProjectile(struct Sprite *sprite);
 void AnimDirtScatter(struct Sprite *sprite);
 void AnimMudSportDirt(struct Sprite *sprite);
 void AnimDirtPlumeParticle(struct Sprite *sprite);
@@ -180,7 +180,7 @@ static void AnimBonemerangProjectile_End(struct Sprite *sprite)
 // arg 2: target x pixel offset
 // arg 3: target y pixel offset
 // arg 4: duration
-static void AnimBoneHitProjectile(struct Sprite *sprite)
+void AnimBoneHitProjectile(struct Sprite *sprite)
 {
     InitSpritePosToAnimTarget(sprite, TRUE);
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)

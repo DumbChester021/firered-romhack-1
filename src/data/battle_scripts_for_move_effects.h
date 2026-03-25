@@ -99,6 +99,7 @@ extern const u8 BattleScript_EffectRoost[];
 extern const u8 BattleScript_EffectSafeguard[];
 extern const u8 BattleScript_EffectSandstorm[];
 extern const u8 BattleScript_EffectSketch[];
+extern const u8 BattleScript_EffectShellSmash[];
 extern const u8 BattleScript_EffectSkillSwap[];
 extern const u8 BattleScript_EffectSleep[];
 extern const u8 BattleScript_EffectSleepTalk[];
@@ -133,6 +134,7 @@ extern const u8 BattleScript_EffectUproar[];
 extern const u8 BattleScript_EffectWaterSport[];
 extern const u8 BattleScript_EffectWillOWisp[];
 extern const u8 BattleScript_EffectWish[];
+extern const u8 BattleScript_EffectWorrySeed[];
 extern const u8 BattleScript_EffectYawn[];
 
 const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
@@ -266,7 +268,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_STOCKPILE] = BattleScript_EffectStockpile,
     [EFFECT_SPIT_UP] = BattleScript_EffectSpitUp,
     [EFFECT_SWALLOW] = BattleScript_EffectSwallow,
-    [EFFECT_WORRY_SEED] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectWorrySeed)
+    [EFFECT_WORRY_SEED] = BattleScript_EffectWorrySeed,
     [EFFECT_HAIL] = BattleScript_EffectHail,
     [EFFECT_TORMENT] = BattleScript_EffectTorment,
     [EFFECT_FLATTER] = BattleScript_EffectFlatter,
@@ -373,7 +375,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_SOAK] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSoak)
     [EFFECT_GROWTH] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectGrowth)
     [EFFECT_LAST_RESORT] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectLastResort)
-    [EFFECT_SHELL_SMASH] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectShellSmash)
+    [EFFECT_SHELL_SMASH] = BattleScript_EffectShellSmash,
     [EFFECT_SHIFT_GEAR] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectShiftGear)
     [EFFECT_DEFENSE_UP_3] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectDefenseUp3)
     [EFFECT_NOBLE_ROAR] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectNobleRoar)

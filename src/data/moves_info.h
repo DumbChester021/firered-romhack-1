@@ -8129,7 +8129,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
 
     [MOVE_WORRY_SEED] =
     {
-        .effect = EFFECT_HIT,
+        .effect = EFFECT_WORRY_SEED,
+        .argument = ABILITY_INSOMNIA,
         .power = 0,
         .type = TYPE_GRASS,
         .accuracy = 100,
@@ -8675,6 +8676,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .category = SPLIT_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
+            .chance = 10,
+        },
+        {
+            .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 10,
         }),
     },
@@ -9826,7 +9831,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
 
     [MOVE_SHELL_SMASH] =
     {
-        .effect = EFFECT_HIT,
+        .effect = EFFECT_SHELL_SMASH,
         .power = 0,
         .type = TYPE_NORMAL,
         .accuracy = 0,

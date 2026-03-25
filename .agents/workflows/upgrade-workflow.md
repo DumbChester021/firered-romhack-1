@@ -82,10 +82,11 @@ Before starting any task:
 4. Locate relevant files in project.
 5. Plan modification.
 6. Implement minimal change. Port missing dependencies 1:1 if necessary.
-7. Verify build logic (`make -j$(nproc)`).
-8. Verify data integrity (`python3 tools/verify_data.py`).
-9. Update Continuation Document & Docs.
-10. Commit & Push changes.
+7. Clean build artifacts: `make clean`.
+8. Verify build logic (`make -j$(nproc)`).
+9. Verify data integrity (`python3 tools/verify_data.py`).
+10. Update Continuation Document & Docs.
+11. Commit & Push changes (only when told to).
 
 Never start coding without checking the Continuation Document first.
 
