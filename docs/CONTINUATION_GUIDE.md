@@ -28,10 +28,11 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
 | **Wild AI Initialization Fix** | ✅ Done | Ported RHH scaling AI logic to fix empty trainer flags for wild battles |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
-| **Move Engine Overhaul (Phase 1–9)** | ✅ Done | Structural arrays, additionalEffects, modern flags |
+| **Move Engine Overhaul (Phase 1–12)** | ✅ Done | Structural arrays, additionalEffects, modern flags, macros |
 | **Animation Infrastructure (Phase 1)** | ✅ Done | Opcodes 0x30–0x34, `GetAnimBattlerId`, `gAnimMoveIndex` |
 | **Gen 4+ Moves (Batches 1 & 2)** | ✅ Done | Roost, Confide, Round, Captivate, Tera Blast, Giga Impact, Bulldoze, Trailblaze, Work Up, Power-Up Punch, Zen Headbutt |
 | **preproc Tool Upgrade** | ✅ Done | C++ compiler tool upgraded for keyword args (`x=0`) |
+| **Battle Script Effect Hooks** | ✅ Done | Restored Gen 1 functionality for Two-Turn moves and basic stat modifications. |
 
 ---
 
@@ -157,6 +158,11 @@ The codebase has been updated to perfectly compile with zero warnings under mode
 - **`-Waggressive-loop-optimizations`**: Flattened `gCanvasPixels` in `image_processing_effects.c` to a 1D pointer matrix to fix bounds checking errors. Stripped decompilation artifacts triggering index `-1` OOB access in `battle_interface.c` (`ballIconSpritesIds`).
 - **`-Wattribute-alias`**: Resolved incompatible 2-arg to 3-arg type signature aliases (`GetMonData2`, `GetBoxMonData2`) in `pokemon.c` by writing explicit wrapper functions.
 - **`-Wstringop-overflow`**: Safely guarded struct bounds in `SetBoxMonData` (`MON_DATA_PP1`...`PP4`) natively without pragmas.
+
+### Phase 12: Battle Script Effect Hooks Restoration — Complete
+Restored 1:1 functional parity with RHH for missing battle scripts that were previously stubbed to `EFFECT_HIT`. 
+- **Two-Turn Attacks:** Hooked up `EFFECT_SEMI_INVULNERABLE` and `EFFECT_SOLAR_BEAM` to their respective assembly scripts, ensuring moves like Fly, Dig, and Solar Beam correctly charge instead of striking instantly.
+- **Missing Stat Modifiers:** Ported native assembly handlers for missing stat manipulations like `EFFECT_SPECIAL_ATTACK_DOWN` (Confide), `EFFECT_SPEED_UP`, and `EFFECT_SPECIAL_ATTACK_DOWN_2` (Eerie Impulse) into `data/battle_scripts_1.s` and correctly wired them in `src/data/battle_scripts_for_move_effects.h`.
 
 ---
 
