@@ -2500,6 +2500,13 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (gBattleMoves[gCurrentMove].effect == EFFECT_EXPLOSION)
         defense /= 2;
 
+    // Assurance power doubles if the target has already taken damage this turn
+    if (gBattleMoves[gCurrentMove].effect == EFFECT_ASSURANCE)
+    {
+        if (gSpecialStatuses[battlerIdDef].physicalDmg != 0 || gSpecialStatuses[battlerIdDef].specialDmg != 0 || gProtectStructs[battlerIdDef].confusionSelfDmg)
+            gBattleMovePower *= 2;
+    }
+
     if (gBattleMoves[gCurrentMove].category == SPLIT_PHYSICAL)
     {
         if (gCritMultiplier == 2)

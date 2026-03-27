@@ -1392,3 +1392,8 @@
 	.macro jumpifnotbattletype flags:req, jumpInstr:req
 	jumpifword CMP_NO_COMMON_BITS, gBattleTypeFlags, \flags, \jumpInstr
 	.endm
+
+	.macro suckerpunchcheck failInstr:req
+	various BS_ATTACKER, VARIOUS_SUCKER_PUNCH_CHECK
+	.4byte \failInstr
+	.endm

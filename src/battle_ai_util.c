@@ -72,6 +72,25 @@ bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 move)
     return spdAtk >= spdDef;
 }
 
+// AI_IsSlower: Extrapolates AI_WhoStrikesFirst from RHH context for predictive priority evaluations.
+// Returns TRUE if battlerAtk definitively strikes after battlerDef.
+bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef)
+{
+    s8 priorityAtk = (moveAtk != 0) ? gBattleMoves[moveAtk].priority : 0;
+    s8 priorityDef = (moveDef != 0) ? gBattleMoves[moveDef].priority : 0;
+    u16 spdAtk = gBattleMons[battlerAtk].speed;
+    u16 spdDef = gBattleMons[battlerDef].speed;
+
+    if (priorityAtk > priorityDef)
+        return FALSE;
+    if (priorityAtk < priorityDef)
+        return TRUE;
+
+    // In a speed tie, the result is technically a coinflip, but for AI safety logic
+    // we assume it is NOT definitively slower unless speed is strictly less.
+    return spdAtk < spdDef;
+}
+
 // AI_HasMoveEffect: Returns TRUE if any of battlerAtk's current moves have the given effect ID.
 bool8 AI_HasMoveEffect(u8 battlerAtk, u16 effect)
 {
@@ -733,4 +752,52 @@ bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect)
             return TRUE;
     }
     return FALSE;
+}
+
+// =============================================================================
+// AI Helpers for Gen 4+ Moves (RHH Faithful Ports)
+// =============================================================================
+
+bool8 HasMoveWithCategory(u8 battler, u8 category)
+{
+    u8 i;
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u16 move = gBattleMons[battler].moves[i];
+        if (move != MOVE_NONE && move != MOVE_UNAVAILABLE && gBattleMoves[move].category == category)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 BattlerStatCanRise(u8 battler, u8 stat)
+{
+    if ((gBattleMons[battler].statStages[stat] < MAX_STAT_STAGE && gBattleMons[battler].ability != ABILITY_CONTRARY)
+      || (gBattleMons[battler].ability == ABILITY_CONTRARY && gBattleMons[battler].statStages[stat] > MIN_STAT_STAGE))
+        return TRUE;
+    return FALSE;
+}
+
+u32 GetBattlerSideSpeedAverage(u8 battler)
+{
+    u32 totalSpeed = 0;
+    u32 numAlive = 0;
+    u8 side = GetBattlerSide(battler);
+    struct Pokemon *party = (side == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
+    u8 i;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&party[i], MON_DATA_SPECIES, NULL) != SPECIES_NONE
+         && GetMonData(&party[i], MON_DATA_HP, NULL) > 0)
+        {
+            totalSpeed += GetMonData(&party[i], MON_DATA_SPEED, NULL);
+            numAlive++;
+        }
+    }
+
+    if (numAlive == 0)
+        return 0;
+
+    return totalSpeed / numAlive;
 }

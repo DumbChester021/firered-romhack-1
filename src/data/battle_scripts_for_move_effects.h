@@ -145,6 +145,7 @@ extern const u8 BattleScript_EffectWillOWisp[];
 extern const u8 BattleScript_EffectWish[];
 extern const u8 BattleScript_EffectWorrySeed[];
 extern const u8 BattleScript_EffectYawn[];
+extern const u8 BattleScript_EffectSuckerPunch[];
 
 const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
 {
@@ -361,7 +362,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_STICKY_WEB] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectStickyWeb)
     [EFFECT_METAL_BURST] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectMetalBurst)
     [EFFECT_LUCKY_CHANT] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectLuckyChant)
-    [EFFECT_SUCKER_PUNCH] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSuckerPunch)
+    [EFFECT_SUCKER_PUNCH] = BattleScript_EffectSuckerPunch,
     [EFFECT_SIMPLE_BEAM] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSimpleBeam)
     [EFFECT_ENTRAINMENT] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectEntrainment)
     [EFFECT_HEAL_PULSE] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectHealPulse)

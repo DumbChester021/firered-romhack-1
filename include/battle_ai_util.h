@@ -24,6 +24,9 @@ s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness)
 // Returns TRUE if battlerAtk moves before battlerDef for the given move (accounts for priority).
 bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 move);
 
+// Extrapolates AI_WhoStrikesFirst logic to strictly evaluate predict priority safely.
+bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef);
+
 // Returns TRUE if any of battlerAtk's moves have the given effect ID.
 bool8 AI_HasMoveEffect(u8 battlerAtk, u16 effect);
 
@@ -54,5 +57,9 @@ bool8 AI_IsTrickRoomActive(void);
 // RHH source: pokeemerald-expansion/include/battle_ai_util.h
 // Returns TRUE if any of battlerId's moves have additionalEffects containing moveEffect.
 bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect);
+
+bool8 HasMoveWithCategory(u8 battler, u8 category);
+bool8 BattlerStatCanRise(u8 battler, u8 stat);
+u32 GetBattlerSideSpeedAverage(u8 battler);
 
 #endif // GUARD_BATTLE_AI_UTIL_H

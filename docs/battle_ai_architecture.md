@@ -99,6 +99,12 @@ bool8 AI_HasMoveEffect(u8 battler, u8 effect);
 
 // Count alive party members not currently on field
 u8 AI_CountAlivePokemon(u8 battler);
+
+// Predicts speed order safely handling trick room (if ported) and switch priorities
+bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef);
+
+// Checks if battler stat stages can be increased depending on abilities like Contrary
+bool8 BattlerStatCanRise(u8 battler, u8 stat);
 ```
 
 ### Gen 4+ Extension Stubs

@@ -89,6 +89,7 @@
 #define VARIOUS_RETURN_OPPONENT_MON2            10
 #define VARIOUS_CHECK_POKEFLUTE                 11
 #define VARIOUS_WAIT_FANFARE                    12
+#define VARIOUS_SUCKER_PUNCH_CHECK              13
 
 // Cmd_manipulatedmg
 #define DMG_CHANGE_SIGN            0
@@ -138,6 +139,7 @@
 #define MOVEEND_UPDATE_LAST_MOVES               14
 #define MOVEEND_MIRROR_MOVE                     15
 #define MOVEEND_NEXT_TARGET                     16
-#define MOVEEND_COUNT                           17
+#define MOVEEND_RECOIL                          17
+#define MOVEEND_COUNT                           18
 
 #endif // GUARD_CONSTANTS_BATTLE_SCRIPT_COMMANDS_H

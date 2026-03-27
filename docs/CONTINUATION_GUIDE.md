@@ -24,8 +24,10 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Reusable TMs** | ✅ Done | Infinite-use (Gen 5+), sell/dupe blocked |
 | **Overworld Poison** | ✅ Done | Configurable via `OW_POISON_DAMAGE` in `include/config.h` |
 | **pret Bug Fixes** | ✅ Done | All `#ifdef BUGFIX` / `#ifdef UBFIX` enabled (~25 bugs) |
-| **Battle AI: C Port** | ✅ Done | ASM VM replaced with C dispatch table (9 flags) |
-| **Battle AI: Smart Switching** | ✅ Done | Faithful RHH port, Gen 3 mechanics |
+| **Battle AI: C Port** | Phase 4 | All 9 AI flags ported from ASM to C | ✅ Done |
+| Phase 4b | Smart switching — faithful RHH port + Gen 3 mechanics fully implemented | ✅ Done |
+| Phase 4c | Gen 4+ AI Heuristics (Sucker Punch, Shell Smash, Tailwind, etc.) | ✅ Done |
+| Phase 5 | Automated AI test framework (in-ROM DSL from RHH) | ⏳ Pending |9 prediction/setup heuristics |
 | **Wild AI Initialization Fix** | ✅ Done | Ported RHH scaling AI logic to fix empty trainer flags for wild battles |
 | **Modern compiler default** | ✅ Done | `arm-none-eabi-gcc` default, no `MODERN=1` needed |
 | **Move Engine Overhaul (Phase 1–12)** | ✅ Done | Structural arrays, additionalEffects, modern flags, macros |

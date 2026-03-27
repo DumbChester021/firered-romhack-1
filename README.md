@@ -28,6 +28,7 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - `gBattleMoves` structural array fully synchronized with the `pokeemerald-expansion` Gen 9 architecture, dropping legacy bitfields for explicit struct fields.
 - 927 moves up to `Tera Starstorm` populated with strictly accurate modern configurations (Power, Accuracy, PP, Priority, Type, and target constants).
 - Complete decoupling of AI heuristics and effect handlers from the rigid FireRed `EFFECT_` switch-cases in favor of dynamic `.additionalEffects` parsing logic!
+- Native C port of Gen 9 RHH AI heuristics for modern moves (Sucker Punch, Shell Smash, Tailwind, Acrobatics, Bug Bite) fully integrated into `AI_CheckBadMove` and `AI_CheckViability`.
 - Native configuration flags like `.thawsUser`, `.onChargeTurnOnly`, and `.criticalHitStage` adopted natively over hacky legacy macros.
 - Upgraded `CMD_ARGS` macro pipeline to parse RHH syntax exactly (e.g. `tryhealhalfhealth BS_TARGET, BattleScript_AlreadyAtFullHp`).
 - Assembly `preproc` compiler tool upgraded to fully support RHH's Python-style named keyword arguments (`x=0, y=0`), enabling 1:1 animation script ports.
@@ -81,8 +82,12 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 - **Mystery Gift** — display bug (`mystery_gift_show_card.c`)
 - **Trainer class lookup** — class lookup bug (`trainer_class_lookups.h`)
 - **Party menu memory leak** — switching tilemap buffers never freed (`party_menu.c`) *(additionally fixed — was only commented)*
+- **AI Heuristics**
+  - `AI_CountAlivePokemon`: Counts alive party members not currently on field.
+  - `AI_IsSlower`: Predicts speed order safely handling trick room (if ported) and switch priorities.
+  - `BattlerStatCanRise`: Checks if battler stat stages can be increased depending on abilities like Contrary.
 
-### Build System
+### Gen 4+ Extension Stubstem
 - Modern compiler (`arm-none-eabi-gcc`) is now the default — no need to pass `MODERN=1`
 - Legacy `agbcc` build still available via `make MODERN=0` if needed
 

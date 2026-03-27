@@ -13,6 +13,7 @@
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/pokemon.h"
+#include "item.h"
 
 // Forward declarations for all AI flag functions.
 static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score);
@@ -288,7 +289,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     case EFFECT_ROAR:
         if (AI_CountAlivePokemon(battlerDef) == 0)
-            return score - 10;
+            score -= 10;
         if (defAbility == ABILITY_SUCTION_CUPS)
             return score - 10;
         break;
@@ -562,6 +563,8 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_KNOCK_OFF:
         if (defAbility == ABILITY_STICKY_HOLD)
             return score - 10;
+        if (effect == EFFECT_TRICK && AI_HasMoveEffect(battlerAtk, EFFECT_ACROBATICS))
+            return score - 10;
         break;
 
     case EFFECT_INGRAIN:
@@ -637,11 +640,34 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             return score - 10;
         break;
 
-    case EFFECT_SHELL_SMASH:
-        if (gBattleMons[battlerAtk].statStages[STAT_ATK] == MAX_STAT_STAGE
-         && gBattleMons[battlerAtk].statStages[STAT_SPATK] == MAX_STAT_STAGE
-         && gBattleMons[battlerAtk].statStages[STAT_SPEED] == MAX_STAT_STAGE)
+    case EFFECT_SUCKER_PUNCH:
+        if ((HasMoveWithCategory(battlerDef, SPLIT_STATUS) && (Random() % 100 < 50))
+         || AI_IsSlower(battlerAtk, battlerDef, move, 0))
             return score - 10;
+        break;
+
+    case EFFECT_TAILWIND:
+        if (gSideTimers[GET_BATTLER_SIDE(battlerAtk)].tailwindTimer != 0)
+            return score - 10;
+        break;
+
+    case EFFECT_SHELL_SMASH:
+        if (atkAbility == ABILITY_CONTRARY)
+        {
+            if (!BattlerStatCanRise(battlerAtk, STAT_DEF))
+                return score - 10;
+            else if (!BattlerStatCanRise(battlerAtk, STAT_SPDEF))
+                return score - 8;
+        }
+        else
+        {
+            if (!BattlerStatCanRise(battlerAtk, STAT_ATK) || !HasMoveWithCategory(battlerAtk, SPLIT_PHYSICAL))
+                return score - 10;
+            else if (!BattlerStatCanRise(battlerAtk, STAT_SPATK) || !HasMoveWithCategory(battlerAtk, SPLIT_SPECIAL))
+                return score - 8;
+            else if (!BattlerStatCanRise(battlerAtk, STAT_SPEED))
+                return score - 6;
+        }
         break;
     }
 
@@ -948,6 +974,10 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_MORNING_SUN:
     case EFFECT_SYNTHESIS:
     case EFFECT_MOONLIGHT:
+        if (atkHpPct >= 90)
+            return score - 10;
+        break;
+
     case EFFECT_SOFTBOILED:
         // Bad if: weather hurts, full HP, or slower than target
         if (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_RAIN | B_WEATHER_SANDSTORM))
@@ -1380,6 +1410,12 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         else
             score -= 1;
         break;
+    }
+
+    if (MoveHasAdditionalEffect(move, MOVE_EFFECT_BUG_BITE))
+    {
+        if (ItemId_GetPocket(gBattleMons[battlerDef].item) == POCKET_BERRY_POUCH)
+            score += 2;
     }
 
     return score;

@@ -7920,15 +7920,15 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
 
     [MOVE_ASSURANCE] =
     {
-        .effect = EFFECT_HIT,
+        .effect = EFFECT_ASSURANCE,
         .power = 60,
         .type = TYPE_DARK,
         .accuracy = 100,
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .makesContact = TRUE,
     },
 
     [MOVE_EMBARGO] =
@@ -8143,15 +8143,15 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
 
     [MOVE_SUCKER_PUNCH] =
     {
-        .effect = EFFECT_HIT,
+        .effect = EFFECT_SUCKER_PUNCH,
         .power = 70,
         .type = TYPE_DARK,
         .accuracy = 100,
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
-        .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .makesContact = TRUE,
     },
 
     [MOVE_TOXIC_SPIKES] =
@@ -8270,10 +8270,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_USER,
         .priority = 0,
-        .ignoresProtect = TRUE,
-        .snatchAffected = TRUE,
-        .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
+        .snatchAffected = TRUE,
+        .ignoresProtect = TRUE,
+        .mirrorMoveBanned = TRUE,
     },
 
     [MOVE_POISON_JAB] =
@@ -9074,8 +9074,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .makesContact = TRUE,
+        ADDITIONAL_EFFECTS({
+            .moveEffect = MOVE_EFFECT_BUG_BITE,
+        }),
     },
 
     [MOVE_CHARGE_BEAM] =
@@ -10834,8 +10837,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .soundMove = TRUE,
         .category = SPLIT_SPECIAL,
+        .soundMove = TRUE,
     },
 
     [MOVE_PARTING_SHOT] =

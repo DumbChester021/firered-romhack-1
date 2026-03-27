@@ -31,7 +31,7 @@ gBattleAnims_Moves::
 	.4byte Move_ICE_PUNCH
 	.4byte Move_THUNDER_PUNCH
 	.4byte Move_SCRATCH
-	.4byte Move_VICE_GRIP
+	.4byte Move_NONE
 	.4byte Move_GUILLOTINE
 	.4byte Move_RAZOR_WIND
 	.4byte Move_SWORDS_DANCE
@@ -156,7 +156,7 @@ gBattleAnims_Moves::
 	.4byte Move_AMNESIA
 	.4byte Move_KINESIS
 	.4byte Move_SOFT_BOILED
-	.4byte Move_HI_JUMP_KICK
+	.4byte Move_NONE
 	.4byte Move_GLARE
 	.4byte Move_DREAM_EATER
 	.4byte Move_POISON_GAS
@@ -205,7 +205,7 @@ gBattleAnims_Moves::
 	.4byte Move_PROTECT
 	.4byte Move_MACH_PUNCH
 	.4byte Move_SCARY_FACE
-	.4byte Move_FAINT_ATTACK
+	.4byte Move_NONE
 	.4byte Move_SWEET_KISS
 	.4byte Move_BELLY_DRUM
 	.4byte Move_SLUDGE_BOMB
@@ -285,7 +285,7 @@ gBattleAnims_Moves::
 	.4byte Move_MEMENTO
 	.4byte Move_FACADE
 	.4byte Move_FOCUS_PUNCH
-	.4byte Move_SMELLING_SALT
+	.4byte Move_NONE
 	.4byte Move_FOLLOW_ME
 	.4byte Move_NATURE_POWER
 	.4byte Move_CHARGE
@@ -375,17 +375,68 @@ gBattleAnims_Moves::
 	.4byte Move_WATER_PULSE
 	.4byte Move_DOOM_DESIRE
 	.4byte Move_PSYCHO_BOOST
-	.4byte Move_ROOST                       @ MOVE_ROOST (355) — Gen 4
+	.4byte Move_ROOST
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_FAINT_ATTACK
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_FAINT_ATTACK
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
 	.4byte Move_FLARE_BLITZ
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_AGILITY
+	.4byte Move_POISON_JAB
+	.4byte Move_DARK_PULSE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_SEED_BOMB
+	.4byte Move_NONE
+	.4byte Move_X_SCISSOR
+	.4byte Move_BUG_BUZZ
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_NONE
+	.4byte Move_ENERGY_BALL
 	.4byte Move_BRAVE_BIRD
 	.4byte Move_EARTH_POWER
-	.4byte Move_BUG_BUZZ
-	.4byte Move_DARK_PULSE
-	.4byte Move_ENERGY_BALL
-	.4byte Move_SEED_BOMB
-	.4byte Move_X_SCISSOR
-	.4byte Move_POISON_JAB
 	.4byte Move_NONE
+	.4byte Move_GIGA_IMPACT
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -408,25 +459,23 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_WorrySeed          @ MOVE_WORRY_SEED (388)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_CAPTIVATE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_BITE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_AquaTail            @ MOVE_AQUA_TAIL (401)
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_AirSlash            @ MOVE_AIR_SLASH (403)
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_DragonPulse         @ MOVE_DRAGON_PULSE (406)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -436,7 +485,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_GIGA_IMPACT                 @ MOVE_GIGA_IMPACT (416)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -444,13 +492,10 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_FireFang            @ MOVE_FIRE_FANG (424)
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_ZenHeadbutt             @ MOVE_ZEN_HEADBUTT (428)
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_FlashCannon         @ MOVE_FLASH_CANNON (430)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -458,20 +503,20 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_PowerWhip           @ MOVE_POWER_WHIP (438)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_CAPTIVATE                   @ MOVE_CAPTIVATE (445)
 	.4byte Move_NONE
+	.4byte Move_LOW_KICK
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_ROUND
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -516,7 +561,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_ROUND                       @ MOVE_ROUND (496)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -524,7 +568,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_ShellSmash          @ MOVE_SHELL_SMASH (504)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -537,15 +580,12 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_Inferno             @ MOVE_INFERNO (517)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_Bulldoze                @ MOVE_BULLDOZE (523)
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_WorkUp                  @ MOVE_WORK_UP (526)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -554,6 +594,7 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_HYPER_VOICE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -569,6 +610,7 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_CONFIDE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -587,12 +629,12 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_SPARK
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_PetalBlizzard      @ MOVE_PETAL_BLIZZARD (572)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -610,7 +652,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_CONFIDE                     @ MOVE_CONFIDE (590)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -631,7 +672,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_PowerUpPunch            @ MOVE_POWER_UP_PUNCH (612)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -759,6 +799,7 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte Move_TERA_BLAST
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -782,7 +823,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte gBattleAnimMove_WaveCrash           @ MOVE_WAVE_CRASH (762)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -791,46 +831,6 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_TERA_BLAST                  @ MOVE_TERA_BLAST (779)
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte gBattleAnimMove_Trailblaze              @ MOVE_TRAILBLAZE (811)
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE

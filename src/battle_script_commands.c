@@ -2773,6 +2773,34 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 BattleScriptPush(gBattlescriptCurrInstr + 1);
                 gBattlescriptCurrInstr = BattleScript_SAtkDown2;
                 break;
+            case MOVE_EFFECT_BUG_BITE:
+                if (gBattleMons[gBattlerTarget].item != ITEM_NONE
+                 && ItemId_GetPocket(gBattleMons[gBattlerTarget].item) == POCKET_BERRY_POUCH
+                 && gBattleMons[gBattlerTarget].ability != ABILITY_STICKY_HOLD)
+                {
+                    u16 *changedItem = &gBattleStruct->changedItems[gBattlerAttacker];
+                    gLastUsedItem = *changedItem = gBattleMons[gBattlerTarget].item;
+                    gBattleMons[gBattlerTarget].item = ITEM_NONE;
+
+                    gActiveBattler = gBattlerAttacker;
+                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_HELDITEM_BATTLE, 0, sizeof(gLastUsedItem), &gLastUsedItem);
+                    MarkBattlerForControllerExec(gBattlerAttacker);
+
+                    gActiveBattler = gBattlerTarget;
+                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_HELDITEM_BATTLE, 0, sizeof(gBattleMons[gBattlerTarget].item), &gBattleMons[gBattlerTarget].item);
+                    MarkBattlerForControllerExec(gBattlerTarget);
+
+                    BattleScriptPush(gBattlescriptCurrInstr + 1);
+                    gBattlescriptCurrInstr = BattleScript_ItemSteal;
+
+                    *(u8 *)((u8 *)(&gBattleStruct->choicedMove[gBattlerTarget]) + 0) = 0;
+                    *(u8 *)((u8 *)(&gBattleStruct->choicedMove[gBattlerTarget]) + 1) = 0;
+                }
+                else
+                {
+                    gBattlescriptCurrInstr++;
+                }
+                break;
             }
         }
     }
@@ -4382,6 +4410,21 @@ static void Cmd_moveend(void)
                 {
                     gHitMarker |= HITMARKER_NO_ATTACKSTRING;
                 }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_RECOIL: // dynamic recoil for modern moves
+            if (gBattleMoves[gCurrentMove].recoil > 0
+                && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+                && gBattleMons[gBattlerAttacker].hp != 0
+                && gHpDealt != 0)
+            {
+                gBattleMoveDamage = (gHpDealt * gBattleMoves[gCurrentMove].recoil) / 100;
+                if (gBattleMoveDamage == 0)
+                    gBattleMoveDamage = 1;
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = BattleScript_MoveEffectRecoil;
+                effect = TRUE;
             }
             gBattleScripting.moveendState++;
             break;
@@ -6264,6 +6307,17 @@ static void Cmd_various(void)
             gBattleCommunication[5] = 1;
         }
         break;
+    case VARIOUS_SUCKER_PUNCH_CHECK:
+    {
+        const u8 *failInstr = T1_READ_PTR(gBattlescriptCurrInstr + 3);
+        if (GetBattlerTurnOrderNum(gBattlerAttacker) > GetBattlerTurnOrderNum(gBattlerTarget))
+            gBattlescriptCurrInstr = failInstr;
+        else if (gBattleMoves[gChosenMoveByBattler[gBattlerTarget]].category == SPLIT_STATUS)
+            gBattlescriptCurrInstr = failInstr;
+        else
+            gBattlescriptCurrInstr += 7;
+        return;
+    }
     case VARIOUS_WAIT_FANFARE:
         if (!IsFanfareTaskInactive())
             return;
