@@ -19,6 +19,7 @@ extern const u8 BattleScript_EffectBrickBreak[];
 extern const u8 BattleScript_EffectBulkUp[];
 extern const u8 BattleScript_EffectCalmMind[];
 extern const u8 BattleScript_EffectCamouflage[];
+extern const u8 BattleScript_EffectCaptivate[];
 extern const u8 BattleScript_EffectCharge[];
 extern const u8 BattleScript_EffectConfuse[];
 extern const u8 BattleScript_EffectConversion[];
@@ -96,8 +97,10 @@ extern const u8 BattleScript_EffectRoar[];
 extern const u8 BattleScript_EffectRolePlay[];
 extern const u8 BattleScript_EffectRollout[];
 extern const u8 BattleScript_EffectRoost[];
+extern const u8 BattleScript_EffectAttackSpAttackUp[];
 extern const u8 BattleScript_EffectSafeguard[];
 extern const u8 BattleScript_EffectSandstorm[];
+extern const u8 BattleScript_EffectSemiInvulnerable[];
 extern const u8 BattleScript_EffectSketch[];
 extern const u8 BattleScript_EffectShellSmash[];
 extern const u8 BattleScript_EffectSkillSwap[];
@@ -106,10 +109,16 @@ extern const u8 BattleScript_EffectSleepTalk[];
 extern const u8 BattleScript_EffectSnatch[];
 extern const u8 BattleScript_EffectSnore[];
 extern const u8 BattleScript_EffectSoftboiled[];
+extern const u8 BattleScript_EffectSolarBeam[];
 extern const u8 BattleScript_EffectSpecialAttackUp[];
 extern const u8 BattleScript_EffectSpecialAttackUp2[];
+extern const u8 BattleScript_EffectSpecialAttackDown[];
+extern const u8 BattleScript_EffectSpecialAttackDown2[];
+extern const u8 BattleScript_EffectSpecialDefenseDown[];
 extern const u8 BattleScript_EffectSpecialDefenseDown2[];
+extern const u8 BattleScript_EffectSpecialDefenseUp[];
 extern const u8 BattleScript_EffectSpecialDefenseUp2[];
+extern const u8 BattleScript_EffectSpeedUp[];
 extern const u8 BattleScript_EffectSpeedDown[];
 extern const u8 BattleScript_EffectSpeedDown2[];
 extern const u8 BattleScript_EffectSpeedUp2[];
@@ -148,17 +157,17 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_MIRROR_MOVE] = BattleScript_EffectMirrorMove,
     [EFFECT_ATTACK_UP] = BattleScript_EffectAttackUp,
     [EFFECT_DEFENSE_UP] = BattleScript_EffectDefenseUp,
-    [EFFECT_SPEED_UP] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSpeedUp)
+    [EFFECT_SPEED_UP] = BattleScript_EffectSpeedUp,
     [EFFECT_SPECIAL_ATTACK_UP] = BattleScript_EffectSpecialAttackUp,
-    [EFFECT_SPECIAL_DEFENSE_UP] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSpecialDefenseUp)
+    [EFFECT_SPECIAL_DEFENSE_UP] = BattleScript_EffectSpecialDefenseUp,
     [EFFECT_ACCURACY_UP] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectAccuracyUp)
     [EFFECT_EVASION_UP] = BattleScript_EffectEvasionUp,
     [EFFECT_SPECIAL_ATTACK_UP_3] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSpecialAttackUp3)
     [EFFECT_ATTACK_DOWN] = BattleScript_EffectAttackDown,
     [EFFECT_DEFENSE_DOWN] = BattleScript_EffectDefenseDown,
     [EFFECT_SPEED_DOWN] = BattleScript_EffectSpeedDown,
-    [EFFECT_SPECIAL_ATTACK_DOWN] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSpecialAttackDown)
-    [EFFECT_SPECIAL_DEFENSE_DOWN] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSpecialDefenseDown)
+    [EFFECT_SPECIAL_ATTACK_DOWN] = BattleScript_EffectSpecialAttackDown,
+    [EFFECT_SPECIAL_DEFENSE_DOWN] = BattleScript_EffectSpecialDefenseDown,
     [EFFECT_ACCURACY_DOWN] = BattleScript_EffectAccuracyDown,
     [EFFECT_EVASION_DOWN] = BattleScript_EffectEvasionDown,
     [EFFECT_HAZE] = BattleScript_EffectHaze,
@@ -190,7 +199,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_ATTACK_DOWN_2] = BattleScript_EffectAttackDown2,
     [EFFECT_DEFENSE_DOWN_2] = BattleScript_EffectDefenseDown2,
     [EFFECT_SPEED_DOWN_2] = BattleScript_EffectSpeedDown2,
-    [EFFECT_SPECIAL_ATTACK_DOWN_2] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSpecialAttackDown2)
+    [EFFECT_SPECIAL_ATTACK_DOWN_2] = BattleScript_EffectSpecialAttackDown2,
     [EFFECT_SPECIAL_DEFENSE_DOWN_2] = BattleScript_EffectSpecialDefenseDown2,
     [EFFECT_ACCURACY_DOWN_2] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectAccuracyDown2)
     [EFFECT_EVASION_DOWN_2] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectEvasionDown2)
@@ -243,7 +252,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_MAGNITUDE] = BattleScript_EffectMagnitude,
     [EFFECT_BATON_PASS] = BattleScript_EffectBatonPass,
     [EFFECT_PURSUIT] = BattleScript_EffectHit,
-    [EFFECT_CAPTIVATE] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectCaptivate)
+    [EFFECT_CAPTIVATE] = BattleScript_EffectCaptivate,
     [EFFECT_MORNING_SUN] = BattleScript_EffectMorningSun,
     [EFFECT_SYNTHESIS] = BattleScript_EffectSynthesis,
     [EFFECT_MOONLIGHT] = BattleScript_EffectMoonlight,
@@ -256,11 +265,11 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_MIRROR_COAT] = BattleScript_EffectMirrorCoat,
     [EFFECT_EARTHQUAKE] = BattleScript_EffectHit,
     [EFFECT_FUTURE_SIGHT] = BattleScript_EffectFutureSight,
-    [EFFECT_SOLAR_BEAM] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectTwoTurnsAttack)
+    [EFFECT_SOLAR_BEAM] = BattleScript_EffectSolarBeam,
     [EFFECT_THUNDER] = BattleScript_EffectHit,
     [EFFECT_TELEPORT] = BattleScript_EffectTeleport,
     [EFFECT_BEAT_UP] = BattleScript_EffectBeatUp,
-    [EFFECT_SEMI_INVULNERABLE] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectTwoTurnsAttack)
+    [EFFECT_SEMI_INVULNERABLE] = BattleScript_EffectSemiInvulnerable,
     [EFFECT_DEFENSE_CURL] = BattleScript_EffectDefenseCurl,
     [EFFECT_SOFTBOILED] = BattleScript_EffectSoftboiled,
     [EFFECT_FIRST_TURN_ONLY] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectFirstTurnOnly)
@@ -365,7 +374,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_ELECTRIC_TERRAIN] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectElectricTerrain)
     [EFFECT_PSYCHIC_TERRAIN] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectPsychicTerrain)
     [EFFECT_ATTACK_ACCURACY_UP] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectAttackAccUp)
-    [EFFECT_ATTACK_SPATK_UP] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectAttackSpAttackUp)
+    [EFFECT_ATTACK_SPATK_UP] = BattleScript_EffectAttackSpAttackUp,
     [EFFECT_TWO_TYPED_MOVE] = BattleScript_EffectHit,
     [EFFECT_ME_FIRST] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectMeFirst)
     [EFFECT_QUIVER_DANCE] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectQuiverDance)
@@ -373,7 +382,7 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_ELECTRIFY] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectElectrify)
     [EFFECT_REFLECT_TYPE] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectReflectType)
     [EFFECT_SOAK] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectSoak)
-    [EFFECT_GROWTH] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectGrowth)
+    [EFFECT_GROWTH] = BattleScript_EffectAttackSpAttackUp,
     [EFFECT_LAST_RESORT] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectLastResort)
     [EFFECT_SHELL_SMASH] = BattleScript_EffectShellSmash,
     [EFFECT_SHIFT_GEAR] = BattleScript_EffectHit, // Stubbed (missing BattleScript_EffectShiftGear)

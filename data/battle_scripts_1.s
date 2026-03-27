@@ -268,7 +268,15 @@ BattleScript_EffectDefenseUp::
 
 BattleScript_EffectSpecialAttackUp::
 	setstatchanger STAT_SPATK, 1, FALSE
-	goto BattleScript_EffectStatUp
+	goto BattleScript_StatUp
+
+BattleScript_EffectSpeedUp::
+	setstatchanger STAT_SPEED, 1, FALSE
+	goto BattleScript_StatUp
+
+BattleScript_EffectSpecialDefenseUp::
+	setstatchanger STAT_SPDEF, 1, FALSE
+	goto BattleScript_StatUp
 
 BattleScript_EffectEvasionUp::
 	setstatchanger STAT_EVASION, 1, FALSE
@@ -313,6 +321,18 @@ BattleScript_EffectSpeedDown::
 
 BattleScript_EffectAccuracyDown::
 	setstatchanger STAT_ACC, 1, TRUE
+	goto BattleScript_EffectStatDown
+
+BattleScript_EffectSpecialAttackDown::
+	setstatchanger STAT_SPATK, 1, TRUE
+	goto BattleScript_EffectStatDown
+
+BattleScript_EffectSpecialDefenseDown::
+	setstatchanger STAT_SPDEF, 1, TRUE
+	goto BattleScript_EffectStatDown
+
+BattleScript_EffectSpecialAttackDown2::
+	setstatchanger STAT_SPATK, 2, TRUE
 	goto BattleScript_EffectStatDown
 
 BattleScript_EffectEvasionDown::
@@ -2537,6 +2557,31 @@ BattleScript_CalmMindTrySpDef::
 	printfromtable gStatUpStringIds
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_CalmMindEnd::
+	goto BattleScript_MoveEnd
+
+BattleScript_EffectAttackSpAttackUp::
+	attackcanceler
+	attackstring
+	ppreduce
+	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_ATK, MAX_STAT_STAGE, BattleScript_AttackSpAttackUpDoMoveAnim
+	jumpifstat BS_ATTACKER, CMP_EQUAL, STAT_SPATK, MAX_STAT_STAGE, BattleScript_CantRaiseMultipleStats
+BattleScript_AttackSpAttackUpDoMoveAnim::
+	attackanimation
+	waitanimation
+	setbyte sSTAT_ANIM_PLAYED, FALSE
+	playstatchangeanimation BS_ATTACKER, BIT_ATK | BIT_SPATK, 0
+	setstatchanger STAT_ATK, 1, FALSE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_AttackSpAttackUpTrySpAtk
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_AttackSpAttackUpTrySpAtk
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_AttackSpAttackUpTrySpAtk::
+	setstatchanger STAT_SPATK, 1, FALSE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_AttackSpAttackUpEnd
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_AttackSpAttackUpEnd
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_AttackSpAttackUpEnd:
 	goto BattleScript_MoveEnd
 
 BattleScript_CantRaiseMultipleStats::
