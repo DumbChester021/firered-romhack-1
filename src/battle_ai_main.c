@@ -629,6 +629,20 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         if (gBattleMons[battlerAtk].statStages[STAT_SPEED] == MAX_STAT_STAGE)
             return score - 8;
         break;
+
+    case EFFECT_GROWTH:
+    case EFFECT_ATTACK_SPATK_UP:
+        if (gBattleMons[battlerAtk].statStages[STAT_ATK] == MAX_STAT_STAGE
+         && gBattleMons[battlerAtk].statStages[STAT_SPATK] == MAX_STAT_STAGE)
+            return score - 10;
+        break;
+
+    case EFFECT_SHELL_SMASH:
+        if (gBattleMons[battlerAtk].statStages[STAT_ATK] == MAX_STAT_STAGE
+         && gBattleMons[battlerAtk].statStages[STAT_SPATK] == MAX_STAT_STAGE
+         && gBattleMons[battlerAtk].statStages[STAT_SPEED] == MAX_STAT_STAGE)
+            return score - 10;
+        break;
     }
 
     return score;
@@ -1283,6 +1297,9 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_BULK_UP:
     case EFFECT_CALM_MIND:
     case EFFECT_COSMIC_POWER:
+    case EFFECT_GROWTH:
+    case EFFECT_ATTACK_SPATK_UP:
+    case EFFECT_SHELL_SMASH:
         // Already handled by CheckBadMove — these are neutral in Viability
         break;
 
