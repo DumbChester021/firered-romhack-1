@@ -320,13 +320,31 @@ python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
 
 ## Coding Rules
 
-1. **Port, don't invent.** Cite the RHH source if porting.
+1. **Converge, don't adapt.** Port from RHH using identical names, structs, and signatures. If our name differs from RHH, rename ours.
 2. **`FRLG_STUB`** = mechanic that exists in RHH but needs infrastructure not yet in FireRed.
 3. **`GEN4_STUB`** = utility function returning neutral value, declared in header, real body later.
 4. **No invented AI logic.** Trace to RHH or don't add it.
 5. **Build must stay clean.** `make -j$(nproc) 2>&1 | grep "error:"` returns nothing.
 6. **Active test/debug code** must be documented in `## Active Test/Debug Changes` in `README.md`.
 7. **Named fields, not FLAG_*.** `FLAG_*` constants are removed. Use struct field names directly.
+8. **Token efficiency.** For large ports (500+ lines), use Python porting tools instead of reading full files into LLM context.
+
+---
+
+## RHH Convergence Tracker
+
+Names/structures that still differ from RHH and need renaming when touched:
+
+| Current FireRed | RHH Name | Scope | Priority |
+|---|---|---|---|
+| `gBattleMoves` | `gMovesInfo` | Global array + all references | High (blocks AI port) |
+| `struct BattleMove` | `struct MoveInfo` | Header + all references | High (blocks AI port) |
+| `SPLIT_PHYSICAL/SPECIAL/STATUS` | `DAMAGE_CATEGORY_*` | Constants + all move data | Medium |
+| `MOVE_TARGET_*` | `TARGET_*` (some differ) | Constants | Low |
+| `gBattleMons[x].status2` bitfield | `gBattleMons[x].volatiles.*` struct | Major structural change | Future |
+| `sBattler_AI` | Various AI locals | AI functions | When porting AI |
+
+This table should be updated as convergence progresses. When a rename is completed, remove the row.
 
 ---
 

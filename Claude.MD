@@ -1,4 +1,4 @@
-PROJECT OPERATING PROMPT — PRET / POKEFIRERED PROJECT (RHH-FAITHFUL, NO-ASSUMPTION)
+PROJECT OPERATING PROMPT — PRET / POKEFIRERED PROJECT (RHH-CONVERGENCE, NO-ASSUMPTION)
 
 ---
 
@@ -7,24 +7,43 @@ PROJECT CONTEXT
 This project is a PRET-based Pokémon FireRed decompilation modification project.
 
 Primary reference implementation:
-* /mnt/data/Github/prototype/pokeemerald-expansion
+* /mnt/data/Github/prototype/pokeemerald-expansion (LOCAL — do NOT fetch from GitHub)
 
 This repository represents the feature baseline and architectural reference target.
-Behavior, architecture patterns, file organization, naming conventions, and feature implementation style should follow the reference repository as closely as possible unless explicitly instructed otherwise.
+The long-term goal is FULL CONVERGENCE with RHH: identical struct names, field names,
+function signatures, and engine patterns. Not "adapted for FireRed" — identical to RHH
+where possible, so eventually the codebase is essentially a copy.
 
-This project must remain RHH-faithful:
-* Port natively rather than writing hacky fallbacks.
-* If a C dependency (e.g., `SpriteTemplate`, callback function, or macro) is missing in FireRed, DO NOT fallback. Extrapolate and natively port that missing dependency from the reference repo into FireRed.
-* Simple & Practical
-* Minimal abstractions (Convention over configuration)
-* No unnecessary architecture or speculative systems
-* Direct, readable C code
-* Match existing engine patterns
+---
 
-When uncertain about implementation:
-→ Check reference repo behavior
-→ Match their implementation style
-→ Do not invent new patterns
+RHH CONVERGENCE RULES (CRITICAL)
+
+1. NO ADAPTATIONS. NO NAME MAPPINGS. Port code exactly as RHH has it.
+2. If a struct/field/function name differs from RHH, RENAME IT to match RHH.
+   - Example: if RHH uses `gMovesInfo`, rename our `gBattleMoves` to `gMovesInfo`.
+   - Example: if RHH uses `DAMAGE_CATEGORY_PHYSICAL`, rename our `SPLIT_PHYSICAL`.
+   - Propagate renames across the entire codebase.
+3. If a struct layout differs, RESTRUCTURE IT to match RHH.
+4. If RHH has a function we lack, PORT IT verbatim.
+5. If RHH has a field/flag we lack, ADD IT with the same name and type.
+6. Gimmick systems (Tera, Mega, Z-Moves, Dynamax) are not yet implemented,
+   but their data (ban flags, structural stubs, no-op handlers) MUST be present
+   matching RHH so the data layer is ready when they are.
+7. Every touch point is an opportunity to converge. When modifying any file,
+   check if it matches RHH. If not, converge it.
+
+---
+
+TOKEN EFFICIENCY FOR LARGE PORTS
+
+For large functions (500+ lines) or large files, DO NOT read them fully into LLM context.
+Instead:
+1. Build a Python porting tool that reads RHH source, extracts functions by brace-depth parsing.
+2. Since we converge (no name mappings), the tool mostly just copies + resolves missing deps.
+3. Write output directly to the target file.
+4. Only bring small targeted snippets into LLM for logic review or conflict resolution.
+5. Create research docs (`docs/research/`) explaining the port plan so future sessions
+   can resume without re-reading everything.
 
 ---
 
@@ -91,17 +110,18 @@ Never start coding without checking the Continuation Document first.
 IMPLEMENTATION RULES (IMPORTANT)
 
 When adding features:
-* Follow existing file structure and naming conventions.
+* Follow RHH naming conventions. If our names differ, rename to match RHH.
 * Reuse existing systems. Do not duplicate systems.
-* Match reference repo patterns perfectly.
-* Missing macro? Port it from `asm/macros/`
-* Missing C struct (e.g., SpriteTemplate)? Port it from `src/battle_anim_*.c` to `src/battle_anim_new.c`.
-* The `preproc` compiler supports native Python kwargs (e.g., `x=0, y=0`), enabling perfectly 1:1 ASM ports. USE THIS. Do not invent legacy fallbacks. 
+* Match reference repo patterns EXACTLY — same names, same signatures, same logic.
+* Missing macro? Port it from RHH `asm/macros/`
+* Missing C struct? Port it from RHH with the SAME name.
+* Missing function? Port it from RHH with the SAME name and signature.
+* The `preproc` compiler supports native Python kwargs (e.g., `x=0, y=0`), enabling perfectly 1:1 ASM ports. USE THIS. Do not invent legacy fallbacks.
 * Avoid global state unless the engine already uses it.
 * Do not refactor unrelated code or redesign architecture.
 * Keep commits logically grouped. One feature per commit group.
 
-Think like maintaining a legacy C engine, not building a new engine.
+Think like converging toward RHH, not maintaining a separate fork.
 
 ---
 
@@ -123,7 +143,7 @@ TASK EXECUTION PROTOCOL
 2. Define task.
 3. Locate related code in `firered-romhack-1`.
 4. Locate reference code in `pokeemerald-expansion`.
-5. Port code 1:1 exactly. Include missing sub-dependencies natively.
+5. Port code 1:1 exactly. Use same names. Include missing sub-dependencies natively.
 6. Build (`make -j$(nproc)`) and Verify (`python3 tools/verify_data.py`).
 7. Update Continuation Doc.
 8. Commit and provide next steps.

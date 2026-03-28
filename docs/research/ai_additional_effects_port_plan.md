@@ -44,17 +44,10 @@ As more Gen 4+ moves are ported, this gap grows.
 Create `tools/port_ai_scoring.py` that:
 1. Reads RHH's `src/battle_ai_main.c` and `src/battle_ai_util.c`
 2. Extracts target function bodies by brace-depth parsing
-3. Applies constant/struct name mappings (RHH → FireRed):
-   - `gMovesInfo` → `gBattleMoves`
-   - `DAMAGE_CATEGORY_*` → `SPLIT_*`
-   - `TARGET_*` → `MOVE_TARGET_*`
-   - `gBattleMons[x].volatiles.*` → `gBattleMons[x].status2 & STATUS2_*` (where applicable)
-   - `GetMoveEffect(move)` → `gBattleMoves[move].effect`
-   - `GetMovePower(move)` → `gBattleMoves[move].power`
-   - etc.
-4. Identifies missing dependencies (functions/structs not yet in FireRed)
-5. Generates stub declarations for missing deps
-6. Writes output C code to a staging file for review
+3. NO name mappings needed — we converge to RHH names (rename FireRed to match)
+4. Identifies missing dependencies (functions/structs/constants not yet in FireRed)
+5. Lists what needs to be ported or renamed as prerequisites
+6. Copies function bodies directly to staging file for review
 
 ### Step 2: Port Helper Functions First
 Port from `src/battle_ai_util.c`:
@@ -72,15 +65,21 @@ Port from `src/battle_ai_util.c`:
 - Many more effect handlers
 - Port incrementally: only handlers for effects we actually use
 
-## Key Struct Differences
+## Convergence Strategy (NO Name Mappings)
 
-| RHH | FireRed | Notes |
+Per project rules, we do NOT translate RHH names to FireRed names. We RENAME FireRed to match RHH.
+When porting AI functions, the prerequisite renames include:
+
+| Current FireRed Name | RHH Name | Action |
 |---|---|---|
-| `struct AiLogicData` | Does not exist | Cached AI calculations per turn |
-| `gMovesInfo[move]` | `gBattleMoves[move]` | Same struct, different name |
-| `gBattleMons[x].volatiles.*` | `gBattleMons[x].status2` bitfield | Major structural difference |
-| `GetMoveAdditionalEffectById()` | Direct `.additionalEffects[i]` access | Our struct has the pointer |
-| `GetMoveAdditionalEffectCount()` | `.numAdditionalEffects` field | Direct access |
+| `gBattleMoves` | `gMovesInfo` | Rename globally when touching AI port |
+| `SPLIT_PHYSICAL` etc. | `DAMAGE_CATEGORY_PHYSICAL` | Rename globally |
+| `gBattleMons[x].status2` bitfield | `gBattleMons[x].volatiles.*` | Structural change — port volatiles struct |
+| `.additionalEffects[i]` direct | `GetMoveAdditionalEffectById()` | Port the accessor function |
+| `.numAdditionalEffects` direct | `GetMoveAdditionalEffectCount()` | Port the accessor function |
+| (missing) | `struct AiLogicData` | Port the struct + data gathering |
+
+These renames should be done as a preparatory commit before the AI port itself.
 
 ## Call Integration Point
 
@@ -94,3 +93,4 @@ score += AI_CalcAdditionalEffectScore(sBattler_AI, gBattlerTarget, move);
 - `MoveEffectIsGuaranteed()` filters out non-100% effects (so 20% flinch on Zen Headbutt won't be scored — matching RHH behavior)
 - Self-targeting effects (`.self = TRUE`) use attacker stats, opponent-targeting use defender stats
 - ABILITY_CONTRARY inverts stat change scoring
+- As convergence progresses, the porting tool becomes simpler — eventually just a copy
