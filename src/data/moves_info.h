@@ -5387,6 +5387,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .skyBattleBanned = TRUE,
+        .forcePressure = TRUE,
     },
 
     [MOVE_ZAP_CANNON] =
@@ -6811,6 +6812,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
+        .forcePressure = TRUE,
     },
 
     [MOVE_REFRESH] =
@@ -6855,6 +6857,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
+        .forcePressure = TRUE,
     },
 
     [MOVE_SECRET_POWER] =
@@ -8359,6 +8362,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .skyBattleBanned = TRUE,
+        .forcePressure = TRUE,
     },
 
     [MOVE_HEART_SWAP] =
@@ -8756,7 +8760,6 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
-            .chance = 0,
         }),
     },
 
@@ -9219,6 +9222,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .magicCoatAffected = TRUE,
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
+        .forcePressure = TRUE,
     },
 
     [MOVE_GRASS_KNOT] =
@@ -14205,6 +14209,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .moveEffect = MOVE_EFFECT_TERA_BLAST,
             .self = TRUE,
         }),
+        .forcePressure = TRUE,
     },
 
     [MOVE_SILK_TRAP] =

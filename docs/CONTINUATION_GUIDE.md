@@ -348,3 +348,4 @@ python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
 | `missing_egg_moves.md` | Egg moves not yet in FireRed |
 | `battle_ai_migration_research.md` | AI ASM→C migration research log |
 | `battle_animation_systems.md` | FireRed vs RHH animation system comparison + porting guide |
+| `ai_additional_effects_port_plan.md` | Plan for porting AI_CalcAdditionalEffectScore from RHH (token-efficient Python tool approach) |

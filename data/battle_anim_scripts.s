@@ -448,7 +448,7 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_NONE
+	.4byte gBattleAnimMove_ZenHeadbutt
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -543,10 +543,10 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
+	.4byte gBattleAnimMove_Bulldoze
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_NONE
-	.4byte Move_NONE
+	.4byte gBattleAnimMove_WorkUp
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -632,7 +632,7 @@ gBattleAnims_Moves::
 	.4byte Move_SPARK
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_NONE
+	.4byte gBattleAnimMove_PowerUpPunch
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -831,7 +831,7 @@ gBattleAnims_Moves::
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
-	.4byte Move_NONE
+	.4byte gBattleAnimMove_Trailblaze
 	.4byte Move_NONE
 	.4byte Move_NONE
 	.4byte Move_NONE
@@ -12037,20 +12037,20 @@ GigaImpactContinuity:
 	createsprite gBasicHitSplatSpriteTemplate, ANIM_TARGET, 4, -10, 0, ANIM_TARGET, 0
 	playsewithpan SE_M_MEGA_KICK2, SOUND_PAN_TARGET
 	delay 1
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_BG, 1, 0, 16, RGB_WHITE
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_ATTACKER, 1, 0, 16, RGB_WHITE
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_TARGET, 1, 0, 16, RGB_WHITE
+	createsprite gSlideMonToOffsetSpriteTemplate, ANIM_ATTACKER, 2, ANIM_TARGET, -16, 0, 0, 4
 	waitforvisualfinish
+	createvisualtask AnimTask_ShakeMonInPlace, 2, ANIM_TARGET, 4, 0, 12, 1
+	waitforvisualfinish
+	delay 2
+	createsprite gSlideMonToOriginalPosSpriteTemplate, ANIM_ATTACKER, 2, ANIM_ATTACKER, 0, 5
 	delay 3
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_BG, 1, 16, 0, RGB_WHITE
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_ATTACKER, 1, 16, 0, RGB_WHITE
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_TARGET, 1, 16, 0, RGB_WHITE
+	createsprite gSlideMonToOriginalPosSpriteTemplate, ANIM_TARGET, 2, ANIM_TARGET, 0, 6
 	waitforvisualfinish
-	delay 8
-	restorebg
-	waitbgfadein
 	clearmonbg ANIM_DEF_PARTNER
 	blendoff
+	restorebg
+	waitbgfadein
+	waitforvisualfinish
 	end
 
 Move_TERA_BLAST::
@@ -12064,17 +12064,34 @@ gBattleAnimMove_Bulldoze::
 gBattleAnimMove_WorkUp::
 	loadspritegfx ANIM_TAG_FOCUS_ENERGY
 	playsewithpan SE_M_DRAGON_RAGE, SOUND_PAN_ATTACKER
-	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -24, 26, 2
-	delay 4
-	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 14, 28, 1
-	delay 4
-	createvisualtask AnimTask_BlendColorCycle, 2, F_PAL_ATTACKER, 2, 2, 0, 11, RGB_RED
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -28, 26, 2
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 28, 26, 2
+	delay 5
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -23, 10, 2
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 23, 10, 2
+	delay 5
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -18, 26, 3
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 18, 26, 3
+	delay 14
+	blend_color_cycle selector=F_PAL_ATTACKER, delay=2, num_blends=2, initial_blend_y=0, target_blend_y=11, color=RGB(31, 2, 4)
 	createvisualtask AnimTask_ShakeMon2, 2, ANIM_ATTACKER, 1, 0, 32, 1
-	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -5, 10, 2
-	delay 4
-	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 28, 26, 3
-	delay 4
-	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -12, 0, 1
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -13, 26, 2
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 13, 26, 2
+	delay 5
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -8, 10, 2
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 8, 10, 2
+	delay 5
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -3, 26, 3
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 3, 26, 3
+	delay 14
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -2, 26, 2
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 2, 26, 2
+	delay 5
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -7, 10, 2
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 7, 10, 2
+	delay 5
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, -12, 26, 3
+	createsprite gEndureEnergySpriteTemplate, ANIM_ATTACKER, 2, 0, 12, 26, 3
 	waitforvisualfinish
 	end
 
@@ -12119,6 +12136,9 @@ TrailblazeVortex:
 	createsprite gLeafTornadoVortexTemplate, ANIM_ATTACKER, 2, 0x0, 0x1f, 0x190, 0x19, 0xb, 0xffd6, ANIM_ATTACKER
 	delay 2
 	createsprite gLeafTornadoVortexTemplate, ANIM_ATTACKER, 2, 0x0, 0x1c, 0x200, 0x19, 0x10, 0x2e, ANIM_ATTACKER
+	delay 2
+	createsprite gLeafTornadoVortexTemplate, ANIM_ATTACKER, 2, 0x0, 0x21, 0x1d0, 0x1e, 0xf, 0xffce, ANIM_ATTACKER
+	delay 2
 	return
 
 gBattleAnimMove_PowerUpPunch::

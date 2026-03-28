@@ -283,6 +283,7 @@ struct BattleMove
     u8  skyBattleBanned:1;       // RHH: skyBattleBanned — STUB (no Sky Battles)
     u8  sketchBanned:1;          // RHH: sketchBanned
     u8  dampBanned:1;            // RHH: dampBanned (blocked by Damp ability)
+    u8  forcePressure:1;         // RHH: forcePressure (Pressure deducts PP even if move targets self/ally)
 
     // Effect-based hack replacements — port of RHH MoveInfo fields.
     // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.
