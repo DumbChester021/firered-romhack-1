@@ -501,4 +501,6 @@ const u8 *const gBattleScriptsForMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     [EFFECT_DRAGON_DARTS] = BattleScript_EffectHit,
     [EFFECT_GUARDIAN_OF_ALOLA] = BattleScript_EffectHit, // Stubbed (missing BattleScript_DamageToQuarterTargetHP)
     [EFFECT_SHELL_SIDE_ARM] = BattleScript_EffectHit,
+    [EFFECT_RECOIL] = BattleScript_EffectHit,
+    [EFFECT_STRUGGLE] = BattleScript_EffectHit,
 };

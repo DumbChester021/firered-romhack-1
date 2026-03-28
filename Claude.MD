@@ -1,7 +1,3 @@
----
-description: Workflow Upgrade for this Pokemon Firered Decomp in C Rom Hack
----
-
 PROJECT OPERATING PROMPT — PRET / POKEFIRERED PROJECT (RHH-FAITHFUL, NO-ASSUMPTION)
 
 ---

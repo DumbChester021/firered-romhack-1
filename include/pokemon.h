@@ -269,6 +269,8 @@ struct BattleMove
     u8  windMove:1;              // RHH: windMove — STUB (no Wind Rider yet)
     u8  healingMove:1;           // RHH: healingMove — STUB (no Heal Block yet)
     u8  thawsUser:1;             // RHH: thawsUser
+    u8  ignoresSubstitute:1;     // RHH: ignoresSubstitute (sound moves Gen 6+, etc.)
+    u8  metronomeBanned:1;       // RHH: metronomeBanned
 
     // Effect-based hack replacements — port of RHH MoveInfo fields.
     // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.

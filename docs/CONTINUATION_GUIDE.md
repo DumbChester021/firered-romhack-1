@@ -35,6 +35,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Gen 4+ Moves (Batches 1 & 2)** | ✅ Done | Roost, Confide, Round, Captivate, Tera Blast, Giga Impact, Bulldoze, Trailblaze, Work Up, Power-Up Punch, Zen Headbutt |
 | **preproc Tool Upgrade** | ✅ Done | C++ compiler tool upgraded for keyword args (`x=0`) |
 | **Battle Script Effect Hooks** | ✅ Done | Restored Gen 1 functionality for Two-Turn moves and basic stat modifications. |
+| **RHH Faithfulness Audit** | ✅ Done | EFFECT_RECOIL, EFFECT_STRUGGLE, ignoresSubstitute, metronomeBanned (153 moves) |
 
 ---
 
@@ -162,9 +163,38 @@ The codebase has been updated to perfectly compile with zero warnings under mode
 - **`-Wstringop-overflow`**: Safely guarded struct bounds in `SetBoxMonData` (`MON_DATA_PP1`...`PP4`) natively without pragmas.
 
 ### Phase 12: Battle Script Effect Hooks Restoration — Complete
-Restored 1:1 functional parity with RHH for missing battle scripts that were previously stubbed to `EFFECT_HIT`. 
+Restored 1:1 functional parity with RHH for missing battle scripts that were previously stubbed to `EFFECT_HIT`.
 - **Two-Turn Attacks:** Hooked up `EFFECT_SEMI_INVULNERABLE` and `EFFECT_SOLAR_BEAM` to their respective assembly scripts, ensuring moves like Fly, Dig, and Solar Beam correctly charge instead of striking instantly.
 - **Missing Stat Modifiers:** Ported native assembly handlers for missing stat manipulations like `EFFECT_SPECIAL_ATTACK_DOWN` (Confide), `EFFECT_SPEED_UP`, and `EFFECT_SPECIAL_ATTACK_DOWN_2` (Eerie Impulse) into `data/battle_scripts_1.s` and correctly wired them in `src/data/battle_scripts_for_move_effects.h`.
+
+### Phase 13: RHH Faithfulness Audit & Move Ban System — Complete
+
+Comprehensive audit of all ported Gen 4+ moves against RHH reference, plus structural ports for move restriction flags.
+
+#### EFFECT_RECOIL / EFFECT_STRUGGLE
+- Added `EFFECT_RECOIL` and `EFFECT_STRUGGLE` to `include/constants/battle_move_effects.h`
+- Mapped both to `BattleScript_EffectHit` in `src/data/battle_scripts_for_move_effects.h`
+- Changed 12 recoil moves from `EFFECT_HIT` to `EFFECT_RECOIL`: Take Down, Double-Edge, Submission, Volt Tackle, Flare Blitz, Brave Bird, Wood Hammer, Head Smash, Wild Charge, Head Charge, Light of Ruin, Wave Crash
+- Changed Struggle from `EFFECT_HIT` + `.recoil = 25` to `EFFECT_STRUGGLE` + `ADDITIONAL_EFFECTS({ .moveEffect = MOVE_EFFECT_RECOIL_HP_25, .self = TRUE })`
+
+#### New MOVE_EFFECT constants (`include/constants/battle.h`)
+- `MOVE_EFFECT_RECOIL_HP_25` (63) — Struggle's Gen 4+ HP%-based recoil
+- `MOVE_EFFECT_ROUND` (61) — structural port for Round (doubles priority, no-op in singles)
+- `MOVE_EFFECT_TERA_BLAST` (62) — structural port for Tera Blast (no-op without Tera system)
+
+#### `ignoresSubstitute` field
+- Added `ignoresSubstitute:1` bitfield to `struct BattleMove` in `include/pokemon.h`
+- Engine check in `Cmd_attackcanceler` (`src/battle_script_commands.c`): sets `HITMARKER_IGNORE_SUBSTITUTE` when flag is set
+- Applied to all 31 sound-based moves matching RHH
+
+#### `metronomeBanned` field
+- Added `metronomeBanned:1` bitfield to `struct BattleMove` in `include/pokemon.h`
+- Engine check in `Cmd_metronome` (`src/battle_script_commands.c`): skips moves with flag set
+- Applied to 153 moves matching RHH (includes gimmick moves: Tera, Mega, Z-Move, Dynamax)
+- All gimmick-related moves are banned even though gimmick systems aren't yet implemented
+
+#### Next: Remaining ban flags
+The following RHH ban flags still need porting: `mimicBanned`, `copycatBanned`, `assistBanned`, `sleepTalkBanned`, `instructBanned`, `encoreBanned`. These will replace the old hardcoded `sMovesForbiddenToCopy` array.
 
 ---
 

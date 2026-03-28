@@ -873,6 +873,10 @@ static void Cmd_attackcanceler(void)
 
     gHitMarker |= HITMARKER_OBEYS;
 
+    // RHH: sound moves and other ignoresSubstitute moves bypass Substitute (Gen 6+).
+    if (gBattleMoves[gCurrentMove].ignoresSubstitute)
+        gHitMarker |= HITMARKER_IGNORE_SUBSTITUTE;
+
     if (gProtectStructs[gBattlerTarget].bounceMove && gBattleMoves[gCurrentMove].magicCoatAffected)
     {
         PressurePPLose(gBattlerAttacker, gBattlerTarget, MOVE_MAGIC_COAT);
@@ -2801,6 +2805,26 @@ void SetMoveEffect(bool8 primary, u8 certain)
                     gBattlescriptCurrInstr++;
                 }
                 break;
+            case MOVE_EFFECT_ROUND:
+                // RHH: TryUpdateRoundTurnOrder() — reorders turn order in doubles
+                // so Round users go consecutively. No-op in singles.
+                gBattlescriptCurrInstr++;
+                break;
+            case MOVE_EFFECT_TERA_BLAST:
+                // RHH: lowers Atk/SpAtk after Stellar Tera Blast.
+                // Requires Terastallization infrastructure — no-op until ported.
+                gBattlescriptCurrInstr++;
+                break;
+            case MOVE_EFFECT_RECOIL_HP_25: // RHH: 25% max HP recoil (Struggle Gen 4+)
+            {
+                s32 recoil = gBattleMons[gEffectBattler].maxHP / 4;
+                if (recoil == 0)
+                    recoil = 1;
+                gBattleMoveDamage = recoil;
+                BattleScriptPush(gBattlescriptCurrInstr + 1);
+                gBattlescriptCurrInstr = BattleScript_MoveEffectRecoil;
+                break;
+            }
             }
         }
     }
@@ -7635,6 +7659,8 @@ static void Cmd_metronome(void)
 
         gCurrentMove = (Random() & 0x1FF) + 1;
         if (gCurrentMove >= MOVES_COUNT)
+            continue;
+        if (gBattleMoves[gCurrentMove].metronomeBanned)
             continue;
 
         for (i = 0; i < MAX_MON_MOVES; i++); // ?
