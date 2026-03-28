@@ -58,16 +58,16 @@ Port in this exact order — each step may unlock the next.
 11. ✅ `HasMoveWithEffect()` → `src/battle_ai_util.c`
 12. ✅ `HasMoveThatChangesKOThreshold()` → `src/battle_ai_util.c` (static)
 
-### Tier C: Battler State Helpers
+### Tier C: Battler State Helpers ✅ PARTIAL (secondary damage done)
 12. `GetBattlerParty()` — returns `gPlayerParty`/`gEnemyParty` by battler side
-13. `GetBattlerSecondaryDamage()` — 16 lines, needs:
+13. ✅ `GetBattlerSecondaryDamage()` — ported with all 6 sub-helpers:
     - `GetLeechSeedDamage()` — 1 line (use gStatuses3[battler] & STATUS3_LEECHSEED)
     - `GetNightmareDamage()` — 1 line (use status1 nightmare bit)
     - `GetCurseDamage()` — 1 line (use status2 cursed bit)
     - `GetTrapDamage()` — 1 line (use status2 wrapped bits)
     - `GetPoisonDamage()` — 1 line (use status1 poison)
     - `GetWeatherDamage()` — ~10 lines (use gBattleWeather)
-14. `DoesAbilityRaiseStatsWhenLowered()` — 12 lines, pure switch (CONTRARY/COMPETITIVE/DEFIANT)
+14. ✅ `DoesAbilityRaiseStatsWhenLowered()` — ported; COMPETITIVE/DEFIANT #ifdef-guarded
 15. `IsBattlerPredictedToSwitch()` — 13 lines, needs `gAiThinkingStruct->aiFlags[]` as array
     - **Blocker**: RHH has `u64 aiFlags[MAX_BATTLERS_COUNT]`, FireRed has `u32 aiFlags` (single)
     - This is a structural change — defer or alias
@@ -124,7 +124,8 @@ Others (IncreaseStatDownScore speed path, GetStatBeingChanged/GetStagesOfStatCha
 
 - **Session A**: ✅ Tier A steps 1-8 (speed infrastructure + AI_IsFaster update)
 - **Session B**: ✅ Tiers B+D (BattlerHasAi, IsAiBattlerAware, GetMovesArray, HasMoveWithEffect, HasMoveThatChangesKOThreshold, GetStatBeingChanged, GetStagesOfStatChange)
-- **Session C (next)**: Tier C (GetBattlerSecondaryDamage + helpers, DoesAbilityRaiseStatsWhenLowered)
+- **Session C**: ✅ Tier C partial (GetBattlerSecondaryDamage + 6 helpers, DoesAbilityRaiseStatsWhenLowered)
+- **Session D (next)**: Tier E (GetIncomingMoveSpeedCheck, ShouldRaiseAnyStat) + remaining Tier C (GetBattlerParty, IsBattlerPredictedToSwitch)
 - **Session C**: Tier C part (GetBattlerSecondaryDamage + secondary-dmg helpers)
 - **Session D**: Tier E (CanAiPredictMove, GetIncomingMoveSpeedCheck, ShouldRaiseAnyStat)
 - **Session E**: Tier F+G (damage calc, IsBattlerTrapped)

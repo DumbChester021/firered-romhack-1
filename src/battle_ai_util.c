@@ -897,6 +897,226 @@ static bool32 HasMoveThatChangesKOThreshold(u8 battlerId, u32 noOfHitsToFaint, b
 }
 
 // =============================================================================
+// Tier C: Secondary damage helpers (pokeemerald-expansion/src/battle_ai_util.c:3270-3432)
+// Used by IncreaseStatDownScore to skip stat-lowering if target dies from residuals anyway.
+// Gen 4+ abilities (Magic Guard, Poison Heal, etc.) and hold effects are #ifdef-guarded.
+// =============================================================================
+
+// RHH: GetLeechSeedDamage (pokeemerald-expansion/src/battle_ai_util.c:3270)
+static u32 GetLeechSeedDamage(u8 battler)
+{
+    u32 damage = 0;
+    if (gStatuses3[battler] & STATUS3_LEECHSEED)
+    {
+        u8 seeder = gStatuses3[battler] & STATUS3_LEECHSEED_BATTLER;
+        if (gBattleMons[seeder].hp != 0)
+        {
+            damage = gBattleMons[battler].maxHP / 8;
+            if (damage == 0)
+                damage = 1;
+        }
+    }
+    return damage;
+}
+
+// RHH: GetNightmareDamage (pokeemerald-expansion/src/battle_ai_util.c:3283)
+static u32 GetNightmareDamage(u8 battlerId)
+{
+    u32 damage = 0;
+    if ((gBattleMons[battlerId].status2 & STATUS2_NIGHTMARE)
+     && (gBattleMons[battlerId].status1 & STATUS1_SLEEP))
+    {
+        damage = gBattleMons[battlerId].maxHP / 4;
+        if (damage == 0)
+            damage = 1;
+    }
+    return damage;
+}
+
+// RHH: GetCurseDamage (pokeemerald-expansion/src/battle_ai_util.c:3297)
+static u32 GetCurseDamage(u8 battlerId)
+{
+    u32 damage = 0;
+    if (gBattleMons[battlerId].status2 & STATUS2_CURSED)
+    {
+        damage = gBattleMons[battlerId].maxHP / 4;
+        if (damage == 0)
+            damage = 1;
+    }
+    return damage;
+}
+
+// RHH: GetTrapDamage (pokeemerald-expansion/src/battle_ai_util.c:3309)
+// HOLD_EFFECT_BINDING_BAND not in FireRed — use /16 divisor only (Gen 3 default).
+static u32 GetTrapDamage(u8 battler)
+{
+    u32 damage = 0;
+    if (gBattleMons[battler].status2 & STATUS2_WRAPPED)
+    {
+        damage = gBattleMons[battler].maxHP / 16;
+        if (damage == 0)
+            damage = 1;
+    }
+    return damage;
+}
+
+// RHH: GetPoisonDamage (pokeemerald-expansion/src/battle_ai_util.c:3326)
+static u32 GetPoisonDamage(u8 battlerId)
+{
+    u32 damage = 0;
+#ifdef ABILITY_POISON_HEAL
+    if (gAiLogicData->abilities[battlerId] == ABILITY_POISON_HEAL)
+        return 0;
+#endif
+    if (gBattleMons[battlerId].status1 & STATUS1_POISON)
+    {
+        damage = gBattleMons[battlerId].maxHP / 8;
+        if (damage == 0)
+            damage = 1;
+    }
+    else if (gBattleMons[battlerId].status1 & STATUS1_TOXIC_POISON)
+    {
+        u32 status1Temp = gBattleMons[battlerId].status1;
+        damage = gBattleMons[battlerId].maxHP / 16;
+        if (damage == 0)
+            damage = 1;
+        if ((status1Temp & STATUS1_TOXIC_COUNTER) != STATUS1_TOXIC_TURN(15))
+            status1Temp += STATUS1_TOXIC_TURN(1);
+        damage *= (status1Temp & STATUS1_TOXIC_COUNTER) >> 8;
+    }
+    return damage;
+}
+
+// RHH: DoesBattlerTakeSandstormDamage (pokeemerald-expansion/src/battle_ai_util.c:3352)
+static bool32 DoesBattlerTakeSandstormDamage(u8 battlerId, u8 ability)
+{
+    if (!(gBattleWeather & B_WEATHER_SANDSTORM))
+        return FALSE;
+    if (IS_BATTLER_OF_TYPE(battlerId, TYPE_ROCK)
+     || IS_BATTLER_OF_TYPE(battlerId, TYPE_GROUND)
+     || IS_BATTLER_OF_TYPE(battlerId, TYPE_STEEL))
+        return FALSE;
+    if (ability == ABILITY_SAND_VEIL)
+        return FALSE;
+#ifdef ABILITY_SAND_FORCE
+    if (ability == ABILITY_SAND_FORCE)
+        return FALSE;
+#endif
+#ifdef ABILITY_SAND_RUSH
+    if (ability == ABILITY_SAND_RUSH)
+        return FALSE;
+#endif
+#ifdef ABILITY_MAGIC_GUARD
+    if (ability == ABILITY_MAGIC_GUARD)
+        return FALSE;
+#endif
+#ifdef ABILITY_OVERCOAT
+    if (ability == ABILITY_OVERCOAT)
+        return FALSE;
+#endif
+    return TRUE;
+}
+
+// RHH: DoesBattlerTakeHailDamage (pokeemerald-expansion/src/battle_ai_util.c:3367)
+static bool32 DoesBattlerTakeHailDamage(u8 battlerId, u8 ability)
+{
+    if (!(gBattleWeather & B_WEATHER_HAIL))
+        return FALSE;
+    if (IS_BATTLER_OF_TYPE(battlerId, TYPE_ICE))
+        return FALSE;
+#ifdef ABILITY_SNOW_CLOAK
+    if (ability == ABILITY_SNOW_CLOAK)
+        return FALSE;
+#endif
+#ifdef ABILITY_ICE_BODY
+    if (ability == ABILITY_ICE_BODY)
+        return FALSE;
+#endif
+#ifdef ABILITY_MAGIC_GUARD
+    if (ability == ABILITY_MAGIC_GUARD)
+        return FALSE;
+#endif
+#ifdef ABILITY_OVERCOAT
+    if (ability == ABILITY_OVERCOAT)
+        return FALSE;
+#endif
+    return TRUE;
+}
+
+// RHH: GetWeatherDamage (pokeemerald-expansion/src/battle_ai_util.c:3381)
+// HOLD_EFFECT_SAFETY_GOGGLES and semiInvulnerable checks not in FireRed — omitted.
+static u32 GetWeatherDamage(u8 battlerId)
+{
+    u8 ability = gAiLogicData->abilities[battlerId];
+    u32 damage = 0;
+
+    if (!gBattleWeather)
+        return 0;
+
+    if (DoesBattlerTakeSandstormDamage(battlerId, ability))
+    {
+        damage = gBattleMons[battlerId].maxHP / 16;
+        if (damage == 0)
+            damage = 1;
+    }
+    if ((gBattleWeather & B_WEATHER_HAIL)
+#ifdef ABILITY_ICE_BODY
+        && ability != ABILITY_ICE_BODY
+#endif
+    )
+    {
+        if (DoesBattlerTakeHailDamage(battlerId, ability))
+        {
+            damage = gBattleMons[battlerId].maxHP / 16;
+            if (damage == 0)
+                damage = 1;
+        }
+    }
+    return damage;
+}
+
+// RHH: GetBattlerSecondaryDamage (pokeemerald-expansion/src/battle_ai_util.c:3417)
+// Returns total residual damage the battler will take this turn.
+u32 GetBattlerSecondaryDamage(u8 battlerId)
+{
+    u32 secondaryDamage;
+
+#ifdef ABILITY_MAGIC_GUARD
+    if (gAiLogicData->abilities[battlerId] == ABILITY_MAGIC_GUARD)
+        return 0;
+#endif
+
+    secondaryDamage = GetLeechSeedDamage(battlerId)
+     + GetNightmareDamage(battlerId)
+     + GetCurseDamage(battlerId)
+     + GetTrapDamage(battlerId)
+     + GetPoisonDamage(battlerId)
+     + GetWeatherDamage(battlerId);
+
+    return secondaryDamage;
+}
+
+// RHH: DoesAbilityRaiseStatsWhenLowered (pokeemerald-expansion/src/battle_ai_util.c:5844)
+// Returns TRUE if the ability turns stat reductions into gains (Contrary/Competitive/Defiant).
+// Competitive and Defiant are Gen 5+ — #ifdef-guarded until their constants are added.
+bool32 DoesAbilityRaiseStatsWhenLowered(u8 ability)
+{
+    switch (ability)
+    {
+    case ABILITY_CONTRARY:
+#ifdef ABILITY_COMPETITIVE
+    case ABILITY_COMPETITIVE:
+#endif
+#ifdef ABILITY_DEFIANT
+    case ABILITY_DEFIANT:
+#endif
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
+// =============================================================================
 // Tier D: Stat change helpers (pokeemerald-expansion/src/battle_ai_util.c:4762-4823)
 // Pure switches — no external dependencies beyond enum StatChange (battle_ai_main.h).
 // =============================================================================

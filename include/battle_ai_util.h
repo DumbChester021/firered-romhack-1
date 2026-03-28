@@ -87,6 +87,14 @@ u16 *GetMovesArray(u8 battler);
 // Returns TRUE if any of battler's moves have the given battle move effect ID.
 bool32 HasMoveWithEffect(u8 battler, u16 effect);
 
+// RHH: GetBattlerSecondaryDamage (pokeemerald-expansion/src/battle_ai_util.c:3417)
+// Returns total expected residual damage (leech seed, poison, trap, etc.) this turn.
+u32 GetBattlerSecondaryDamage(u8 battlerId);
+
+// RHH: DoesAbilityRaiseStatsWhenLowered (pokeemerald-expansion/src/battle_ai_util.c:5844)
+// Returns TRUE for Contrary/Competitive/Defiant — abilities that benefit from stat drops.
+bool32 DoesAbilityRaiseStatsWhenLowered(u8 ability);
+
 // RHH: SetBattlerAiData (pokeemerald-expansion/src/battle_ai_main.c:615)
 // Populates gAiLogicData fields for one battler. Call for both battlers before scoring.
 void SetBattlerAiData(u8 battler, struct AiLogicData *aiData);
