@@ -13,6 +13,8 @@
 #include "constants/moves.h"
 #include "constants/battle_move_effects.h"
 
+#define AI_THINKING_STRUCT (gBattleResources->ai)
+
 // AI_CalcDamage: Returns an estimated damage value for the AI's move selection.
 // Calls FireRed's existing AI_CalcDmg + TypeCalc (from battle_script_commands.c)
 // which use gBattleMoveDamage as an in/out global.
@@ -792,6 +794,178 @@ bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect)
             return TRUE;
     }
     return FALSE;
+}
+
+// =============================================================================
+// Tier B: Move array + move query helpers (RHH pokeemerald-expansion/src/battle_ai_util.c)
+// =============================================================================
+
+// RHH: BattlerHasAi (pokeemerald-expansion/src/battle_controllers.c:103)
+// RHH checks gBattlerBattleController[battler] (absent in FireRed).
+// FireRed equivalent: opponent side is always AI-controlled.
+bool32 BattlerHasAi(u8 battler)
+{
+    return GetBattlerSide(battler) == B_SIDE_OPPONENT;
+}
+
+// RHH: IsAiFlagPresent (pokeemerald-expansion/src/battle_ai_util.c:139)
+// RHH iterates per-battler u64 aiFlags[4]. FireRed has a single u32 aiFlags.
+// Semantics: returns TRUE if any AI battler has the given flag set.
+bool32 IsAiFlagPresent(u32 flag)
+{
+    return (AI_THINKING_STRUCT->aiFlags & flag) != 0;
+}
+
+// RHH: IsAiBattlerAware (pokeemerald-expansion/src/battle_ai_util.c:150)
+// TRUE if the AI has full knowledge of battler's moves (own battler, or OMNISCIENT flag).
+bool32 IsAiBattlerAware(u8 battler)
+{
+#ifdef AI_FLAG_OMNISCIENT
+    if (IsAiFlagPresent(AI_FLAG_OMNISCIENT))
+        return TRUE;
+#endif
+    return BattlerHasAi(battler);
+}
+
+// RHH: GetMovesArray (pokeemerald-expansion/src/battle_ai_util.c:2528)
+// Returns the array of moves for the given battler.
+// When the AI is aware of the battler, returns live gBattleMons data;
+// otherwise RHH returns gBattleHistory->usedMoves[battler]. Our history struct
+// is side-indexed (usedMoves[2][8]) rather than battler-indexed, so we fall
+// back to gBattleMons here too — functionally omniscient, same as current FireRed AI.
+u16 *GetMovesArray(u8 battler)
+{
+    if (IsAiBattlerAware(battler) || IsAiBattlerAware(BATTLE_PARTNER(battler)))
+        return gBattleMons[battler].moves;
+    else
+        return gBattleMons[battler].moves; // FireRed: no battler-indexed history
+}
+
+// RHH: HasMoveWithEffect (pokeemerald-expansion/src/battle_ai_util.c:2610)
+// Returns TRUE if any of battler's moves have the given effect ID.
+bool32 HasMoveWithEffect(u8 battler, u16 effect)
+{
+    u16 *moves = GetMovesArray(battler);
+    u32 moveIndex;
+
+    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+            && GetMoveEffect(moves[moveIndex]) == effect)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: HasMoveThatChangesKOThreshold (pokeemerald-expansion/src/battle_ai_util.c:4727)
+// Returns TRUE if battlerId has a priority move or a speed-drop additional effect
+// that could change how many hits are needed to KO.
+static bool32 HasMoveThatChangesKOThreshold(u8 battlerId, u32 noOfHitsToFaint, bool32 aiIsFaster)
+{
+    u16 *moves = GetMovesArray(battlerId);
+    u32 moveIndex;
+
+    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        u32 additionalEffectCount, effectIndex;
+
+        if (moves[moveIndex] == MOVE_NONE || moves[moveIndex] == MOVE_UNAVAILABLE)
+            continue;
+        if (noOfHitsToFaint <= 2)
+        {
+            if (GetMovePriority(moves[moveIndex]) > 0)
+                return TRUE;
+
+            additionalEffectCount = GetMoveAdditionalEffectCount(moves[moveIndex]);
+            for (effectIndex = 0; effectIndex < additionalEffectCount; effectIndex++)
+            {
+                const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(moves[moveIndex], effectIndex);
+                switch (additionalEffect->moveEffect)
+                {
+                case MOVE_EFFECT_SPD_MINUS_1:
+                case MOVE_EFFECT_SPD_MINUS_2:
+                    if (aiIsFaster && !additionalEffect->self)
+                        return TRUE;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+    return FALSE;
+}
+
+// =============================================================================
+// Tier D: Stat change helpers (pokeemerald-expansion/src/battle_ai_util.c:4762-4823)
+// Pure switches — no external dependencies beyond enum StatChange (battle_ai_main.h).
+// =============================================================================
+
+// RHH: GetStatBeingChanged (pokeemerald-expansion/src/battle_ai_util.c:4762)
+// Maps a StatChange enum value to the corresponding STAT_* constant.
+static u8 GetStatBeingChanged(enum StatChange statChange)
+{
+    switch (statChange)
+    {
+    case STAT_CHANGE_ATK:
+    case STAT_CHANGE_ATK_2:
+    case STAT_CHANGE_ATK_3:
+    case STAT_CHANGE_ATK_MAX:
+        return STAT_ATK;
+    case STAT_CHANGE_DEF:
+    case STAT_CHANGE_DEF_2:
+    case STAT_CHANGE_DEF_3:
+        return STAT_DEF;
+    case STAT_CHANGE_SPEED:
+    case STAT_CHANGE_SPEED_2:
+    case STAT_CHANGE_SPEED_3:
+        return STAT_SPEED;
+    case STAT_CHANGE_SPATK:
+    case STAT_CHANGE_SPATK_2:
+    case STAT_CHANGE_SPATK_3:
+        return STAT_SPATK;
+    case STAT_CHANGE_SPDEF:
+    case STAT_CHANGE_SPDEF_2:
+    case STAT_CHANGE_SPDEF_3:
+        return STAT_SPDEF;
+    case STAT_CHANGE_ACC:
+        return STAT_ACC;
+    case STAT_CHANGE_EVASION:
+        return STAT_EVASION;
+    }
+    return STAT_HP; // should never be reached
+}
+
+// RHH: GetStagesOfStatChange (pokeemerald-expansion/src/battle_ai_util.c:4795)
+// Returns the number of stat stages changed (1, 2, 3, or 6 for ATK_MAX).
+static u32 GetStagesOfStatChange(enum StatChange statChange)
+{
+    switch (statChange)
+    {
+    case STAT_CHANGE_ATK:
+    case STAT_CHANGE_DEF:
+    case STAT_CHANGE_SPEED:
+    case STAT_CHANGE_SPATK:
+    case STAT_CHANGE_SPDEF:
+    case STAT_CHANGE_ACC:
+    case STAT_CHANGE_EVASION:
+        return 1;
+    case STAT_CHANGE_ATK_2:
+    case STAT_CHANGE_DEF_2:
+    case STAT_CHANGE_SPEED_2:
+    case STAT_CHANGE_SPATK_2:
+    case STAT_CHANGE_SPDEF_2:
+        return 2;
+    case STAT_CHANGE_ATK_3:
+    case STAT_CHANGE_DEF_3:
+    case STAT_CHANGE_SPEED_3:
+    case STAT_CHANGE_SPATK_3:
+    case STAT_CHANGE_SPDEF_3:
+        return 3;
+    case STAT_CHANGE_ATK_MAX:
+        return 6;
+    }
+    return 0; // should never be reached
 }
 
 // =============================================================================

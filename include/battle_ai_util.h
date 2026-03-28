@@ -73,6 +73,20 @@ bool8 HasMoveWithCategory(u8 battler, u8 category);
 bool8 BattlerStatCanRise(u8 battler, u8 stat);
 u32 GetBattlerSideSpeedAverage(u8 battler);
 
+// RHH: BattlerHasAi / IsAiFlagPresent / IsAiBattlerAware
+// (pokeemerald-expansion/src/battle_controllers.c:103, src/battle_ai_util.c:139/150)
+bool32 BattlerHasAi(u8 battler);
+bool32 IsAiFlagPresent(u32 flag);
+bool32 IsAiBattlerAware(u8 battler);
+
+// RHH: GetMovesArray (pokeemerald-expansion/src/battle_ai_util.c:2528)
+// Returns pointer to battler's move array (or history moves if AI is unaware of battler).
+u16 *GetMovesArray(u8 battler);
+
+// RHH: HasMoveWithEffect (pokeemerald-expansion/src/battle_ai_util.c:2610)
+// Returns TRUE if any of battler's moves have the given battle move effect ID.
+bool32 HasMoveWithEffect(u8 battler, u16 effect);
+
 // RHH: SetBattlerAiData (pokeemerald-expansion/src/battle_ai_main.c:615)
 // Populates gAiLogicData fields for one battler. Call for both battlers before scoring.
 void SetBattlerAiData(u8 battler, struct AiLogicData *aiData);

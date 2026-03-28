@@ -52,10 +52,11 @@ Port in this exact order — each step may unlock the next.
 7. ✅ Updated `AI_IsFaster()`/`AI_IsSlower()` to RHH 5-param signature + updated 4 callers
 8. ✅ Updated `SetBattlerAiData()` field `speedStats` to use `GetBattlerTotalSpeedStat()`
 
-### Tier B: Move Array + Move Query Helpers
-9. `GetMovesArray()` — RHH `src/battle_ai_util.c` — returns `gBattleMons[battler].moves`
-10. `HasMoveWithEffect()` — 12 lines, needs 9 + `GetMoveEffect()` (done)
-11. `HasMoveThatChangesKOThreshold()` — 34 lines, needs 9+10 + accessors (done)
+### Tier B: Move Array + Move Query Helpers ✅ DONE
+9. ✅ `BattlerHasAi()` / `IsAiFlagPresent()` / `IsAiBattlerAware()` → `src/battle_ai_util.c`
+10. ✅ `GetMovesArray()` → `src/battle_ai_util.c` (returns `gBattleMons[battler].moves`; history path #commented — FireRed history is side-indexed)
+11. ✅ `HasMoveWithEffect()` → `src/battle_ai_util.c`
+12. ✅ `HasMoveThatChangesKOThreshold()` → `src/battle_ai_util.c` (static)
 
 ### Tier C: Battler State Helpers
 12. `GetBattlerParty()` — returns `gPlayerParty`/`gEnemyParty` by battler side
@@ -71,9 +72,9 @@ Port in this exact order — each step may unlock the next.
     - **Blocker**: RHH has `u64 aiFlags[MAX_BATTLERS_COUNT]`, FireRed has `u32 aiFlags` (single)
     - This is a structural change — defer or alias
 
-### Tier D: Stat Change Helpers (self-contained)
-16. `GetStatBeingChanged()` — 32 lines, pure switch on StatChange → needs `enum StatChange` (done)
-17. `GetStagesOfStatChange()` — 29 lines, pure switch on StatChange
+### Tier D: Stat Change Helpers (self-contained) ✅ DONE
+16. ✅ `GetStatBeingChanged()` — static in `src/battle_ai_util.c`
+17. ✅ `GetStagesOfStatChange()` — static in `src/battle_ai_util.c`
 
 ### Tier E: Setup Logic
 18. `CanAiPredictMove()` — needed by GetIncomingMoveSpeedCheck
@@ -122,7 +123,8 @@ Others (IncreaseStatDownScore speed path, GetStatBeingChanged/GetStagesOfStatCha
 ## Port Session Plan
 
 - **Session A**: ✅ Tier A steps 1-8 (speed infrastructure + AI_IsFaster update)
-- **Session B (next)**: Tiers B+D (GetMovesArray, HasMoveWithEffect, GetStatBeingChanged, GetStagesOfStatChange)
+- **Session B**: ✅ Tiers B+D (BattlerHasAi, IsAiBattlerAware, GetMovesArray, HasMoveWithEffect, HasMoveThatChangesKOThreshold, GetStatBeingChanged, GetStagesOfStatChange)
+- **Session C (next)**: Tier C (GetBattlerSecondaryDamage + helpers, DoesAbilityRaiseStatsWhenLowered)
 - **Session C**: Tier C part (GetBattlerSecondaryDamage + secondary-dmg helpers)
 - **Session D**: Tier E (CanAiPredictMove, GetIncomingMoveSpeedCheck, ShouldRaiseAnyStat)
 - **Session E**: Tier F+G (damage calc, IsBattlerTrapped)
