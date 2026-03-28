@@ -342,25 +342,29 @@ Names/structures that still differ from RHH and need renaming when touched:
 - `gBattleMoves` → `gMovesInfo` (29 files, 246 occurrences)
 - `SPLIT_PHYSICAL/SPECIAL/STATUS` → `DAMAGE_CATEGORY_*` (14 files, 891 occurrences)
 
-**Completed AI infrastructure ports:**
-- `GetMoveAdditionalEffectCount()` — inline in `include/pokemon.h`
-- `GetMoveAdditionalEffectById()` — inline in `include/pokemon.h`
-- `MoveEffectIsGuaranteed()` — `src/battle_util.c`
-- `MoveIsAffectedBySheerForce()` — `src/battle_util.c`
-- `IsSheerForceAffected()` — `src/battle_util.c` (ifdef'd for Gen 5 ability)
+**Completed AI infrastructure ports (Tier A done — commit d06c38e95):**
+- `GetMoveAdditionalEffectCount()` / `GetMoveAdditionalEffectById()` — inline in `include/pokemon.h`
+- `MoveEffectIsGuaranteed()` / `MoveIsAffectedBySheerForce()` / `IsSheerForceAffected()` — `src/battle_util.c`
 - `struct AiLogicData` — `include/battle.h` (full RHH struct, heap-allocated)
 - `gAiLogicData` — allocated in `src/battle_util2.c`
 - `.sheerForceOverride` field added to `struct AdditionalEffect`
-- Python extraction tool: `tools/port_ai_scoring.py` (12 functions extracted, 715 lines)
-- Staging area: `tools/staging/ai_port/` (individual + combined extracted files)
+- `enum AIScore`, `enum StatChange`, `ADJUST_SCORE`/`ADJUST_SCORE_PTR` — `include/battle_ai_main.h`
+- `enum ConsiderPriority` — `include/battle_ai_util.h`
+- `AI_IS_FASTER`/`AI_IS_SLOWER` (#define 1/-1), `UNKNOWN_NO_OF_HITS` — `include/battle_ai_main.h`
+- `GetBattlerTotalSpeedStat()` / `GetBattleMovePriority()` — `src/battle_main.c`
+- `AI_WhoStrikesFirst()` — `src/battle_ai_util.c` (5-param RHH signature)
+- `AI_IsFaster()` / `AI_IsSlower()` — updated to 5-param RHH signatures, 4 callers updated
+- `SetBattlerAiData()` — `src/battle_ai_util.c` (uses GetBattlerTotalSpeedStat)
+- Python extraction tool: `tools/port_ai_scoring.py`; 12 staged functions in `tools/staging/ai_port/`
 
-**Next: AI scoring port** (see `docs/research/ai_additional_effects_port_plan.md`):
-1. Port `enum AIScore` + `ADJUST_SCORE` macros
-2. Port `SetBattlerAiData()` with simplified deps
-3. Port stat scoring helpers (`IncreaseStatUpScore`, `IncreaseStatDownScore`)
-4. Port `AI_CalcAdditionalEffectScore()` (355 lines, full RHH body)
-5. Wire into `AI_CheckViability()`
-- Estimated: 3-4 sessions total
+**Next: Session B — Tiers B+D** (see `docs/research/ai_additional_effects_port_plan.md`):
+1. `GetMovesArray()` — returns `gBattleMons[battler].moves` pointer
+2. `HasMoveWithEffect()` — 12 lines
+3. `HasMoveThatChangesKOThreshold()` — 34 lines
+4. `GetStatBeingChanged()` — 32-line pure switch (StatChange → Stat)
+5. `GetStagesOfStatChange()` — 29-line pure switch (StatChange → u32)
+- Then Session C: GetBattlerSecondaryDamage + helpers, DoesAbilityRaiseStatsWhenLowered
+- Estimated: 2-3 sessions to reach AI_CalcAdditionalEffectScore
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 

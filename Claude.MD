@@ -150,14 +150,16 @@ TASK EXECUTION PROTOCOL
 
 ---
 
-CURRENT ACTIVE WORK (as of 2026-03-28)
+CURRENT ACTIVE WORK (as of 2026-03-29)
 
-Active task: Porting AI additionalEffects scoring from RHH.
+Active task: Porting AI additionalEffects scoring from RHH (Session B next).
 * Research doc: `docs/research/ai_additional_effects_port_plan.md`
 * Python extraction tool: `tools/port_ai_scoring.py` (run with `--check-deps`)
-* Staging area: `tools/staging/ai_port/` (12 extracted RHH functions, 715 lines)
-* Infrastructure done: accessors, MoveEffectIsGuaranteed, struct AiLogicData, gAiLogicData
-* Next: enum AIScore + ADJUST_SCORE macros, then SetBattlerAiData, then stat scoring helpers
+* Staging area: `tools/staging/ai_port/` (12 extracted RHH functions ready)
+* Tier A DONE (commit d06c38e95): speed infrastructure — GetBattlerTotalSpeedStat,
+  GetBattleMovePriority, AI_WhoStrikesFirst, AI_IsFaster/IsSlower 5-param, SetBattlerAiData
+* Next (Session B): Tiers B+D — GetMovesArray, HasMoveWithEffect, HasMoveThatChangesKOThreshold,
+  GetStatBeingChanged, GetStagesOfStatChange
 * Continuation guide section: "RHH Convergence Tracker" in `docs/CONTINUATION_GUIDE.md`
 
 EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
