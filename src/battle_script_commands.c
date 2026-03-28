@@ -710,34 +710,6 @@ static const struct SpriteTemplate sSpriteTemplate_MonIconOnLvlUpBanner =
 
 static const u16 sProtectSuccessRates[] = {USHRT_MAX, USHRT_MAX / 2, USHRT_MAX / 4, USHRT_MAX / 8};
 
-#define MIMIC_FORBIDDEN_END             0xFFFE
-#define METRONOME_FORBIDDEN_END         0xFFFF
-#define ASSIST_FORBIDDEN_END            0xFFFF
-
-static const u16 sMovesForbiddenToCopy[] =
-{
-    MOVE_METRONOME,
-    MOVE_STRUGGLE,
-    MOVE_SKETCH,
-    MOVE_MIMIC,
-    MIMIC_FORBIDDEN_END,
-    MOVE_COUNTER,
-    MOVE_MIRROR_COAT,
-    MOVE_PROTECT,
-    MOVE_DETECT,
-    MOVE_ENDURE,
-    MOVE_DESTINY_BOND,
-    MOVE_SLEEP_TALK,
-    MOVE_THIEF,
-    MOVE_FOLLOW_ME,
-    MOVE_SNATCH,
-    MOVE_HELPING_HAND,
-    MOVE_COVET,
-    MOVE_TRICK,
-    MOVE_FOCUS_PUNCH,
-    METRONOME_FORBIDDEN_END
-};
-
 static const u8 sFlailHpScaleToPowerTable[] =
 {
     1, 200,
@@ -7603,11 +7575,7 @@ static void Cmd_setsubstitute(void)
 
 static bool8 IsMoveUncopyableByMimic(u16 move)
 {
-    s32 i;
-    for (i = 0; sMovesForbiddenToCopy[i] != MIMIC_FORBIDDEN_END
-                && sMovesForbiddenToCopy[i] != move; i++);
-
-    return (sMovesForbiddenToCopy[i] != MIMIC_FORBIDDEN_END);
+    return gBattleMoves[move].mimicBanned;
 }
 
 static void Cmd_mimicattackcopy(void)
@@ -7663,19 +7631,6 @@ static void Cmd_metronome(void)
         if (gBattleMoves[gCurrentMove].metronomeBanned)
             continue;
 
-        for (i = 0; i < MAX_MON_MOVES; i++); // ?
-
-        i = -1;
-        while (TRUE)
-        {
-            i++;
-            if (sMovesForbiddenToCopy[i] == gCurrentMove)
-                break;
-            if (sMovesForbiddenToCopy[i] == METRONOME_FORBIDDEN_END)
-                break;
-        }
-
-        if (sMovesForbiddenToCopy[i] == METRONOME_FORBIDDEN_END)
         {
             gHitMarker &= ~HITMARKER_ATTACKSTRING_PRINTED;
             gBattlescriptCurrInstr = gBattleScriptsForMoveEffects[gBattleMoves[gCurrentMove].effect];
@@ -7786,9 +7741,7 @@ static void Cmd_trysetencore(void)
             break;
     }
 
-    if (gLastMoves[gBattlerTarget] == MOVE_STRUGGLE
-        || gLastMoves[gBattlerTarget] == MOVE_ENCORE
-        || gLastMoves[gBattlerTarget] == MOVE_MIRROR_MOVE)
+    if (gBattleMoves[gLastMoves[gBattlerTarget]].encoreBanned)
     {
         i = MAX_MON_MOVES;
     }
@@ -7965,18 +7918,6 @@ static bool8 IsTwoTurnsMove(u16 move)
         return FALSE;
 }
 
-static bool8 IsInvalidForSleepTalkOrAssist(u16 move)
-{
-    if (move == MOVE_NONE
-     || move == MOVE_SLEEP_TALK
-     || move == MOVE_ASSIST
-     || move == MOVE_MIRROR_MOVE
-     || move == MOVE_METRONOME)
-        return TRUE;
-    else
-        return FALSE;
-}
-
 static u8 AttacksThisTurn(u8 battlerId, u16 move) // Note: returns 1 if it's a charging turn, otherwise 2
 {
     // first argument is unused
@@ -8001,10 +7942,7 @@ static void Cmd_trychoosesleeptalkmove(void)
 
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        if (IsInvalidForSleepTalkOrAssist(gBattleMons[gBattlerAttacker].moves[i])
-            || gBattleMons[gBattlerAttacker].moves[i] == MOVE_FOCUS_PUNCH
-            || gBattleMons[gBattlerAttacker].moves[i] == MOVE_UPROAR
-            || IsTwoTurnsMove(gBattleMons[gBattlerAttacker].moves[i]))
+        if (gBattleMoves[gBattleMons[gBattlerAttacker].moves[i]].sleepTalkBanned)
         {
             unusableMovesBits |= gBitTable[i];
         }
@@ -9262,17 +9200,11 @@ static void Cmd_assistattackselect(void)
 
         for (moveId = 0; moveId < MAX_MON_MOVES; moveId++)
         {
-            s32 i = 0;
             u16 move = GetMonData(&party[monId], MON_DATA_MOVE1 + moveId);
 
-            if (IsInvalidForSleepTalkOrAssist(move))
-                continue;
-
-            for (; sMovesForbiddenToCopy[i] != ASSIST_FORBIDDEN_END && move != sMovesForbiddenToCopy[i]; i++);
-
-            if (sMovesForbiddenToCopy[i] != ASSIST_FORBIDDEN_END)
-                continue;
             if (move == MOVE_NONE)
+                continue;
+            if (gBattleMoves[move].assistBanned)
                 continue;
 
             validMoves[chooseableMovesNo] = move;

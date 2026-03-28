@@ -271,6 +271,12 @@ struct BattleMove
     u8  thawsUser:1;             // RHH: thawsUser
     u8  ignoresSubstitute:1;     // RHH: ignoresSubstitute (sound moves Gen 6+, etc.)
     u8  metronomeBanned:1;       // RHH: metronomeBanned
+    u8  mimicBanned:1;           // RHH: mimicBanned
+    u8  copycatBanned:1;         // RHH: copycatBanned
+    u8  assistBanned:1;          // RHH: assistBanned (copycatBanned + semi-invulnerable + Mirror Coat)
+    u8  sleepTalkBanned:1;       // RHH: sleepTalkBanned
+    u8  instructBanned:1;        // RHH: instructBanned
+    u8  encoreBanned:1;          // RHH: encoreBanned
 
     // Effect-based hack replacements — port of RHH MoveInfo fields.
     // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.

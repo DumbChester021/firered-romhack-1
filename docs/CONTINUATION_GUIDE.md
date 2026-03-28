@@ -193,8 +193,22 @@ Comprehensive audit of all ported Gen 4+ moves against RHH reference, plus struc
 - Applied to 153 moves matching RHH (includes gimmick moves: Tera, Mega, Z-Move, Dynamax)
 - All gimmick-related moves are banned even though gimmick systems aren't yet implemented
 
-#### Next: Remaining ban flags
-The following RHH ban flags still need porting: `mimicBanned`, `copycatBanned`, `assistBanned`, `sleepTalkBanned`, `instructBanned`, `encoreBanned`. These will replace the old hardcoded `sMovesForbiddenToCopy` array.
+#### Remaining ban flags — Complete
+Added 6 additional per-move ban flags matching RHH:
+- `mimicBanned` (24 moves) — engine check in `IsMoveUncopyableByMimic()`
+- `copycatBanned` (49 moves) — data-only (Copycat not yet implemented)
+- `assistBanned` (47 moves) — engine check in Assist handler
+- `sleepTalkBanned` (37 moves) — engine check in `Cmd_trychoosesleeptalkmove()`
+- `instructBanned` (51 moves) — data-only (Instruct not yet implemented)
+- `encoreBanned` (13 moves) — engine check in `Cmd_trysetencore()`
+
+**Deprecated:** Removed `sMovesForbiddenToCopy` hardcoded array and `IsInvalidForSleepTalkOrAssist()` helper. All move restriction checks now use per-move bitfield flags matching RHH architecture.
+
+#### Still Needed (Phase 13 Follow-up)
+- **`copycatBanned` engine check**: Copycat (`EFFECT_COPYCAT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].copycatBanned` check in its handler.
+- **`instructBanned` engine check**: Instruct (`EFFECT_INSTRUCT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].instructBanned` check in its handler.
+- **Additional RHH ban flags not yet ported**: `gravityBanned`, `meFirstBanned`, `parentalBondBanned`, `skyBattleBanned`, `sketchBanned`, `dampBanned` — these exist in RHH's struct but aren't ported yet. Port when the relevant mechanics are implemented.
+- **`MOVE_NONE` special case for assistBanned**: RHH marks `MOVE_NONE` with `.assistBanned = TRUE`. Our `MOVE_NONE` entry is index 0 in the array and the Assist handler already checks `move == MOVE_NONE` before checking flags, so this is functionally handled.
 
 ---
 

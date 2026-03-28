@@ -2753,6 +2753,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .windMove = TRUE,
         .criticalHitStage = 1,
         .category = SPLIT_SPECIAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_SWORDS_DANCE] =
@@ -2835,6 +2837,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_BIND] =
@@ -3100,6 +3104,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
             .chance = 0,
         }),
+        .instructBanned = TRUE,
     },
 
     [MOVE_DOUBLE_EDGE] =
@@ -3541,6 +3546,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_SEISMIC_TOSS] =
@@ -3647,6 +3654,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .category = SPLIT_SPECIAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_POISON_POWDER] =
@@ -3708,6 +3717,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
             .chance = 0,
         }),
+        .instructBanned = TRUE,
     },
 
     [MOVE_STRING_SHOT] =
@@ -3859,6 +3869,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_TOXIC] =
@@ -4012,6 +4024,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_SCREECH] =
@@ -4232,6 +4250,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_METRONOME] =
@@ -4247,6 +4267,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_MIRROR_MOVE] =
@@ -4260,6 +4284,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_SELF_DESTRUCT] =
@@ -4430,6 +4459,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
             .chance = 0,
         }),
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_SPIKE_CANNON] =
@@ -4611,6 +4642,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
         }),
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_TRANSFORM] =
@@ -4626,6 +4659,9 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_BUBBLE] =
@@ -4938,6 +4974,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_SKETCH] =
@@ -4953,6 +4995,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_TRIPLE_KICK] =
@@ -4985,6 +5032,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 0,
         }),
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_SPIDER_WEB] =
@@ -5180,6 +5229,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_MACH_PUNCH] =
@@ -5358,6 +5409,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_PERISH_SONG] =
@@ -5406,6 +5459,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_BONE_RUSH] =
@@ -5448,6 +5503,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
             .chance = 0,
         }),
+        .instructBanned = TRUE,
     },
 
     [MOVE_SANDSTORM] =
@@ -5491,6 +5547,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_CHARM] =
@@ -5517,6 +5575,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .instructBanned = TRUE,
     },
 
     [MOVE_FALSE_SWIPE] =
@@ -5650,6 +5709,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_HEAL_BELL] =
@@ -5833,6 +5897,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .category = SPLIT_STATUS,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_PURSUIT] =
@@ -6071,6 +6136,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_SPECIAL,
         .metronomeBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_PSYCH_UP] =
@@ -6227,6 +6293,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
             .chance = 0,
         }),
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_STOCKPILE] =
@@ -6382,6 +6450,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_PHYSICAL,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_SMELLING_SALTS] =
@@ -6410,6 +6482,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_NATURE_POWER] =
@@ -6423,6 +6497,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_CHARGE] =
@@ -6466,6 +6544,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_TRICK] =
@@ -6479,6 +6559,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_ROLE_PLAY] =
@@ -6524,6 +6606,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_INGRAIN] =
@@ -6736,6 +6824,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_SECRET_POWER] =
@@ -6761,6 +6851,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_ARM_THRUST] =
@@ -6910,6 +7002,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .ballisticMove = TRUE,
         .category = SPLIT_PHYSICAL,
+        .instructBanned = TRUE,
     },
 
     [MOVE_NEEDLE_ARM] =
@@ -7503,6 +7596,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
         }),
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_MUD_SHOT] =
@@ -7555,6 +7650,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 0,
         }),
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_VOLT_TACKLE] =
@@ -7861,6 +7958,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .category = SPLIT_PHYSICAL,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_PLUCK] =
@@ -8101,6 +8200,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_COPYCAT] =
@@ -8116,6 +8220,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_POWER_SWAP] =
@@ -8585,6 +8694,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_GIGA_IMPACT] =
@@ -9096,6 +9207,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 100,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_JUDGMENT] =
@@ -9377,6 +9493,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .ignoresProtect = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_HONE_CLAWS] =
@@ -9502,6 +9620,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_TELEKINESIS] =
@@ -9940,6 +10060,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_SHIFT_GEAR] =
@@ -9968,6 +10090,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = -6,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_INCINERATE] =
@@ -10059,6 +10183,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_INFERNO] =
@@ -10180,6 +10306,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = -6,
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_WORK_UP] =
@@ -10611,6 +10739,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 30,
         }),
         .metronomeBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_ICE_BURN] =
@@ -10628,6 +10758,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 30,
         }),
         .metronomeBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_SNARL] =
@@ -10731,6 +10863,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_BELCH] =
@@ -10745,6 +10879,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_SPECIAL,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_ROTOTILLER] =
@@ -10801,6 +10940,9 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .ignoresProtect = TRUE,
         .category = SPLIT_PHYSICAL,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_TRICK_OR_TREAT] =
@@ -11107,6 +11249,9 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_PLAY_NICE] =
@@ -11225,6 +11370,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_AROMATIC_MIST] =
@@ -11291,6 +11438,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_USER,
         .priority = 0,
         .category = SPLIT_STATUS,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_MAGNETIC_FLUX] =
@@ -11361,6 +11510,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_HOLD_HANDS] =
@@ -11375,6 +11529,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_BABY_DOLL_EYES] =
@@ -11627,6 +11786,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_SPIRIT_SHACKLE] =
@@ -11745,6 +11906,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .category = SPLIT_PHYSICAL,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_LEAFAGE] =
@@ -11772,6 +11935,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_TOXIC_THREAD] =
@@ -12028,6 +12193,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_BEAK_BLAST] =
@@ -12043,6 +12209,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_PHYSICAL,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_CLANGING_SCALES] =
@@ -12117,6 +12287,10 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_SPECIAL,
         .metronomeBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_FLEUR_CANNON] =
@@ -12594,6 +12768,11 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_SPECIAL,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_SNIPE_SHOT] =
@@ -12874,6 +13053,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .slicingMove = TRUE,
         .category = SPLIT_PHYSICAL,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
     },
 
     [MOVE_BEHEMOTH_BASH] =
@@ -12888,6 +13069,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .category = SPLIT_PHYSICAL,
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
     },
 
     [MOVE_AURA_WHEEL] =
@@ -13054,6 +13237,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
         .metronomeBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_FALSE_SURRENDER] =
@@ -13086,6 +13270,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 0,
         }),
         .metronomeBanned = TRUE,
+        .instructBanned = TRUE,
     },
 
     [MOVE_ETERNABEAM] =
@@ -13171,6 +13356,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .self = TRUE,
             .chance = 0,
         }),
+        .instructBanned = TRUE,
     },
 
     [MOVE_SHELL_SIDE_ARM] =
@@ -14585,6 +14771,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 30,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_WICKED_TORQUE] =
@@ -14603,6 +14795,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 10,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_NOXIOUS_TORQUE] =
@@ -14621,6 +14819,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 30,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_COMBAT_TORQUE] =
@@ -14639,6 +14843,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 30,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_MAGICAL_TORQUE] =
@@ -14657,6 +14867,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
             .chance = 30,
         }),
         .metronomeBanned = TRUE,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
+        .sleepTalkBanned = TRUE,
+        .instructBanned = TRUE,
+        .encoreBanned = TRUE,
     },
 
     [MOVE_PSYBLADE] =
@@ -14769,6 +14985,9 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .category = SPLIT_SPECIAL,
+        .mimicBanned = TRUE,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_FICKLE_BEAM] =
@@ -14795,6 +15014,8 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
         .category = SPLIT_STATUS,
+        .copycatBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_THUNDERCLAP] =
