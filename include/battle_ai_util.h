@@ -2,6 +2,22 @@
 #define GUARD_BATTLE_AI_UTIL_H
 
 #include "global.h"
+#include "constants/moves.h"
+
+// RHH: IsMoveUnusable (pokeemerald-expansion/include/battle_ai_util.h:71-77)
+// Returns TRUE if a move slot should be skipped during AI move evaluation.
+static inline bool32 IsMoveUnusable(u32 moveIndex, u16 move, u32 moveLimitations)
+{
+    return move == MOVE_NONE
+        || move == MOVE_UNAVAILABLE
+        || (moveLimitations & (1u << moveIndex));
+}
+
+// RHH: LEFT_FOE / RIGHT_FOE (pokeemerald-expansion/include/constants/battle.h:62-63)
+#ifndef LEFT_FOE
+#define LEFT_FOE(battler)  ((BATTLE_OPPOSITE(battler)) & BIT_SIDE)
+#define RIGHT_FOE(battler) (((BATTLE_OPPOSITE(battler)) & BIT_SIDE) | BIT_FLANK)
+#endif
 
 // RHH: ConsiderPriority enum (pokeemerald-expansion/include/battle_ai_util.h:65-69)
 // Controls whether AI_WhoStrikesFirst checks move priority before comparing speed.
@@ -9,6 +25,22 @@ enum ConsiderPriority
 {
     DONT_CONSIDER_PRIORITY,
     CONSIDER_PRIORITY,
+};
+
+// RHH: enum DamageCalcContext (pokeemerald-expansion/include/battle_ai_util.h:17-23)
+// Selects which battler's damage perspective to use in AI_GetDamage.
+enum DamageCalcContext
+{
+    AI_DEFENDING,
+    AI_ATTACKING,
+};
+
+// RHH: enum AiConsiderEndure (pokeemerald-expansion/include/battle_ai_util.h:25-29)
+// Controls whether GetNoOfHitsToKOBattler accounts for Focus Sash / Sturdy.
+enum AiConsiderEndure
+{
+    CONSIDER_ENDURE,
+    DONT_CONSIDER_ENDURE,
 };
 
 // ============================================================================
@@ -107,5 +139,37 @@ bool32 ShouldRaiseAnyStat(u8 battlerAtk, u8 battlerDef);
 // RHH: SetBattlerAiData (pokeemerald-expansion/src/battle_ai_main.c:615)
 // Populates gAiLogicData fields for one battler. Call for both battlers before scoring.
 void SetBattlerAiData(u8 battler, struct AiLogicData *aiData);
+
+// RHH: Tier H/I pre-reqs
+bool32 DoesSubstituteBlockMove(u8 battlerAtk, u8 battlerDef, u16 move);
+bool32 CanAIFaintTarget(u8 battlerAtk, u8 battlerDef, u32 numHits);
+bool32 CanTargetFaintAi(u8 battlerDef, u8 battlerAtk);
+bool32 IsMoldBreakerTypeAbility(u8 battler, u8 ability);
+bool32 HasTwoOpponents(u8 battler);
+bool32 HasPartner(u8 battler);
+enum AIScore IncreaseStatDownScore(u8 battlerAtk, u8 battlerDef, u8 stat);
+enum AIScore IncreaseStatUpScore(u8 battlerAtk, u8 battlerDef, enum StatChange statChange);
+enum AIScore IncreaseStatUpScoreContrary(u8 battlerAtk, u8 battlerDef, enum StatChange statChange);
+void IncreasePoisonScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score);
+void IncreaseBurnScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score);
+void IncreaseParalyzeScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score);
+void IncreaseSleepScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score);
+void IncreaseConfusionScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score);
+
+// RHH: Tier F — KO calculation helpers
+// (pokeemerald-expansion/src/battle_ai_util.c:1362-1561)
+bool32 CanEndureHit(u8 battler, u8 battlerTarget, u16 move);
+u32 GetNoOfHitsToKO(u32 dmg, s32 hp);
+u32 GetNoOfHitsToKOBattlerDmg(u32 dmg, u8 battlerDef);
+u32 GetNoOfHitsToKOBattler(u8 battlerAtk, u8 battlerDef, u32 moveIndex, enum DamageCalcContext calcContext, enum AiConsiderEndure considerEndure);
+u32 NoOfHitsForTargetToFaintBattler(u8 battlerDef, u8 battlerAtk, enum AiConsiderEndure considerEndure);
+
+// RHH: Tier G — trap detection helpers
+// (pokeemerald-expansion/src/battle_ai_util.c:68, 469-510, 4553-4585, 6349-6365)
+bool32 AI_IsBattlerGrounded(u8 battler);
+bool32 AI_CanBattlerEscape(u8 battler);
+void GetAIPartyIndexes(u8 battler, s32 *firstId, s32 *lastId);
+s32 CountUsablePartyMons(u8 battlerId);
+bool32 IsBattlerTrapped(u8 battlerAtk, u8 battlerDef);
 
 #endif // GUARD_BATTLE_AI_UTIL_H

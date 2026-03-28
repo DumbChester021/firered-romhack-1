@@ -3377,3 +3377,23 @@ u8 GetBattlerType2(u8 battlerId)
     }
     return type;
 }
+
+// RHH: IsBattlerGrounded (pokeemerald-expansion/src/battle_util.c:5985)
+// Gen 3 subset: Levitate and Flying type are the only airborne checks.
+// Ingrain (STATUS3_ROOTED) grounds the battler in Gen 3.
+// Gen 4+ checks (IRON_BALL, GRAVITY, SMACK_DOWN, TELEKINESIS, MAGNET_RISE, AIR_BALLOON) #ifdef'd.
+static bool32 IsBattlerGroundedInternal(u8 battler, u8 ability, u8 holdEffect)
+{
+    if (gStatuses3[battler] & STATUS3_ROOTED)
+        return TRUE;
+    if (ability == ABILITY_LEVITATE)
+        return FALSE;
+    if (IS_BATTLER_OF_TYPE(battler, TYPE_FLYING))
+        return FALSE;
+    return TRUE;
+}
+
+bool32 IsBattlerGrounded(u8 battler, u8 ability, u8 holdEffect)
+{
+    return IsBattlerGroundedInternal(battler, ability, holdEffect);
+}

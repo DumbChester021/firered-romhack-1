@@ -467,6 +467,14 @@ struct BattleStruct
 
 extern struct BattleStruct *gBattleStruct;
 
+// RHH: struct SimulatedDamage (pokeemerald-expansion/include/battle.h:200-205)
+struct SimulatedDamage
+{
+    u16 minimum;
+    u16 median;
+    u16 maximum;
+};
+
 // RHH: struct AiLogicData (pokeemerald-expansion/include/battle.h:208-239)
 // Pre-computed data for AI decision-making, populated once per turn by SetBattlerAiData.
 // Fields use FireRed primitive types (u8/u16) since we don't have RHH's enum typedefs yet.
@@ -480,6 +488,7 @@ struct AiLogicData
     u8  hpPercents[MAX_BATTLERS_COUNT];
     u16 partnerMove;
     u16 speedStats[MAX_BATTLERS_COUNT];
+    struct SimulatedDamage simulatedDmg[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES];
     u8  moveLimitations[MAX_BATTLERS_COUNT];
     u8  monToSwitchInId[MAX_BATTLERS_COUNT];
     u8  mostSuitableMonId[MAX_BATTLERS_COUNT];

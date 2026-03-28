@@ -61,10 +61,13 @@
 #define BATTLE_TYPE_GHOST_UNVEILED     (1 << 13) // Re-use of BATTLE_TYPE_LEGENDARY, when combined with BATTLE_TYPE_GHOST
 #define BATTLE_TYPE_REGI               (1 << 14)
 #define BATTLE_TYPE_GHOST              (1 << 15) // Used in pokeemerald as BATTLE_TYPE_TWO_OPPONENTS.
+#define BATTLE_TYPE_TWO_OPPONENTS      (1 << 15) // RHH name for BATTLE_TYPE_GHOST
 #define BATTLE_TYPE_POKEDUDE           (1 << 16) // Used in pokeemerald as BATTLE_TYPE_DOME.
 #define BATTLE_TYPE_WILD_SCRIPTED      (1 << 17) // Used in pokeemerald as BATTLE_TYPE_PALACE.
 #define BATTLE_TYPE_LEGENDARY_FRLG     (1 << 18) // Used in pokeemerald as BATTLE_TYPE_ARENA.
 #define BATTLE_TYPE_TRAINER_TOWER      (1 << 19) // Used in pokeemerald as BATTLE_TYPE_FACTORY.
+#define BATTLE_TYPE_INGAME_PARTNER     (1 << 22) // RHH: Ingame tag partner (unused in FRLG)
+#define BATTLE_TYPE_TOWER_LINK_MULTI   (1 << 23) // RHH: Battle Tower link multi (unused in FRLG)
 
 #define IS_BATTLE_TYPE_GHOST_WITHOUT_SCOPE(flags) ((flags) & BATTLE_TYPE_GHOST && !((flags) & BATTLE_TYPE_GHOST_UNVEILED))
 #define IS_BATTLE_TYPE_GHOST_WITH_SCOPE(flags) ((flags) & BATTLE_TYPE_GHOST && (flags) & BATTLE_TYPE_GHOST_UNVEILED)

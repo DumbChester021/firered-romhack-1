@@ -342,29 +342,74 @@ Names/structures that still differ from RHH and need renaming when touched:
 - `gBattleMoves` → `gMovesInfo` (29 files, 246 occurrences)
 - `SPLIT_PHYSICAL/SPECIAL/STATUS` → `DAMAGE_CATEGORY_*` (14 files, 891 occurrences)
 
-**Completed AI infrastructure ports (Tier A done — commit d06c38e95):**
+**Completed AI infrastructure ports (Tiers A–G done):**
 - `GetMoveAdditionalEffectCount()` / `GetMoveAdditionalEffectById()` — inline in `include/pokemon.h`
 - `MoveEffectIsGuaranteed()` / `MoveIsAffectedBySheerForce()` / `IsSheerForceAffected()` — `src/battle_util.c`
+- `IsBattlerGrounded()` — `src/battle_util.c` (Gen 3 subset; Gen 4+ #ifdef'd)
 - `struct AiLogicData` — `include/battle.h` (full RHH struct, heap-allocated)
+- `struct SimulatedDamage` + `simulatedDmg[4][4][4]` field in `struct AiLogicData`
 - `gAiLogicData` — allocated in `src/battle_util2.c`
 - `.sheerForceOverride` field added to `struct AdditionalEffect`
 - `enum AIScore`, `enum StatChange`, `ADJUST_SCORE`/`ADJUST_SCORE_PTR` — `include/battle_ai_main.h`
-- `enum ConsiderPriority` — `include/battle_ai_util.h`
+- `enum ConsiderPriority`, `enum DamageCalcContext`, `enum AiConsiderEndure` — `include/battle_ai_util.h`
 - `AI_IS_FASTER`/`AI_IS_SLOWER` (#define 1/-1), `UNKNOWN_NO_OF_HITS` — `include/battle_ai_main.h`
+- `AI_FLAG_*` constants — `include/constants/battle_ai.h` (RHH names; same bits as legacy AI_SCRIPT_*)
+- `BATTLE_TYPE_TWO_OPPONENTS/INGAME_PARTNER/TOWER_LINK_MULTI` — `include/constants/battle.h`
 - `GetBattlerTotalSpeedStat()` / `GetBattleMovePriority()` — `src/battle_main.c`
 - `AI_WhoStrikesFirst()` — `src/battle_ai_util.c` (5-param RHH signature)
-- `AI_IsFaster()` / `AI_IsSlower()` — updated to 5-param RHH signatures, 4 callers updated
-- `SetBattlerAiData()` — `src/battle_ai_util.c` (uses GetBattlerTotalSpeedStat)
-- Python extraction tool: `tools/port_ai_scoring.py`; 12 staged functions in `tools/staging/ai_port/`
+- `AI_IsFaster()` / `AI_IsSlower()` — 5-param RHH signatures, 4 callers updated
+- `SetBattlerAiData()` — `src/battle_ai_util.c` (now populates simulatedDmg)
+- `BattlerHasAi()` / `IsAiFlagPresent()` / `IsAiBattlerAware()` / `GetMovesArray()` / `HasMoveWithEffect()` / `HasMoveThatChangesKOThreshold()`
+- `GetStatBeingChanged()` / `GetStagesOfStatChange()` — stat change switches
+- `GetBattlerSecondaryDamage()` + 6 sub-helpers / `DoesAbilityRaiseStatsWhenLowered()`
+- `CanAiPredictMove()` / `IsBattlerPredictedToSwitch()` / `GetIncomingMoveSpeedCheck()` / `AI_IsAbilityOnSide()` / `AreBattlersStatsMaxed()` / `CountPositiveStatStages()` / `ShouldRaiseAnyStat()`
+- `IsBattlerAlive()` / `GetBattlerParty()` / `GetSideParty()` — inlines in `include/battle.h`
+- `AI_GetDamage()` (static) / `GetNoOfHitsToKO()` / `GetNoOfHitsToKOBattlerDmg()` / `CanEndureHit()` / `GetNoOfHitsToKOBattler()` / `NoOfHitsForTargetToFaintBattler()`
+- `AI_IsBattlerGrounded()` / `AI_CanBattlerEscape()` / `GetAIPartyIndexes()` / `CountUsablePartyMons()` / `IsBattlerTrapped()`
+- Python extraction tool: `tools/port_ai_scoring.py`; 24 staged functions in `tools/staging/ai_port/`
 
-**Next: Session B — Tiers B+D** (see `docs/research/ai_additional_effects_port_plan.md`):
-1. `GetMovesArray()` — returns `gBattleMons[battler].moves` pointer
-2. `HasMoveWithEffect()` — 12 lines
-3. `HasMoveThatChangesKOThreshold()` — 34 lines
-4. `GetStatBeingChanged()` — 32-line pure switch (StatChange → Stat)
-5. `GetStagesOfStatChange()` — 29-line pure switch (StatChange → u32)
-- Then Session C: GetBattlerSecondaryDamage + helpers, DoesAbilityRaiseStatsWhenLowered
-- Estimated: 2-3 sessions to reach AI_CalcAdditionalEffectScore
+- `IsMoveUnusable` inline — `include/battle_ai_util.h`
+- `MoveIgnoresSubstitute` inline — `include/pokemon.h`
+- `DoesSubstituteBlockMove()` / `CanAIFaintTarget()` / `CanTargetFaintAi()` — `src/battle_ai_util.c`
+- `IsMoldBreakerTypeAbility()` stub / `HasTwoOpponents()` / `HasPartner()` — `src/battle_ai_util.c`
+- `IncreaseStatDownScore()` (72 lines, volatiles→status2/gStatuses3) — `src/battle_ai_util.c`
+- `IncreaseStatUpScoreInternal()` (static, 123 lines) / `IncreaseStatUpScore()` / `IncreaseStatUpScoreContrary()` — `src/battle_ai_util.c`
+- `IncreasePoisonScore()` etc. — stubs (blocked by `CanSetNonVolatileStatus` not yet ported)
+
+**Next: Session G — Tier J** (see `docs/research/ai_additional_effects_port_plan.md` for full detailed plan):
+
+**Research complete (2026-03-29).** Full dependency tree mapped. 25 functions to add + 355-line main.
+
+Ordered implementation list for next session:
+
+1. **Inlines** → `include/pokemon.h`: `IsSoundMove`, `GetMoveCategory`, `MoveIgnoresTargetAbility` stub
+2. **Inlines** → `include/battle.h`: `IsBattleMoveStatus`, `IsSpreadMove`
+3. **MOVE_EFFECT constants** → `include/constants/battle.h`: ~20 Gen 4+ effect codes (CLEAR_SMOG, STEALTH_ROCK, THROAT_CHOP, weather effects, terrain effects, AURORA_VEIL, REMOVE_STATUS, BREAK_SCREEN, STEAL_STATS, RAISE_TEAM_*, LOWER_*_SIDE, DEF_SPDEF_DOWN, V_CREATE)
+4. **`AI_FLAG_NEGATE_UNAWARE`** → `include/constants/battle_ai.h`
+5. **src/battle_ai_util.c** — port in order:
+   - `HasPartnerIgnoreFlags`, `HasBattlerSideMoveWithEffect`
+   - `DoesBattlerIgnoreAbilityChecks` (12 lines)
+   - `AI_GetWeather` + static `AI_WeatherHasEffect` (7 lines)
+   - `AI_GetBattlerMoveTargetType` (Gen 9 paths #ifdef'd)
+   - `CanIndexMoveFaintTarget`, `BattlerWillFaintFromSecondaryDamage`
+   - `GetIncomingMove`, `IsAdditionalEffectBlocked`, `GetBestDmgMovesFromBattler`
+   - `ShouldTryToFlinch` (volatiles: `.infatuation`→STATUS2, `.confusionTurns>0`→STATUS2_CONFUSION)
+   - `ShouldTrap` (aiFlags[battler] → single aiFlags)
+   - `HasMoveWithAIEffect` stub (FALSE), `HasBattlerSideMoveWithAIEffect` stub (FALSE)
+   - `CanLowerStat` (62 lines; CLEAR_AMULET/FLOWER_VEIL/BIG_PECKS/MINDS_EYE/FULL_METAL_BODY #ifdef'd; Electro Ball check → FALSE)
+   - `ShouldSetWeather`, `ShouldClearWeather` (simplified without WeatherChecker)
+   - `ShouldSetFieldStatus`, `ShouldClearFieldStatus` (stubs → FALSE; terrain Gen 6+)
+   - `ShouldSetScreen` (34 lines; B_WEATHER_ICY_ANY→B_WEATHER_HAIL; AURORA_VEIL #ifdef)
+   - `ShouldCureStatus` (stub → FALSE; REMOVE_STATUS Gen 4+)
+   - `AI_TryToClearStats` (7 lines), `AI_ShouldCopyStatChanges` (29 lines)
+   - `AI_ShouldSetUpHazards` (24 lines)
+   - `AI_CalcAdditionalEffectScore` (355 lines, 8 adaptations listed in research doc)
+6. Wire `AI_CalcAdditionalEffectScore` into `AI_CheckViability()` in `src/battle_ai_main.c`
+
+**Future sessions:**
+- Port `CanSetNonVolatileStatus` + status-checker deps → fill Tier H stubs
+- Port `WeatherChecker` from `battle_ai_field_statuses.c` (603 lines, own session)
+- Port `ShouldCureStatusInternal` (80+ lines, deferred)
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 

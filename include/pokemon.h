@@ -384,6 +384,12 @@ static inline u8 GetMovePower(u16 moveId)
     return gMovesInfo[moveId].power;
 }
 
+// RHH: MoveIgnoresSubstitute (pokeemerald-expansion/include/move.h:440)
+static inline bool32 MoveIgnoresSubstitute(u16 moveId)
+{
+    return gMovesInfo[moveId].ignoresSubstitute;
+}
+
 extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;

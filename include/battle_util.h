@@ -104,6 +104,10 @@ bool32 MoveEffectIsGuaranteed(u8 battler, u8 battlerAbility, const struct Additi
 bool32 MoveIsAffectedBySheerForce(u16 move);
 bool32 IsSheerForceAffected(u16 move, u8 ability);
 
+// RHH: IsBattlerGrounded (pokeemerald-expansion/src/battle_util.c:5985)
+// Returns TRUE if battler is grounded (not airborne via Flying type, Levitate, etc.).
+bool32 IsBattlerGrounded(u8 battler, u8 ability, u8 holdEffect);
+
 // Modern RHH Wrappers
 bool32 AreBattlersOfOppositeGender(u8 battler1, u8 battler2);
 u16 GetBattlerAbility(u8 battlerId);
