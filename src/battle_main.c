@@ -205,6 +205,7 @@ EWRAM_DATA u16 gExpShareExp = 0;
 EWRAM_DATA struct BattleEnigmaBerry gEnigmaBerries[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA struct BattleScripting gBattleScripting = {0};
 EWRAM_DATA struct BattleStruct *gBattleStruct = NULL;
+EWRAM_DATA struct AiLogicData *gAiLogicData = NULL;
 EWRAM_DATA u8 *gLinkBattleSendBuffer = NULL;
 EWRAM_DATA u8 *gLinkBattleRecvBuffer = NULL;
 EWRAM_DATA struct BattleResources *gBattleResources = NULL;

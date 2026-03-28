@@ -315,9 +315,9 @@ struct AdditionalEffect
     u8  self:1;                  // 1 = affects user; 0 = affects target
     u8  onlyIfTargetRaisedStats:1; // only triggers if target raised a stat this turn (e.g. Burning Jealousy)
     u8  onChargeTurnOnly:1;      // only triggers on the charge turn of a two-turn move
+    u8  sheerForceOverride:1;    // inverts Sheer Force eligibility (RHH: sheerForceOverride)
     u8  chance;                  // 0 = guaranteed (primary); >0 = secondary chance %
 };
-
 
 #define SPINDA_SPOT_WIDTH 16
 #define SPINDA_SPOT_HEIGHT 16
@@ -357,6 +357,18 @@ struct Evolution
 #define GET_SHINY_VALUE(otId, personality) (HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality))
 
 extern const struct MoveInfo gMovesInfo[];
+
+// RHH inline accessors (pokeemerald-expansion/include/move.h)
+static inline u32 GetMoveAdditionalEffectCount(u16 moveId)
+{
+    return gMovesInfo[moveId].numAdditionalEffects;
+}
+
+static inline const struct AdditionalEffect *GetMoveAdditionalEffectById(u16 moveId, u32 effect)
+{
+    return &gMovesInfo[moveId].additionalEffects[effect];
+}
+
 extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;

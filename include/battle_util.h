@@ -100,6 +100,9 @@ bool8 MoveHasAdditionalEffect(u16 move, u16 moveEffect);
 bool8 MoveHasAdditionalEffectWithChance(u16 move, u16 moveEffect, u8 chance);
 bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect);
 u8    CalcSecondaryEffectChance(u8 battler, const struct AdditionalEffect *additionalEffect);
+bool32 MoveEffectIsGuaranteed(u8 battler, u8 battlerAbility, const struct AdditionalEffect *additionalEffect);
+bool32 MoveIsAffectedBySheerForce(u16 move);
+bool32 IsSheerForceAffected(u16 move, u8 ability);
 
 // Modern RHH Wrappers
 bool32 AreBattlersOfOppositeGender(u8 battler1, u8 battler2);

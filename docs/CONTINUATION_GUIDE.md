@@ -335,16 +335,44 @@ python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
 
 Names/structures that still differ from RHH and need renaming when touched:
 
-| Current FireRed | RHH Name | Scope | Status |
-|---|---|---|---|
-| `MOVE_TARGET_*` | `TARGET_*` (some differ) | Constants | Pending |
-| `gBattleMons[x].status2` bitfield | `gBattleMons[x].volatiles.*` struct | Major structural change | Future |
-| `sBattler_AI` | Various AI locals | AI functions | When porting AI |
+**Already matching RHH:** `gBattlerAttacker`, `gBattlerTarget`, `gCurrentMove`, `gBattleMons`, `MAX_MON_MOVES`, `struct AdditionalEffect`, `ADDITIONAL_EFFECTS()`, `MoveHasAdditionalEffect*()`, `EFFECT_*`, `MOVE_EFFECT_*`
 
-Completed renames:
+**Completed renames:**
 - `struct BattleMove` → `struct MoveInfo` (7 files)
 - `gBattleMoves` → `gMovesInfo` (29 files, 246 occurrences)
 - `SPLIT_PHYSICAL/SPECIAL/STATUS` → `DAMAGE_CATEGORY_*` (14 files, 891 occurrences)
+
+**Completed AI infrastructure ports:**
+- `GetMoveAdditionalEffectCount()` — inline in `include/pokemon.h`
+- `GetMoveAdditionalEffectById()` — inline in `include/pokemon.h`
+- `MoveEffectIsGuaranteed()` — `src/battle_util.c`
+- `MoveIsAffectedBySheerForce()` — `src/battle_util.c`
+- `IsSheerForceAffected()` — `src/battle_util.c` (ifdef'd for Gen 5 ability)
+- `struct AiLogicData` — `include/battle.h` (full RHH struct, heap-allocated)
+- `gAiLogicData` — allocated in `src/battle_util2.c`
+- `.sheerForceOverride` field added to `struct AdditionalEffect`
+- Python extraction tool: `tools/port_ai_scoring.py` (12 functions extracted, 715 lines)
+- Staging area: `tools/staging/ai_port/` (individual + combined extracted files)
+
+**Next: AI scoring port** (see `docs/research/ai_additional_effects_port_plan.md`):
+1. Port `enum AIScore` + `ADJUST_SCORE` macros
+2. Port `SetBattlerAiData()` with simplified deps
+3. Port stat scoring helpers (`IncreaseStatUpScore`, `IncreaseStatDownScore`)
+4. Port `AI_CalcAdditionalEffectScore()` (355 lines, full RHH body)
+5. Wire into `AI_CheckViability()`
+- Estimated: 3-4 sessions total
+
+**Remaining structural changes** (not simple renames — values/semantics differ):
+
+| Current FireRed | RHH | Change Type | Scope | Status |
+|---|---|---|---|---|
+| `MOVE_TARGET_*` bitmask `#define`s | `TARGET_*` sequential `enum` | Values + comparison semantics change | 911 occ, 12 files + engine bitwise checks | Future |
+| `gBattleMoveDamage` (single `s32`) | `moveDamage[MAX_BATTLERS_COUNT]` in struct | Global → per-battler array | 232 occ, deep engine refactor | Future |
+| `u32 status2` bitfield | `struct Volatiles volatiles` | Bitfield → named struct | 1200+ occ, every battle file | Future |
+| `u8 type1, type2` | `enum Type types[3]` | 2 fields → array of 3 | Struct layout + all access sites | Future |
+| `u8 gBattlerAttacker` | `enum BattlerId gBattlerAttacker` | Type safety (u8 → enum) | Type change only | Low |
+| `bool8` returns | `bool32` returns | Width change | Function signatures | Low |
+| `sBattler_AI` | Various AI locals | AI refactoring | When porting AI | Future |
 
 This table should be updated as convergence progresses.
 

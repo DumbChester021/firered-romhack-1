@@ -467,6 +467,40 @@ struct BattleStruct
 
 extern struct BattleStruct *gBattleStruct;
 
+// RHH: struct AiLogicData (pokeemerald-expansion/include/battle.h:208-239)
+// Pre-computed data for AI decision-making, populated once per turn by SetBattlerAiData.
+// Fields use FireRed primitive types (u8/u16) since we don't have RHH's enum typedefs yet.
+struct AiLogicData
+{
+    u8  abilities[MAX_BATTLERS_COUNT];
+    u16 items[MAX_BATTLERS_COUNT];
+    u8  holdEffects[MAX_BATTLERS_COUNT];
+    u8  holdEffectParams[MAX_BATTLERS_COUNT];
+    u16 lastUsedMove[MAX_BATTLERS_COUNT];
+    u8  hpPercents[MAX_BATTLERS_COUNT];
+    u16 partnerMove;
+    u16 speedStats[MAX_BATTLERS_COUNT];
+    u8  moveLimitations[MAX_BATTLERS_COUNT];
+    u8  monToSwitchInId[MAX_BATTLERS_COUNT];
+    u8  mostSuitableMonId[MAX_BATTLERS_COUNT];
+    u16 predictedMove[MAX_BATTLERS_COUNT];
+
+    // Flags
+    u32 weatherHasEffect:1;
+    u32 ejectButtonSwitch:1;
+    u32 ejectPackSwitch:1;
+    u32 predictingSwitch:1;
+    u32 aiPredictionInProgress:1;
+    u32 aiCalcInProgress:1;
+    u32 predictingMove:1;
+    u32 shouldConsiderExplosion:1;
+    u32 shouldSwitch:4;
+    u32 shouldConsiderFinalGambit:1;
+    u32 padding:19;
+};
+
+extern struct AiLogicData *gAiLogicData;
+
 #define F_DYNAMIC_TYPE_1 (1 << 6)
 #define F_DYNAMIC_TYPE_2 (1 << 7)
 #define DYNAMIC_TYPE_MASK (F_DYNAMIC_TYPE_1 - 1)

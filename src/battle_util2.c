@@ -19,6 +19,7 @@ void AllocateBattleResources(void)
     }
 
     gBattleStruct = AllocZeroed(sizeof(*gBattleStruct));
+    gAiLogicData = AllocZeroed(sizeof(*gAiLogicData));
 
     gBattleResources = AllocZeroed(sizeof(*gBattleResources));
     gBattleResources->secretBase = AllocZeroed(sizeof(*gBattleResources->secretBase));

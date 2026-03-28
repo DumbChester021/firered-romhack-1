@@ -3281,6 +3281,39 @@ u8 CalcSecondaryEffectChance(u8 battler, const struct AdditionalEffect *addition
     return (u8)chance;
 }
 
+// RHH: MoveEffectIsGuaranteed (pokeemerald-expansion/src/battle_util.c:9617)
+// Returns TRUE if the additional effect has 0 chance (primary/guaranteed) or >= 100% after Serene Grace.
+bool32 MoveEffectIsGuaranteed(u8 battler, u8 battlerAbility, const struct AdditionalEffect *additionalEffect)
+{
+    return additionalEffect->chance == 0 || CalcSecondaryEffectChance(battler, additionalEffect) >= 100;
+}
+
+// RHH: MoveIsAffectedBySheerForce (pokeemerald-expansion/src/battle_util.c:9687)
+bool32 MoveIsAffectedBySheerForce(u16 move)
+{
+    u32 i;
+    u32 numAdditionalEffects = GetMoveAdditionalEffectCount(move);
+    for (i = 0; i < numAdditionalEffects; i++)
+    {
+        const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(move, i);
+        if ((additionalEffect->chance > 0) != additionalEffect->sheerForceOverride)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: IsSheerForceAffected (pokeemerald-expansion/src/battle_util.c:9358)
+// ABILITY_SHEER_FORCE is Gen 5+; always FALSE until ability constants are expanded.
+bool32 IsSheerForceAffected(u16 move, u8 ability)
+{
+#ifdef ABILITY_SHEER_FORCE
+    return ability == ABILITY_SHEER_FORCE && MoveIsAffectedBySheerForce(move);
+#else
+    (void)move; (void)ability;
+    return FALSE;
+#endif
+}
+
 // Returns TRUE if move has an additionalEffect with the given moveEffect targeting the foe.
 bool8 MoveHasAdditionalEffect(u16 move, u16 moveEffect)
 {
