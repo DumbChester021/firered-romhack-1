@@ -2566,7 +2566,7 @@ const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] = {
 // Section 4: Move Battle Stats
 // ---------------------------------------------------------------------------
 
-const struct BattleMove gBattleMoves[MOVES_COUNT] =
+const struct MoveInfo gMovesInfo[MOVES_COUNT] =
 {
     [MOVE_POUND] =
     {
@@ -2578,7 +2578,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_KARATE_CHOP] =
@@ -2592,7 +2592,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DOUBLE_SLAP] =
@@ -2605,7 +2605,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_COMET_PUNCH] =
@@ -2619,7 +2619,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MEGA_PUNCH] =
@@ -2633,7 +2633,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PAY_DAY] =
@@ -2645,7 +2645,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PAYDAY,
             .chance = 0,
@@ -2663,7 +2663,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -2681,7 +2681,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_THUNDER_PUNCH] =
@@ -2695,7 +2695,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 10,
@@ -2712,7 +2712,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_VISE_GRIP] =
@@ -2725,7 +2725,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_GUILLOTINE] =
@@ -2738,7 +2738,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_RAZOR_WIND] =
@@ -2752,7 +2752,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .windMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -2768,7 +2768,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .snatchAffected = TRUE,
         .danceMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CUT] =
@@ -2782,7 +2782,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_GUST] =
@@ -2795,7 +2795,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_WING_ATTACK] =
@@ -2808,7 +2808,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_WHIRLWIND] =
@@ -2823,7 +2823,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
         .windMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLY] =
@@ -2836,7 +2836,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
         .gravityBanned = TRUE,
@@ -2852,7 +2852,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -2869,7 +2869,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -2883,7 +2883,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_STOMP] =
@@ -2896,7 +2896,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -2915,7 +2915,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MEGA_KICK] =
@@ -2928,7 +2928,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_JUMP_KICK] =
@@ -2941,7 +2941,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .gravityBanned = TRUE,
     },
 
@@ -2955,7 +2955,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -2972,7 +2972,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEADBUTT] =
@@ -2985,7 +2985,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -3002,7 +3002,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FURY_ATTACK] =
@@ -3015,7 +3015,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_HORN_DRILL] =
@@ -3028,7 +3028,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TACKLE] =
@@ -3041,7 +3041,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BODY_SLAM] =
@@ -3054,7 +3054,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -3072,7 +3072,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -3090,7 +3090,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 25,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_THRASH] =
@@ -3103,7 +3103,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_RANDOM,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_THRASH,
             .self = TRUE,
@@ -3123,7 +3123,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 33,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TAIL_WHIP] =
@@ -3136,7 +3136,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_POISON_STING] =
@@ -3148,7 +3148,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 35,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 30,
@@ -3165,7 +3165,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 20,
@@ -3181,7 +3181,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LEER] =
@@ -3194,7 +3194,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BITE] =
@@ -3208,7 +3208,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -3227,7 +3227,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ROAR] =
@@ -3243,7 +3243,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SING] =
@@ -3258,7 +3258,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SUPERSONIC] =
@@ -3273,7 +3273,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SONIC_BOOM] =
@@ -3285,7 +3285,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_DISABLE] =
@@ -3298,7 +3298,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ACID] =
@@ -3310,7 +3310,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_EMBER] =
@@ -3322,7 +3322,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 25,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -3338,7 +3338,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -3357,7 +3357,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WATER_GUN] =
@@ -3369,7 +3369,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 25,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_HYDRO_PUMP] =
@@ -3381,7 +3381,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SURF] =
@@ -3393,7 +3393,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -3406,7 +3406,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_BLIZZARD] =
@@ -3419,7 +3419,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_PSYBEAM] =
@@ -3431,7 +3431,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 10,
@@ -3447,7 +3447,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 10,
@@ -3463,7 +3463,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 10,
@@ -3479,7 +3479,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -3497,7 +3497,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DRILL_PECK] =
@@ -3510,7 +3510,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SUBMISSION] =
@@ -3524,7 +3524,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 25,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LOW_KICK] =
@@ -3537,7 +3537,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_COUNTER] =
@@ -3550,7 +3550,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_DEPENDS,
         .priority = -5,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -3567,7 +3567,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -3581,7 +3581,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ABSORB] =
@@ -3594,7 +3594,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MEGA_DRAIN] =
@@ -3607,7 +3607,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_LEECH_SEED] =
@@ -3620,7 +3620,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GROWTH] =
@@ -3635,7 +3635,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_RAZOR_LEAF] =
@@ -3649,7 +3649,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SOLAR_BEAM] =
@@ -3661,7 +3661,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -3677,7 +3677,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_STUN_SPORE] =
@@ -3691,7 +3691,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SLEEP_POWDER] =
@@ -3705,7 +3705,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PETAL_DANCE] =
@@ -3719,7 +3719,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .danceMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_THRASH,
             .self = TRUE,
@@ -3738,7 +3738,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DRAGON_RAGE] =
@@ -3750,7 +3750,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_FIRE_SPIN] =
@@ -3762,7 +3762,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -3778,7 +3778,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 10,
@@ -3794,7 +3794,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 10,
@@ -3811,7 +3811,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_THUNDER] =
@@ -3823,7 +3823,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -3839,7 +3839,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_EARTHQUAKE] =
@@ -3851,7 +3851,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -3864,7 +3864,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -3878,7 +3878,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
         .skyBattleBanned = TRUE,
@@ -3894,7 +3894,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CONFUSION] =
@@ -3906,7 +3906,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 25,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 10,
@@ -3922,7 +3922,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 10,
@@ -3939,7 +3939,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MEDITATE] =
@@ -3954,7 +3954,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_AGILITY] =
@@ -3969,7 +3969,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_QUICK_ATTACK] =
@@ -3982,7 +3982,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_RAGE] =
@@ -3995,7 +3995,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TELEPORT] =
@@ -4009,7 +4009,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = -6,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_NIGHT_SHADE] =
@@ -4021,7 +4021,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MIMIC] =
@@ -4033,7 +4033,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -4055,7 +4055,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DOUBLE_TEAM] =
@@ -4070,7 +4070,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_RECOVER] =
@@ -4086,7 +4086,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HARDEN] =
@@ -4101,7 +4101,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MINIMIZE] =
@@ -4116,7 +4116,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SMOKESCREEN] =
@@ -4129,7 +4129,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CONFUSE_RAY] =
@@ -4142,7 +4142,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WITHDRAW] =
@@ -4157,7 +4157,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DEFENSE_CURL] =
@@ -4172,7 +4172,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BARRIER] =
@@ -4187,7 +4187,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_LIGHT_SCREEN] =
@@ -4202,7 +4202,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HAZE] =
@@ -4216,7 +4216,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_REFLECT] =
@@ -4231,7 +4231,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FOCUS_ENERGY] =
@@ -4246,7 +4246,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BIDE] =
@@ -4260,7 +4260,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 1,
         .makesContact = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -4276,7 +4276,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -4293,7 +4293,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_DEPENDS,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -4311,7 +4311,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .parentalBondBanned = TRUE,
         .dampBanned = TRUE,
     },
@@ -4326,7 +4326,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LICK] =
@@ -4339,7 +4339,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -4355,7 +4355,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 40,
@@ -4371,7 +4371,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 30,
@@ -4387,7 +4387,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 10,
@@ -4403,7 +4403,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -4420,7 +4420,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 20,
@@ -4437,7 +4437,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -4453,7 +4453,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SKULL_BASH] =
@@ -4466,7 +4466,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_PLUS_1,
             .self = TRUE,
@@ -4485,7 +4485,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CONSTRICT] =
@@ -4498,7 +4498,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 10,
@@ -4517,7 +4517,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_KINESIS] =
@@ -4530,7 +4530,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SOFT_BOILED] =
@@ -4546,7 +4546,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HIGH_JUMP_KICK] =
@@ -4559,7 +4559,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .gravityBanned = TRUE,
     },
 
@@ -4573,7 +4573,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DREAM_EATER] =
@@ -4586,7 +4586,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_POISON_GAS] =
@@ -4599,7 +4599,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BARRAGE] =
@@ -4612,7 +4612,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LEECH_LIFE] =
@@ -4626,7 +4626,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .healingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LOVELY_KISS] =
@@ -4639,7 +4639,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SKY_ATTACK] =
@@ -4651,7 +4651,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -4671,7 +4671,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .instructBanned = TRUE,
@@ -4687,7 +4687,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 10,
@@ -4705,7 +4705,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 20,
@@ -4723,7 +4723,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLASH] =
@@ -4736,7 +4736,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PSYWAVE] =
@@ -4748,7 +4748,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SPLASH] =
@@ -4762,7 +4762,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .gravityBanned = TRUE,
     },
 
@@ -4778,7 +4778,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CRABHAMMER] =
@@ -4792,7 +4792,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_EXPLOSION] =
@@ -4804,7 +4804,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .parentalBondBanned = TRUE,
         .dampBanned = TRUE,
     },
@@ -4819,7 +4819,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BONEMERANG] =
@@ -4832,7 +4832,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_REST] =
@@ -4848,7 +4848,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ROCK_SLIDE] =
@@ -4860,7 +4860,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -4878,7 +4878,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 10,
@@ -4897,7 +4897,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CONVERSION] =
@@ -4912,7 +4912,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TRI_ATTACK] =
@@ -4924,7 +4924,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_TRI_ATTACK,
             .chance = 20,
@@ -4941,7 +4941,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SLASH] =
@@ -4956,7 +4956,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SUBSTITUTE] =
@@ -4971,7 +4971,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -4986,7 +4986,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECOIL_HP_25,
             .self = TRUE,
@@ -5013,7 +5013,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -5034,7 +5034,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 3,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_THIEF] =
@@ -5047,7 +5047,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_STEAL_ITEM,
             .chance = 0,
@@ -5069,7 +5069,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MIND_READER] =
@@ -5081,7 +5081,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_NIGHTMARE] =
@@ -5093,7 +5093,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLAME_WHEEL] =
@@ -5107,7 +5107,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .thawsUser = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -5125,7 +5125,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -5144,7 +5144,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLAIL] =
@@ -5157,7 +5157,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CONVERSION_2] =
@@ -5171,7 +5171,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_AEROBLAST] =
@@ -5185,7 +5185,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .windMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_COTTON_SPORE] =
@@ -5199,7 +5199,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_REVERSAL] =
@@ -5212,7 +5212,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SPITE] =
@@ -5225,7 +5225,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_POWDER_SNOW] =
@@ -5237,7 +5237,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 25,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_PROTECT] =
@@ -5249,7 +5249,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_USER,
         .priority = 4,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -5266,7 +5266,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 1,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SCARY_FACE] =
@@ -5279,7 +5279,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FEINT_ATTACK] =
@@ -5292,7 +5292,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SWEET_KISS] =
@@ -5305,7 +5305,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BELLY_DRUM] =
@@ -5320,7 +5320,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SLUDGE_BOMB] =
@@ -5333,7 +5333,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 30,
@@ -5349,7 +5349,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 100,
@@ -5366,7 +5366,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 50,
@@ -5385,7 +5385,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
         .forcePressure = TRUE,
     },
@@ -5400,7 +5400,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 100,
@@ -5417,7 +5417,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DESTINY_BOND] =
@@ -5431,7 +5431,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -5450,7 +5450,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ICY_WIND] =
@@ -5463,7 +5463,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -5481,7 +5481,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -5496,7 +5496,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LOCK_ON] =
@@ -5508,7 +5508,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_OUTRAGE] =
@@ -5521,7 +5521,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_RANDOM,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_THRASH,
             .self = TRUE,
@@ -5542,7 +5542,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .windMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GIGA_DRAIN] =
@@ -5555,7 +5555,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_ENDURE] =
@@ -5569,7 +5569,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -5585,7 +5585,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ROLLOUT] =
@@ -5598,7 +5598,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .instructBanned = TRUE,
         .parentalBondBanned = TRUE,
     },
@@ -5613,7 +5613,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SWAGGER] =
@@ -5626,7 +5626,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MILK_DRINK] =
@@ -5642,7 +5642,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SPARK] =
@@ -5655,7 +5655,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -5673,7 +5673,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_STEEL_WING] =
@@ -5686,7 +5686,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_PLUS_1,
             .self = TRUE,
@@ -5705,7 +5705,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ATTRACT] =
@@ -5718,7 +5718,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SLEEP_TALK] =
@@ -5732,7 +5732,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -5753,7 +5753,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_RETURN] =
@@ -5766,7 +5766,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PRESENT] =
@@ -5778,7 +5778,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FRUSTRATION] =
@@ -5791,7 +5791,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SAFEGUARD] =
@@ -5806,7 +5806,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PAIN_SPLIT] =
@@ -5818,7 +5818,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SACRED_FIRE] =
@@ -5831,7 +5831,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 50,
@@ -5847,7 +5847,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -5862,7 +5862,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 100,
@@ -5879,7 +5879,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DRAGON_BREATH] =
@@ -5891,7 +5891,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -5909,7 +5909,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ENCORE] =
@@ -5922,7 +5922,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .encoreBanned = TRUE,
     },
 
@@ -5936,7 +5936,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_RAPID_SPIN] =
@@ -5949,7 +5949,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SWEET_SCENT] =
@@ -5962,7 +5962,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_IRON_TAIL] =
@@ -5975,7 +5975,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 30,
@@ -5992,7 +5992,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_PLUS_1,
             .self = TRUE,
@@ -6010,7 +6010,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = -1,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MORNING_SUN] =
@@ -6026,7 +6026,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SYNTHESIS] =
@@ -6042,7 +6042,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MOONLIGHT] =
@@ -6058,7 +6058,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HIDDEN_POWER] =
@@ -6070,7 +6070,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_CROSS_CHOP] =
@@ -6084,7 +6084,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TWISTER] =
@@ -6097,7 +6097,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 20,
@@ -6115,7 +6115,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SUNNY_DAY] =
@@ -6129,7 +6129,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CRUNCH] =
@@ -6143,7 +6143,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 0,
@@ -6160,7 +6160,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_DEPENDS,
         .priority = -5,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
         .assistBanned = TRUE,
         .meFirstBanned = TRUE,
@@ -6177,7 +6177,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_EXTREME_SPEED] =
@@ -6190,7 +6190,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 2,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ANCIENT_POWER] =
@@ -6202,7 +6202,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ALL_STATS_UP,
             .self = TRUE,
@@ -6220,7 +6220,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 20,
@@ -6238,7 +6238,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_ROCK_SMASH] =
@@ -6251,7 +6251,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 50,
@@ -6267,7 +6267,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -6283,7 +6283,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FAKE_OUT] =
@@ -6296,7 +6296,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 3,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 100,
@@ -6314,7 +6314,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_UPROAR,
             .self = TRUE,
@@ -6336,7 +6336,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SPIT_UP] =
@@ -6349,7 +6349,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SWALLOW] =
@@ -6365,7 +6365,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEAT_WAVE] =
@@ -6378,7 +6378,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -6396,7 +6396,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TORMENT] =
@@ -6409,7 +6409,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLATTER] =
@@ -6422,7 +6422,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WILL_O_WISP] =
@@ -6435,7 +6435,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MEMENTO] =
@@ -6447,7 +6447,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FACADE] =
@@ -6460,7 +6460,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FOCUS_PUNCH] =
@@ -6475,7 +6475,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .punchingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -6494,7 +6494,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FOLLOW_ME] =
@@ -6508,7 +6508,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 2,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -6523,7 +6523,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_DEPENDS,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -6543,7 +6543,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TAUNT] =
@@ -6556,7 +6556,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HELPING_HAND] =
@@ -6570,7 +6570,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 5,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -6585,7 +6585,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -6602,7 +6602,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WISH] =
@@ -6618,7 +6618,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ASSIST] =
@@ -6632,7 +6632,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -6654,7 +6654,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -6668,7 +6668,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_DEF_DOWN,
             .self = TRUE,
@@ -6687,7 +6687,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_RECYCLE] =
@@ -6702,7 +6702,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_REVENGE] =
@@ -6715,7 +6715,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = -4,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BRICK_BREAK] =
@@ -6728,7 +6728,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_YAWN] =
@@ -6741,7 +6741,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_KNOCK_OFF] =
@@ -6754,7 +6754,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_KNOCK_OFF,
             .chance = 0,
@@ -6771,7 +6771,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .parentalBondBanned = TRUE,
     },
 
@@ -6784,7 +6784,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SKILL_SWAP] =
@@ -6796,7 +6796,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_IMPRISON] =
@@ -6811,7 +6811,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .forcePressure = TRUE,
     },
 
@@ -6827,7 +6827,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GRUDGE] =
@@ -6841,7 +6841,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SNATCH] =
@@ -6853,7 +6853,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_DEPENDS,
         .priority = 4,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -6869,7 +6869,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DIVE] =
@@ -6882,7 +6882,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
         .skyBattleBanned = TRUE,
@@ -6898,7 +6898,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CAMOUFLAGE] =
@@ -6913,7 +6913,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TAIL_GLOW] =
@@ -6928,7 +6928,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_LUSTER_PURGE] =
@@ -6940,7 +6940,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 50,
@@ -6957,7 +6957,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 50,
@@ -6975,7 +6975,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .danceMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TEETER_DANCE] =
@@ -6988,7 +6988,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .danceMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BLAZE_KICK] =
@@ -7002,7 +7002,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -7020,7 +7020,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -7035,7 +7035,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .instructBanned = TRUE,
         .parentalBondBanned = TRUE,
     },
@@ -7050,7 +7050,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -7070,7 +7070,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HYPER_VOICE] =
@@ -7084,7 +7084,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_POISON_FANG] =
@@ -7098,7 +7098,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_TOXIC,
             .chance = 0,
@@ -7115,7 +7115,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 50,
@@ -7131,7 +7131,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -7148,7 +7148,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -7167,7 +7167,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_PLUS_1,
             .self = TRUE,
@@ -7185,7 +7185,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -7202,7 +7202,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_AROMATHERAPY] =
@@ -7217,7 +7217,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FAKE_TEARS] =
@@ -7230,7 +7230,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_AIR_CUTTER] =
@@ -7245,7 +7245,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .slicingMove = TRUE,
         .windMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_OVERHEAT] =
@@ -7257,7 +7257,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_2,
             .self = TRUE,
@@ -7275,7 +7275,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ROCK_TOMB] =
@@ -7287,7 +7287,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -7304,7 +7304,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ALL_STATS_UP,
             .self = TRUE,
@@ -7324,7 +7324,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GRASS_WHISTLE] =
@@ -7339,7 +7339,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TICKLE] =
@@ -7352,7 +7352,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_COSMIC_POWER] =
@@ -7367,7 +7367,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WATER_SPOUT] =
@@ -7379,7 +7379,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SIGNAL_BEAM] =
@@ -7391,7 +7391,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 10,
@@ -7409,7 +7409,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_EXTRASENSORY] =
@@ -7421,7 +7421,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 10,
@@ -7439,7 +7439,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SAND_TOMB] =
@@ -7451,7 +7451,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -7467,7 +7467,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MUDDY_WATER] =
@@ -7479,7 +7479,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 30,
@@ -7497,7 +7497,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_AERIAL_ACE] =
@@ -7511,7 +7511,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ICICLE_SPEAR] =
@@ -7523,7 +7523,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_IRON_DEFENSE] =
@@ -7538,7 +7538,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BLOCK] =
@@ -7552,7 +7552,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HOWL] =
@@ -7569,7 +7569,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresSubstitute = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DRAGON_CLAW] =
@@ -7582,7 +7582,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FRENZY_PLANT] =
@@ -7594,7 +7594,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -7615,7 +7615,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BOUNCE] =
@@ -7628,7 +7628,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -7647,7 +7647,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -7665,7 +7665,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 10,
@@ -7682,7 +7682,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_STEAL_ITEM,
             .chance = 0,
@@ -7704,7 +7704,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 33,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 10,
@@ -7720,7 +7720,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_WATER_SPORT] =
@@ -7734,7 +7734,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -7750,7 +7750,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_LEAF_BLADE] =
@@ -7765,7 +7765,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DRAGON_DANCE] =
@@ -7781,7 +7781,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .danceMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ROCK_BLAST] =
@@ -7794,7 +7794,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SHOCK_WAVE] =
@@ -7806,7 +7806,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_WATER_PULSE] =
@@ -7819,7 +7819,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .pulseMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 20,
@@ -7837,7 +7837,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_PSYCHO_BOOST] =
@@ -7849,7 +7849,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_2,
             .self = TRUE,
@@ -7870,7 +7870,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GRAVITY] =
@@ -7884,7 +7884,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -7898,7 +7898,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WAKE_UP_SLAP] =
@@ -7911,7 +7911,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_HAMMER_ARM] =
@@ -7925,7 +7925,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .self = TRUE,
@@ -7944,7 +7944,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_HEALING_WISH] =
@@ -7960,7 +7960,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BRINE] =
@@ -7972,7 +7972,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_NATURAL_GIFT] =
@@ -7984,7 +7984,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FEINT] =
@@ -7997,7 +7997,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 2,
         .ignoresProtect = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -8013,7 +8013,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TAILWIND] =
@@ -8029,7 +8029,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .windMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ACUPRESSURE] =
@@ -8043,7 +8043,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_METAL_BURST] =
@@ -8055,7 +8055,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_DEPENDS,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .meFirstBanned = TRUE,
     },
 
@@ -8069,7 +8069,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CLOSE_COMBAT] =
@@ -8082,7 +8082,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PAYBACK] =
@@ -8095,7 +8095,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ASSURANCE] =
@@ -8107,7 +8107,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
     },
 
@@ -8121,7 +8121,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLING] =
@@ -8133,7 +8133,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .parentalBondBanned = TRUE,
     },
 
@@ -8146,7 +8146,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TRUMP_CARD] =
@@ -8159,7 +8159,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_HEAL_BLOCK] =
@@ -8172,7 +8172,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WRING_OUT] =
@@ -8185,7 +8185,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_POWER_TRICK] =
@@ -8200,7 +8200,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GASTRO_ACID] =
@@ -8213,7 +8213,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_LUCKY_CHANT] =
@@ -8228,7 +8228,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ME_FIRST] =
@@ -8241,7 +8241,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -8262,7 +8262,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -8280,7 +8280,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GUARD_SWAP] =
@@ -8292,7 +8292,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PUNISHMENT] =
@@ -8305,7 +8305,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LAST_RESORT] =
@@ -8318,7 +8318,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_WORRY_SEED] =
@@ -8332,7 +8332,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SUCKER_PUNCH] =
@@ -8344,7 +8344,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
     },
 
@@ -8360,7 +8360,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
         .forcePressure = TRUE,
     },
@@ -8374,7 +8374,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_AQUA_RING] =
@@ -8389,7 +8389,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MAGNET_RISE] =
@@ -8404,7 +8404,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .gravityBanned = TRUE,
     },
 
@@ -8420,7 +8420,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .thawsUser = TRUE,
         .recoil = 33,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -8437,7 +8437,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -8455,7 +8455,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .pulseMove = TRUE,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_ROCK_POLISH] =
@@ -8467,7 +8467,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_USER,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .snatchAffected = TRUE,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
@@ -8483,7 +8483,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 30,
@@ -8500,7 +8500,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .pulseMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 20,
@@ -8519,7 +8519,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_AQUA_TAIL] =
@@ -8532,7 +8532,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SEED_BOMB] =
@@ -8545,7 +8545,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_AIR_SLASH] =
@@ -8558,7 +8558,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .slicingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -8576,7 +8576,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BUG_BUZZ] =
@@ -8590,7 +8590,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 10,
@@ -8607,7 +8607,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .pulseMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_DRAGON_RUSH] =
@@ -8620,7 +8620,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 20,
@@ -8636,7 +8636,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_DRAIN_PUNCH] =
@@ -8651,7 +8651,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .punchingMove = TRUE,
         .healingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_VACUUM_WAVE] =
@@ -8663,7 +8663,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_FOCUS_BLAST] =
@@ -8676,7 +8676,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 10,
@@ -8693,7 +8693,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 10,
@@ -8711,7 +8711,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 33,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_EARTH_POWER] =
@@ -8723,7 +8723,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 10,
@@ -8740,7 +8740,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -8756,7 +8756,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -8775,7 +8775,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BULLET_PUNCH] =
@@ -8789,7 +8789,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 1,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_AVALANCHE] =
@@ -8802,7 +8802,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = -4,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ICE_SHARD] =
@@ -8814,7 +8814,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 30,
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SHADOW_CLAW] =
@@ -8828,7 +8828,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_THUNDER_FANG] =
@@ -8842,7 +8842,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 10,
@@ -8860,7 +8860,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FIRE_FANG] =
@@ -8874,7 +8874,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -8895,7 +8895,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MUD_BOMB] =
@@ -8908,7 +8908,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 30,
@@ -8926,7 +8926,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ZEN_HEADBUTT] =
@@ -8939,7 +8939,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 20,
@@ -8955,7 +8955,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 30,
@@ -8971,7 +8971,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 10,
@@ -8988,7 +8988,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 20,
@@ -9005,7 +9005,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TRICK_ROOM] =
@@ -9018,7 +9018,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_ALL_BATTLERS,
         .priority = -7,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DRACO_METEOR] =
@@ -9030,7 +9030,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_2,
             .self = TRUE,
@@ -9047,7 +9047,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -9063,7 +9063,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -9079,7 +9079,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_2,
             .self = TRUE,
@@ -9097,7 +9097,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ROCK_WRECKER] =
@@ -9110,7 +9110,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -9130,7 +9130,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 10,
@@ -9146,7 +9146,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 30,
@@ -9163,7 +9163,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -9180,7 +9180,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_STONE_EDGE] =
@@ -9193,7 +9193,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CAPTIVATE] =
@@ -9206,7 +9206,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_STEALTH_ROCK] =
@@ -9221,7 +9221,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .forcePressure = TRUE,
     },
 
@@ -9235,7 +9235,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -9250,7 +9250,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 100,
@@ -9273,7 +9273,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_BUG_BITE] =
@@ -9285,7 +9285,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BUG_BITE,
@@ -9301,7 +9301,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_PLUS_1,
             .self = TRUE,
@@ -9320,7 +9320,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 33,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_AQUA_JET] =
@@ -9333,7 +9333,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ATTACK_ORDER] =
@@ -9346,7 +9346,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DEFEND_ORDER] =
@@ -9361,7 +9361,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEAL_ORDER] =
@@ -9377,7 +9377,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEAD_SMASH] =
@@ -9391,7 +9391,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 50,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DOUBLE_HIT] =
@@ -9405,7 +9405,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ROAR_OF_TIME] =
@@ -9417,7 +9417,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -9435,7 +9435,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_LUNAR_DANCE] =
@@ -9452,7 +9452,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .danceMove = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CRUSH_GRIP] =
@@ -9465,7 +9465,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MAGMA_STORM] =
@@ -9477,7 +9477,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -9494,7 +9494,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SEED_FLARE] =
@@ -9506,7 +9506,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_2,
             .chance = 40,
@@ -9523,7 +9523,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ALL_STATS_UP,
             .self = TRUE,
@@ -9542,7 +9542,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .ignoresProtect = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -9559,7 +9559,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WIDE_GUARD] =
@@ -9574,7 +9574,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -9588,7 +9588,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_POWER_SPLIT] =
@@ -9601,7 +9601,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_WONDER_ROOM] =
@@ -9614,7 +9614,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_ALL_BATTLERS,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PSYSHOCK] =
@@ -9626,7 +9626,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_VENOSHOCK] =
@@ -9638,7 +9638,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_AUTOTOMIZE] =
@@ -9653,7 +9653,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_RAGE_POWDER] =
@@ -9668,7 +9668,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .powderMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -9684,7 +9684,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .gravityBanned = TRUE,
     },
 
@@ -9698,7 +9698,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_ALL_BATTLERS,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SMACK_DOWN] =
@@ -9710,7 +9710,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -9724,7 +9724,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FLAME_BURST] =
@@ -9736,7 +9736,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SLUDGE_WAVE] =
@@ -9748,7 +9748,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 10,
@@ -9768,7 +9768,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .danceMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEAVY_SLAM] =
@@ -9781,7 +9781,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -9794,7 +9794,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_ELECTRO_BALL] =
@@ -9807,7 +9807,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SOAK] =
@@ -9820,7 +9820,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLAME_CHARGE] =
@@ -9833,7 +9833,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_PLUS_1,
             .self = TRUE,
@@ -9853,7 +9853,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_LOW_SWEEP] =
@@ -9866,7 +9866,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -9883,7 +9883,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_2,
             .chance = 100,
@@ -9900,7 +9900,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SIMPLE_BEAM] =
@@ -9913,7 +9913,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ENTRAINMENT] =
@@ -9926,7 +9926,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_AFTER_YOU] =
@@ -9940,7 +9940,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -9955,7 +9955,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ROUND,
         }),
@@ -9972,7 +9972,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_CHIP_AWAY] =
@@ -9985,7 +9985,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CLEAR_SMOG] =
@@ -9997,7 +9997,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_STORED_POWER] =
@@ -10009,7 +10009,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_QUICK_GUARD] =
@@ -10024,7 +10024,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -10039,7 +10039,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 2,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SCALD] =
@@ -10052,7 +10052,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -10071,7 +10071,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEAL_PULSE] =
@@ -10087,7 +10087,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pulseMove = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEX] =
@@ -10099,7 +10099,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SKY_DROP] =
@@ -10112,7 +10112,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
         .gravityBanned = TRUE,
@@ -10130,7 +10130,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CIRCLE_THROW] =
@@ -10143,7 +10143,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = -6,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
     },
@@ -10157,7 +10157,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_QUASH] =
@@ -10169,7 +10169,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -10183,7 +10183,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_REFLECT_TYPE] =
@@ -10196,7 +10196,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_RETALIATE] =
@@ -10209,7 +10209,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FINAL_GAMBIT] =
@@ -10222,7 +10222,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .parentalBondBanned = TRUE,
     },
 
@@ -10236,7 +10236,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -10251,7 +10251,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 100,
@@ -10267,7 +10267,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -10280,7 +10280,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -10293,7 +10293,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -10306,7 +10306,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_STRUGGLE_BUG] =
@@ -10318,7 +10318,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 100,
@@ -10334,7 +10334,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -10351,7 +10351,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_DRAGON_TAIL] =
@@ -10364,7 +10364,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = -6,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
     },
@@ -10381,7 +10381,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ELECTROWEB] =
@@ -10393,7 +10393,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -10411,7 +10411,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 25,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DRILL_RUN] =
@@ -10425,7 +10425,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DUAL_CHOP] =
@@ -10439,7 +10439,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_HEART_STAMP] =
@@ -10452,7 +10452,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -10470,7 +10470,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .healingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SACRED_SWORD] =
@@ -10484,7 +10484,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_RAZOR_SHELL] =
@@ -10498,7 +10498,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 50,
@@ -10515,7 +10515,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LEAF_TORNADO] =
@@ -10528,7 +10528,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 50,
@@ -10545,7 +10545,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -10564,7 +10564,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_NIGHT_DAZE] =
@@ -10576,7 +10576,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ACC_MINUS_1,
             .chance = 40,
@@ -10592,7 +10592,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_TAIL_SLAP] =
@@ -10605,7 +10605,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_HURRICANE] =
@@ -10618,7 +10618,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 30,
@@ -10636,7 +10636,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 25,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_GEAR_GRIND] =
@@ -10650,7 +10650,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SEARING_SHOT] =
@@ -10663,7 +10663,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -10679,7 +10679,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -10694,7 +10694,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SLEEP,
             .chance = 10,
@@ -10712,7 +10712,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .slicingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -10725,7 +10725,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -10742,7 +10742,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 20,
@@ -10758,7 +10758,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 20,
@@ -10775,7 +10775,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .danceMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_PLUS_1,
             .self = TRUE,
@@ -10792,7 +10792,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -10811,7 +10811,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -10832,7 +10832,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 100,
@@ -10849,7 +10849,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -10866,7 +10866,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -10880,7 +10880,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_FUSION_BOLT] =
@@ -10892,7 +10892,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FLYING_PRESS] =
@@ -10905,7 +10905,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .gravityBanned = TRUE,
         .skyBattleBanned = TRUE,
     },
@@ -10922,7 +10922,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -10939,7 +10939,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -10960,7 +10960,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -10976,7 +10976,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -10990,7 +10990,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PHANTOM_FORCE] =
@@ -11004,7 +11004,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .ignoresProtect = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .assistBanned = TRUE,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
@@ -11020,7 +11020,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_NOBLE_ROAR] =
@@ -11035,7 +11035,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ION_DELUGE] =
@@ -11049,7 +11049,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 1,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PARABOLIC_CHARGE] =
@@ -11062,7 +11062,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_FORESTS_CURSE] =
@@ -11075,7 +11075,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PETAL_BLIZZARD] =
@@ -11088,7 +11088,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FREEZE_DRY] =
@@ -11100,7 +11100,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_DISARMING_VOICE] =
@@ -11112,7 +11112,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
     },
@@ -11129,7 +11129,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TOPSY_TURVY] =
@@ -11142,7 +11142,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DRAINING_KISS] =
@@ -11156,7 +11156,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_CRAFTY_SHIELD] =
@@ -11170,7 +11170,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 3,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -11185,7 +11185,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GRASSY_TERRAIN] =
@@ -11199,7 +11199,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -11214,7 +11214,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -11227,7 +11227,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_PLAY_ROUGH] =
@@ -11240,7 +11240,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 10,
@@ -11257,7 +11257,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MOONBLAST] =
@@ -11269,7 +11269,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 30,
@@ -11287,7 +11287,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_FAIRY_LOCK] =
@@ -11300,7 +11300,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_ALL_BATTLERS,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_KINGS_SHIELD] =
@@ -11314,7 +11314,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -11332,7 +11332,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CONFIDE] =
@@ -11348,7 +11348,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DIAMOND_STORM] =
@@ -11360,7 +11360,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -11374,7 +11374,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -11392,7 +11392,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -11405,7 +11405,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MYSTICAL_FIRE] =
@@ -11417,7 +11417,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 100,
@@ -11435,7 +11435,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -11452,7 +11452,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_EERIE_IMPULSE] =
@@ -11465,7 +11465,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_VENOM_DRENCH] =
@@ -11478,7 +11478,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_POWDER] =
@@ -11492,7 +11492,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 1,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GEOMANCY] =
@@ -11504,7 +11504,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_USER,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
         .skyBattleBanned = TRUE,
@@ -11522,7 +11522,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HAPPY_HOUR] =
@@ -11536,7 +11536,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ELECTRIC_TERRAIN] =
@@ -11550,7 +11550,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -11563,7 +11563,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_CELEBRATE] =
@@ -11577,7 +11577,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -11596,7 +11596,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_ALLY,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -11615,7 +11615,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_NUZZLE] =
@@ -11628,7 +11628,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 100,
@@ -11645,7 +11645,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_INFESTATION] =
@@ -11658,7 +11658,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -11676,7 +11676,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_PLUS_1,
             .self = TRUE,
@@ -11694,7 +11694,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_THOUSAND_ARROWS] =
@@ -11706,7 +11706,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .skyBattleBanned = TRUE,
     },
@@ -11720,7 +11720,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PREVENT_ESCAPE,
             .chance = 0,
@@ -11738,7 +11738,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -11752,7 +11752,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .recoil = 50,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -11766,7 +11766,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .pulseMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -11779,7 +11779,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .skyBattleBanned = TRUE,
     },
@@ -11794,7 +11794,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -11808,7 +11808,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .self = TRUE,
@@ -11830,7 +11830,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FIRST_IMPRESSION] =
@@ -11843,7 +11843,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 2,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BANEFUL_BUNKER] =
@@ -11857,7 +11857,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -11872,7 +11872,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PREVENT_ESCAPE,
             .chance = 100,
@@ -11889,7 +11889,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SPARKLING_ARIA] =
@@ -11903,7 +11903,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_ICE_HAMMER] =
@@ -11917,7 +11917,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .self = TRUE,
@@ -11937,7 +11937,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .magicCoatAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HIGH_HORSEPOWER] =
@@ -11950,7 +11950,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_STRENGTH_SAP] =
@@ -11964,7 +11964,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .healingMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SOLAR_BLADE] =
@@ -11978,7 +11978,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .sleepTalkBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -11992,7 +11992,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 40,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SPOTLIGHT] =
@@ -12006,7 +12006,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 3,
         .magicCoatAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -12022,7 +12022,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_LASER_FOCUS] =
@@ -12037,7 +12037,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_GEAR_UP] =
@@ -12052,7 +12052,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_THROAT_CHOP] =
@@ -12065,7 +12065,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_POLLEN_PUFF] =
@@ -12078,7 +12078,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_ANCHOR_SHOT] =
@@ -12091,7 +12091,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PREVENT_ESCAPE,
             .chance = 100,
@@ -12109,7 +12109,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .skyBattleBanned = TRUE,
     },
 
@@ -12123,7 +12123,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 100,
@@ -12140,7 +12140,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 100,
@@ -12157,7 +12157,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BURN_UP] =
@@ -12170,7 +12170,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SPEED_SWAP] =
@@ -12182,7 +12182,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SMART_STRIKE] =
@@ -12195,7 +12195,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PURIFY] =
@@ -12210,7 +12210,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .magicCoatAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_REVELATION_DANCE] =
@@ -12223,7 +12223,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .danceMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_CORE_ENFORCER] =
@@ -12235,7 +12235,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_TROP_KICK] =
@@ -12248,7 +12248,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 100,
@@ -12265,7 +12265,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -12281,7 +12281,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = -3,
         .ballisticMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -12301,7 +12301,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .self = TRUE,
@@ -12319,7 +12319,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BRUTAL_SWING] =
@@ -12332,7 +12332,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_AURORA_VEIL] =
@@ -12347,7 +12347,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_SHELL_TRAP] =
@@ -12360,7 +12360,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = -3,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -12378,7 +12378,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_2,
             .self = TRUE,
@@ -12398,7 +12398,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_STOMPING_TANTRUM] =
@@ -12411,7 +12411,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SHADOW_BONE] =
@@ -12423,7 +12423,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 20,
@@ -12440,7 +12440,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LIQUIDATION] =
@@ -12453,7 +12453,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 20,
@@ -12469,7 +12469,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -12487,7 +12487,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12501,7 +12501,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12514,7 +12514,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12529,7 +12529,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ZING_ZAP] =
@@ -12542,7 +12542,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -12558,7 +12558,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12572,7 +12572,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MIND_BLOWN] =
@@ -12584,7 +12584,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
         .dampBanned = TRUE,
     },
@@ -12600,7 +12600,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12613,7 +12613,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12627,7 +12627,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 2,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_EVS_PLUS_1,
             .chance = 100,
@@ -12644,7 +12644,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -12662,7 +12662,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -12680,7 +12680,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12694,7 +12694,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .healingMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12707,7 +12707,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 100,
@@ -12726,7 +12726,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .thawsUser = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 100,
@@ -12743,7 +12743,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12756,7 +12756,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12770,7 +12770,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12783,7 +12783,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12796,7 +12796,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12810,7 +12810,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -12826,7 +12826,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .punchingMove = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -12844,7 +12844,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -12864,7 +12864,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_JAW_LOCK] =
@@ -12878,7 +12878,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_STUFF_CHEEKS] =
@@ -12893,7 +12893,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_NO_RETREAT] =
@@ -12908,7 +12908,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TAR_SHOT] =
@@ -12921,7 +12921,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_MAGIC_POWDER] =
@@ -12935,7 +12935,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .magicCoatAffected = TRUE,
         .powderMove = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_DRAGON_DARTS] =
@@ -12948,7 +12948,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .parentalBondBanned = TRUE,
     },
 
@@ -12963,7 +12963,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_OCTOLOCK] =
@@ -12975,7 +12975,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_BOLT_BEAK] =
@@ -12988,7 +12988,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FISHIOUS_REND] =
@@ -13002,7 +13002,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .bitingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_COURT_CHANGE] =
@@ -13015,7 +13015,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_ALL_BATTLERS,
         .priority = 0,
         .ignoresProtect = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_CLANGOROUS_SOUL] =
@@ -13033,7 +13033,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .danceMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -13047,7 +13047,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13062,7 +13062,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -13075,7 +13075,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -13093,7 +13093,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -13112,7 +13112,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ballisticMove = TRUE,
         .thawsUser = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
@@ -13131,7 +13131,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -13147,7 +13147,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
@@ -13162,7 +13162,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_PLUS_1,
             .self = TRUE,
@@ -13181,7 +13181,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 100,
@@ -13199,7 +13199,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13214,7 +13214,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13227,7 +13227,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_1,
             .chance = 100,
@@ -13244,7 +13244,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 100,
@@ -13262,7 +13262,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 100,
@@ -13279,7 +13279,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 20,
@@ -13300,7 +13300,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -13315,7 +13315,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
         .instructBanned = TRUE,
     },
@@ -13330,7 +13330,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13343,7 +13343,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -13362,7 +13362,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_RECHARGE,
             .self = TRUE,
@@ -13380,7 +13380,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13393,7 +13393,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_STEEL_ROLLER] =
@@ -13406,7 +13406,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .skyBattleBanned = TRUE,
     },
 
@@ -13419,7 +13419,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_METEOR_BEAM] =
@@ -13431,7 +13431,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_PLUS_1,
             .self = TRUE,
@@ -13449,7 +13449,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 20,
@@ -13465,7 +13465,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .dampBanned = TRUE,
     },
 
@@ -13479,7 +13479,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_RISING_VOLTAGE] =
@@ -13491,7 +13491,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_TERRAIN_PULSE] =
@@ -13504,7 +13504,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .pulseMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_SKITTER_SMACK] =
@@ -13517,7 +13517,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_MINUS_1,
             .chance = 100,
@@ -13533,7 +13533,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 100,
@@ -13550,7 +13550,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_POLTERGEIST] =
@@ -13562,7 +13562,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CORROSIVE_GAS] =
@@ -13575,7 +13575,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_COACHING] =
@@ -13589,7 +13589,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_FLIP_TURN] =
@@ -13602,7 +13602,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TRIPLE_AXEL] =
@@ -13616,7 +13616,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 3,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DUAL_WINGBEAT] =
@@ -13630,7 +13630,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SCORCHING_SANDS] =
@@ -13643,7 +13643,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -13662,7 +13662,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -13677,7 +13677,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13693,7 +13693,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .punchingMove = TRUE,
         .strikeCount = 3,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13706,7 +13706,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_WRAP,
             .chance = 0,
@@ -13723,7 +13723,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13736,7 +13736,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13749,7 +13749,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 20,
@@ -13767,7 +13767,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 100,
@@ -13784,7 +13784,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13797,7 +13797,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -13812,7 +13812,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_DIRE_CLAW] =
@@ -13825,7 +13825,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PSYSHIELD_BASH] =
@@ -13838,7 +13838,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_PLUS_1,
             .self = TRUE,
@@ -13858,7 +13858,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -13873,7 +13873,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SPRINGTIDE_STORM] =
@@ -13886,7 +13886,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 30,
@@ -13903,7 +13903,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_PLUS_1,
             .self = TRUE,
@@ -13920,7 +13920,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_RANDOM,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_THRASH,
             .self = TRUE,
@@ -13940,7 +13940,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .recoil = 33,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_CHLOROBLAST] =
@@ -13952,7 +13952,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MOUNTAIN_GALE] =
@@ -13964,7 +13964,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 30,
@@ -13984,7 +13984,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .danceMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_HEADLONG_RUSH] =
@@ -13998,7 +13998,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BARB_BARRAGE] =
@@ -14010,7 +14010,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 50,
@@ -14027,7 +14027,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_PLUS_1,
             .self = TRUE,
@@ -14044,7 +14044,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 100,
@@ -14063,7 +14063,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TRIPLE_ARROWS] =
@@ -14076,7 +14076,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DEF_MINUS_1,
             .chance = 50,
@@ -14092,7 +14092,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -14110,7 +14110,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BLEAKWIND_STORM] =
@@ -14123,7 +14123,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 30,
@@ -14140,7 +14140,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 20,
@@ -14157,7 +14157,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .windMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 20,
@@ -14177,7 +14177,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .snatchAffected = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TAKE_HEART] =
@@ -14192,7 +14192,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_TERA_BLAST] =
@@ -14204,7 +14204,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_TERA_BLAST,
             .self = TRUE,
@@ -14223,7 +14223,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14237,7 +14237,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 30,
@@ -14253,7 +14253,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_LUMINA_CRASH] =
@@ -14265,7 +14265,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_DEF_MINUS_2,
             .chance = 100,
@@ -14282,7 +14282,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14297,7 +14297,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 1,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14311,7 +14311,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .magicCoatAffected = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14325,7 +14325,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_2,
             .self = TRUE,
@@ -14345,7 +14345,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .strikeCount = 10,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14359,7 +14359,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_GLAIVE_RUSH] =
@@ -14372,7 +14372,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_REVIVAL_BLESSING] =
@@ -14387,7 +14387,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .healingMove = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14400,7 +14400,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14415,7 +14415,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .strikeCount = 3,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_MORTAL_SPIN] =
@@ -14428,7 +14428,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DOODLE] =
@@ -14442,7 +14442,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14458,7 +14458,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .ignoresProtect = TRUE,
         .snatchAffected = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14473,7 +14473,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_FLOWER_TRICK] =
@@ -14485,7 +14485,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TORCH_SONG] =
@@ -14499,7 +14499,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_PLUS_1,
             .self = TRUE,
@@ -14518,7 +14518,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .danceMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_PLUS_1,
             .self = TRUE,
@@ -14536,7 +14536,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14549,7 +14549,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PAYDAY,
             .chance = 0,
@@ -14566,7 +14566,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14580,7 +14580,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14594,7 +14594,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14609,7 +14609,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14624,7 +14624,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14639,7 +14639,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14654,7 +14654,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .metronomeBanned = TRUE,
     },
 
@@ -14668,7 +14668,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_MINUS_1,
             .chance = 100,
@@ -14686,7 +14686,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SPD_PLUS_1,
             .self = TRUE,
@@ -14704,7 +14704,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 20,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_ATK_MINUS_1,
             .chance = 100,
@@ -14723,7 +14723,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .ignoresProtect = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14737,7 +14737,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .strikeCount = 2,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14752,7 +14752,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .punchingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14765,7 +14765,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14781,7 +14781,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .slicingMove = TRUE,
         .healingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DOUBLE_SHOCK] =
@@ -14794,7 +14794,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
     },
 
@@ -14807,7 +14807,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_COMEUPPANCE] =
@@ -14820,7 +14820,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_DEPENDS,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         .metronomeBanned = TRUE,
         .meFirstBanned = TRUE,
     },
@@ -14836,7 +14836,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .slicingMove = TRUE,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_BLAZING_TORQUE] =
@@ -14849,7 +14849,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 30,
@@ -14874,7 +14874,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SLEEP,
             .chance = 10,
@@ -14899,7 +14899,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_POISON,
             .chance = 30,
@@ -14924,7 +14924,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 30,
@@ -14949,7 +14949,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 30,
@@ -14975,7 +14975,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .makesContact = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_HYDRO_STEAM] =
@@ -14988,7 +14988,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_BLOOD_MOON] =
@@ -15000,7 +15000,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MATCHA_GOTCHA] =
@@ -15014,7 +15014,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .healingMove = TRUE,
         .thawsUser = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 20,
@@ -15031,7 +15031,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .ballisticMove = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_IVY_CUDGEL] =
@@ -15044,7 +15044,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .criticalHitStage = 1,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_ELECTRO_SHOT] =
@@ -15056,7 +15056,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_SP_ATK_PLUS_1,
             .self = TRUE,
@@ -15073,7 +15073,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         .mimicBanned = TRUE,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
@@ -15088,7 +15088,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_BURNING_BULWARK] =
@@ -15102,7 +15102,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 4,
         .ignoresProtect = TRUE,
         .mirrorMoveBanned = TRUE,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
         .copycatBanned = TRUE,
         .assistBanned = TRUE,
     },
@@ -15116,7 +15116,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 1,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_MIGHTY_CLEAVE] =
@@ -15131,7 +15131,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .makesContact = TRUE,
         .ignoresProtect = TRUE,
         .slicingMove = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_TACHYON_CUTTER] =
@@ -15145,7 +15145,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .slicingMove = TRUE,
         .strikeCount = 2,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_HARD_PRESS] =
@@ -15158,7 +15158,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_DRAGON_CHEER] =
@@ -15170,7 +15170,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 15,
         .target = MOVE_TARGET_ALLY,
         .priority = 0,
-        .category = SPLIT_STATUS,
+        .category = DAMAGE_CATEGORY_STATUS,
     },
 
     [MOVE_ALLURING_VOICE] =
@@ -15184,7 +15184,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_CONFUSION,
             .chance = 100,
@@ -15201,7 +15201,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_SUPERCELL_SLAM] =
@@ -15214,7 +15214,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
     },
 
     [MOVE_PSYCHIC_NOISE] =
@@ -15228,7 +15228,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .priority = 0,
         .soundMove = TRUE,
         .ignoresSubstitute = TRUE,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
     },
 
     [MOVE_UPPER_HAND] =
@@ -15241,7 +15241,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 3,
         .makesContact = TRUE,
-        .category = SPLIT_PHYSICAL,
+        .category = DAMAGE_CATEGORY_PHYSICAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_FLINCH,
             .chance = 100,
@@ -15257,7 +15257,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .pp = 5,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
-        .category = SPLIT_SPECIAL,
+        .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_TOXIC,
             .chance = 50,

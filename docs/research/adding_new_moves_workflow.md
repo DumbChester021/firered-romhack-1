@@ -49,7 +49,7 @@ This document maps every file and data structure that must be touched when addin
 
 **File:** [battle_moves.h](file:///mnt/data/Github/prototype/firered-romhack-1/src/data/battle_moves.h)
 
-Add a struct entry inside `gBattleMoves[MOVES_COUNT]`:
+Add a struct entry inside `gMovesInfo[MOVES_COUNT]`:
 
 ```c
 [MOVE_XYZ] =
@@ -64,7 +64,7 @@ Add a struct entry inside `gBattleMoves[MOVES_COUNT]`:
         .priority = 0,
         .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED |
                  FLAG_MIRROR_MOVE_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
-        .category = SPLIT_PHYSICAL,     // or SPLIT_SPECIAL / SPLIT_STATUS
+        .category = DAMAGE_CATEGORY_PHYSICAL,     // or DAMAGE_CATEGORY_SPECIAL / DAMAGE_CATEGORY_STATUS
     },
 ```
 
@@ -76,7 +76,7 @@ Add a struct entry inside `gBattleMoves[MOVES_COUNT]`:
 | `.type` | `TYPE_NORMAL`, `TYPE_FIRE`, `TYPE_FAIRY`, etc. from `constants/pokemon.h` |
 | `.target` | `MOVE_TARGET_SELECTED`, `MOVE_TARGET_BOTH`, `MOVE_TARGET_USER`, etc. |
 | `.flags` | Bitwise OR of: `FLAG_MAKES_CONTACT`, `FLAG_PROTECT_AFFECTED`, `FLAG_MIRROR_MOVE_AFFECTED`, `FLAG_MAGIC_COAT_AFFECTED`, `FLAG_SNATCH_AFFECTED`, `FLAG_KINGS_ROCK_AFFECTED` |
-| `.category` | `SPLIT_PHYSICAL`, `SPLIT_SPECIAL`, `SPLIT_STATUS` (your hack has the phys/special split) |
+| `.category` | `DAMAGE_CATEGORY_PHYSICAL`, `DAMAGE_CATEGORY_SPECIAL`, `DAMAGE_CATEGORY_STATUS` (your hack has the phys/special split) |
 
 ---
 
@@ -148,7 +148,7 @@ When a move needs a **new opcode/command** (e.g., `tryoverwriteability` for Worr
 1. **String ID:** `STRINGID_PKMNACQUIREDABILITY` = 386, `BATTLESTRINGS_COUNT` → 387
 2. **String text:** `sText_PkmnAcquiredAbility` = `"{B_DEF_NAME_WITH_PREFIX} acquired\n{B_LAST_ABILITY}!"`
 3. **Macro:** `.byte 0xfa` + `.4byte \failInstr`
-4. **C handler:** `Cmd_tryoverwriteability` — reads `gBattleMoves[gCurrentMove].argument` for the replacement ability, checks `ABILITY_TRUANT` as cantBeOverwritten, sets `gLastUsedAbility` + `RecordAbilityBattle` on success
+4. **C handler:** `Cmd_tryoverwriteability` — reads `gMovesInfo[gCurrentMove].argument` for the replacement ability, checks `ABILITY_TRUANT` as cantBeOverwritten, sets `gLastUsedAbility` + `RecordAbilityBattle` on success
 5. **Effect wiring:** `[EFFECT_WORRY_SEED] = BattleScript_EffectWorrySeed` (was stubbed as `BattleScript_EffectHit`)
 6. **Battle script:** Faithful port of RHH's `BattleScript_EffectOverwriteAbility` — omit only FRLG-absent Gen 5+/6+/8+ commands (ability popups, primal weather, neutralizing gas)
 7. **Move data:** `.effect = EFFECT_WORRY_SEED`, `.argument = ABILITY_INSOMNIA`
@@ -335,7 +335,7 @@ That's **6 files** minimum.
 | Name length | Max 12 characters (`MOVE_NAME_LENGTH`) |
 | TM bitmask | 64 bits max → 64 TMs+HMs total. Currently 58 used. |
 | Level-up encoding | `LEVEL_UP_MOVE(lvl, move)` = `(lvl << 9) | move` → max move ID = **511** (9 bits) |
-| Array ordering | `gBattleMoves`, `gMoveNames`, `gMoveDescriptionPointers` are all indexed by move ID — entries must exist at the correct index |
+| Array ordering | `gMovesInfo`, `gMoveNames`, `gMoveDescriptionPointers` are all indexed by move ID — entries must exist at the correct index |
 | Description offset | `gMoveDescriptionPointers` is size `MOVES_COUNT - 1`, indexed by `MOVE_XYZ - 1` |
 | Animation table | `gBattleAnims_Moves` must have an entry for every move or the game will crash on use |
 

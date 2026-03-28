@@ -476,11 +476,11 @@ extern struct BattleStruct *gBattleStruct;
     if (gBattleStruct->dynamicMoveType)                               \
         typeArg = gBattleStruct->dynamicMoveType & DYNAMIC_TYPE_MASK; \
     else                                                              \
-        typeArg = gBattleMoves[move].type;                            \
+        typeArg = gMovesInfo[move].type;                            \
 }
 
-#define IS_TYPE_PHYSICAL(moveType)(gBattleMoves[gCurrentMove].category == SPLIT_PHYSICAL)
-#define IS_TYPE_SPECIAL(moveType)(gBattleMoves[gCurrentMove].category == SPLIT_SPECIAL)
+#define IS_TYPE_PHYSICAL(moveType)(gMovesInfo[gCurrentMove].category == DAMAGE_CATEGORY_PHYSICAL)
+#define IS_TYPE_SPECIAL(moveType)(gMovesInfo[gCurrentMove].category == DAMAGE_CATEGORY_SPECIAL)
 
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 

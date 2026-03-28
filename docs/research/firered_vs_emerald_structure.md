@@ -74,12 +74,12 @@ Both codebases use the **same battle script macro language** (`attackcanceler`, 
 
 | Aspect | FireRed | Emerald Expansion |
 |--------|---------|-------------------|
-| **Stats** | `src/data/battle_moves.h` — `gBattleMoves[MOVES_COUNT]` | `src/data/moves_info.h` — `gMovesInfo[]` (22,024 lines, ALL-IN-ONE) |
+| **Stats** | `src/data/battle_moves.h` — `gMovesInfo[MOVES_COUNT]` | `src/data/moves_info.h` — `gMovesInfo[]` (22,024 lines, ALL-IN-ONE) |
 | **Names** | `src/data/text/move_names.h` — separate file, ALL CAPS, 12 char max | Inline `.name = COMPOUND_STRING(...)` — mixed case, >12 chars supported |
 | **Descriptions** | `src/move_descriptions.c` — string + pointer array, offset by -1 | Inline `.description = COMPOUND_STRING(...)` |
 | **Flags** | Bitfield: `FLAG_MAKES_CONTACT \| FLAG_PROTECT_AFFECTED \| ...` | Individual booleans: `.makesContact = TRUE`, `.punchingMove = TRUE` |
 | **Secondary effects** | `.effect = EFFECT_BURN_HIT` + `.secondaryEffectChance = 10` | `.additionalEffects = ADDITIONAL_EFFECTS({...})` — supports multiple |
-| **Category** | `SPLIT_PHYSICAL / SPLIT_SPECIAL / SPLIT_STATUS` | `DAMAGE_CATEGORY_PHYSICAL / ...` |
+| **Category** | `DAMAGE_CATEGORY_PHYSICAL / DAMAGE_CATEGORY_SPECIAL / DAMAGE_CATEGORY_STATUS` | `DAMAGE_CATEGORY_PHYSICAL / ...` |
 | **Animation** | Separate `gBattleAnims_Moves` table in `data/battle_anim_scripts.s` | Inline `.battleAnimScript = Move_XYZ` in moves_info |
 | **Contest** | No contests in FireRed | Inline `.contestEffect`, `.contestCategory` |
 | **Files to edit per move** | **4–6 separate files** | **1 file** (`moves_info.h`) |

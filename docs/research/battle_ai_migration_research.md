@@ -201,12 +201,12 @@ Each AI flag is a function with this signature:
 static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 ```
 
-These functions use a `switch` on `gBattleMoves[move].effect`:
+These functions use a `switch` on `gMovesInfo[move].effect`:
 
 ```c
 static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
-    u32 effect = gBattleMoves[move].effect;
+    u32 effect = gMovesInfo[move].effect;
 
     // type effectiveness check
     if (GetTypeEffectiveness(move, battlerAtk, battlerDef) == AI_EFFECTIVENESS_x0)
@@ -322,7 +322,7 @@ Translate:
 ```c
 static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
-    u32 effect = gBattleMoves[move].effect;
+    u32 effect = gMovesInfo[move].effect;
     u32 ability = gBattleMons[battlerDef].ability;
 
     // "get_how_powerful_move_is" → check sDiscouragedPowerfulMoveEffects
@@ -383,7 +383,7 @@ The ASM hides implementation inside `Cmd_*` functions. Things you'll need to wri
 | `if_side_affecting AI_USER, SIDE_STATUS_LIGHTSCREEN` | `gSideStatuses[GetBattlerSide(battlerAtk)] & SIDE_STATUS_LIGHTSCREEN` |
 | `if_stat_level_equal AI_USER, STAT_ATK, 12` | `gBattleMonsMisc[battlerAtk].statChanges[STAT_ATK] == 12` |
 | `count_alive_pokemon AI_USER` | Count non-fainted mons in attacker's party |
-| `if_has_move_with_effect AI_TARGET, EFFECT_DREAM_EATER` | Loop over `gBattleMons[battlerDef].moves[]`, check gBattleMoves[move].effect |
+| `if_has_move_with_effect AI_TARGET, EFFECT_DREAM_EATER` | Loop over `gBattleMons[battlerDef].moves[]`, check gMovesInfo[move].effect |
 | `get_weather` | `gBattleWeather` |
 | `if_can_faint` | `GetBattleDamage() >= gBattleMons[battlerDef].hp` — RHH has `AI_CalcDamage()` |
 | `is_first_turn_for AI_USER` | `gDisableStructs[battlerAtk].isFirstTurn` |

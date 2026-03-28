@@ -57,7 +57,7 @@ const u32 gAIFunctionTableSize = ARRAY_COUNT(gAIFunctionTable);
 
 static bool8 IsMoveTypeMatchingAbsorb(u16 move, u8 ability)
 {
-    u8 moveType = gBattleMoves[move].type;
+    u8 moveType = gMovesInfo[move].type;
     switch (ability)
     {
     case ABILITY_VOLT_ABSORB:  return moveType == TYPE_ELECTRIC;
@@ -75,10 +75,10 @@ static bool8 IsMoveTypeMatchingAbsorb(u16 move, u8 ability)
 // ============================================================================
 static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    u16 effect = gBattleMoves[move].effect;
+    u16 effect = gMovesInfo[move].effect;
     u8 atkAbility = gBattleMons[battlerAtk].ability;
     u8 defAbility = gBattleMons[battlerDef].ability;
-    u8 moveType = gBattleMoves[move].type;
+    u8 moveType = gMovesInfo[move].type;
     u8 defStatus = gBattleMons[battlerDef].status1;
     u8 atkStatus = gBattleMons[battlerAtk].status1;
     u8 typeFlags;
@@ -641,7 +641,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_SUCKER_PUNCH:
-        if ((HasMoveWithCategory(battlerDef, SPLIT_STATUS) && (Random() % 100 < 50))
+        if ((HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_STATUS) && (Random() % 100 < 50))
          || AI_IsSlower(battlerAtk, battlerDef, move, 0))
             return score - 10;
         break;
@@ -661,9 +661,9 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         }
         else
         {
-            if (!BattlerStatCanRise(battlerAtk, STAT_ATK) || !HasMoveWithCategory(battlerAtk, SPLIT_PHYSICAL))
+            if (!BattlerStatCanRise(battlerAtk, STAT_ATK) || !HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_PHYSICAL))
                 return score - 10;
-            else if (!BattlerStatCanRise(battlerAtk, STAT_SPATK) || !HasMoveWithCategory(battlerAtk, SPLIT_SPECIAL))
+            else if (!BattlerStatCanRise(battlerAtk, STAT_SPATK) || !HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_SPECIAL))
                 return score - 8;
             else if (!BattlerStatCanRise(battlerAtk, STAT_SPEED))
                 return score - 6;
@@ -681,7 +681,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 // ============================================================================
 static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    u16 effect      = gBattleMoves[move].effect;
+    u16 effect      = gMovesInfo[move].effect;
     u8 atkHpPct    = gBattleMons[battlerAtk].hp * 100 / gBattleMons[battlerAtk].maxHP;
     u8 defHpPct    = gBattleMons[battlerDef].hp * 100 / gBattleMons[battlerDef].maxHP;
     u8 atkAbility  = gBattleMons[battlerAtk].ability;
@@ -1063,7 +1063,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             u16 lastMove = gLastMoves[battlerDef];
             if (lastMove != MOVE_NONE)
             {
-                u16 lastEffect = gBattleMoves[lastMove].effect;
+                u16 lastEffect = gMovesInfo[lastMove].effect;
                 if (lastEffect == EFFECT_SLEEP || lastEffect == EFFECT_TOXIC ||
                     lastEffect == EFFECT_POISON || lastEffect == EFFECT_PARALYZE ||
                     lastEffect == EFFECT_WILL_O_WISP)
@@ -1169,7 +1169,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         if (!faster)
         {
             u16 lastMove = gLastMoves[battlerDef];
-            if (lastMove != MOVE_NONE && gBattleMoves[lastMove].power > 0)
+            if (lastMove != MOVE_NONE && gMovesInfo[lastMove].power > 0)
                 score += 1;
             else if ((Random() % 100) >= 100)
                 score -= 1;
@@ -1179,7 +1179,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_ENCORE:
         {
             u16 lastMove = gLastMoves[battlerDef];
-            u8 lastEffect = (lastMove != MOVE_NONE) ? gBattleMoves[lastMove].effect : 0xFF;
+            u8 lastEffect = (lastMove != MOVE_NONE) ? gMovesInfo[lastMove].effect : 0xFF;
             // Check encouraged effects to encore
             if (gDisableStructs[battlerDef].disabledMove != MOVE_NONE ||
                 (!faster && (lastEffect == EFFECT_ATTACK_UP || lastEffect == EFFECT_DEFENSE_UP ||
@@ -1431,7 +1431,7 @@ static s32 AI_TryToFaint(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     u8 typeFlags;
     s32 dmg;
 
-    if (gBattleMoves[move].power < 2)
+    if (gMovesInfo[move].power < 2)
         return score;
 
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &typeFlags);
@@ -1443,7 +1443,7 @@ static s32 AI_TryToFaint(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     if (gBattleMons[battlerDef].hp <= dmg)
     {
         // Prefer priority move if we'd be outsped (it gets the kill safely)
-        if (gBattleMoves[move].priority > 0 && !AI_IsFaster(battlerAtk, battlerDef, move))
+        if (gMovesInfo[move].priority > 0 && !AI_IsFaster(battlerAtk, battlerDef, move))
             return score + 7;
         return score + 5;
     }
@@ -1480,7 +1480,7 @@ static s32 AI_SetupFirstTurn(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_COSMIC_POWER, EFFECT_BULK_UP, EFFECT_CALM_MIND, EFFECT_CAMOUFLAGE,
         EFFECT_DRAGON_DANCE, 0xFFFF
     };
-    u16 effect = gBattleMoves[move].effect;
+    u16 effect = gMovesInfo[move].effect;
     u8 i;
 
     if (gBattleResults.battleTurnCounter != 0)
@@ -1513,7 +1513,7 @@ static s32 AI_Risky(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         EFFECT_BELLY_DRUM, EFFECT_MIRROR_COAT,
         EFFECT_FOCUS_PUNCH, EFFECT_REVENGE, 0xFFFF
     };
-    u16 effect = gBattleMoves[move].effect;
+    u16 effect = gMovesInfo[move].effect;
     u8 i;
 
     for (i = 0; sRiskyEffects[i] != 0xFFFF; i++)
@@ -1539,7 +1539,7 @@ static s32 AI_PreferStrongestMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 sc
     // and the AI would not normally prefer it.
     // The script checks get_how_powerful_move_is == MOVE_POWER_DISCOURAGED
     // then randomly adds +2. We mirror that: if non-damaging, randomly boost.
-    if (gBattleMoves[move].power == 0 && (Random() % 100) >= 100)
+    if (gMovesInfo[move].power == 0 && (Random() % 100) >= 100)
         score += 2;
     return score;
 }
@@ -1555,7 +1555,7 @@ static s32 AI_PreferBatonPass(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         return score;
 
     // Only applies to non-damaging (setup) moves
-    if (gBattleMoves[move].power > 0)
+    if (gMovesInfo[move].power > 0)
         return score;
 
     // If user has Baton Pass, randomly boost setup moves
@@ -1588,7 +1588,7 @@ static s32 AI_DoubleBattle(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 // ============================================================================
 static s32 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 {
-    u16 effect = gBattleMoves[move].effect;
+    u16 effect = gMovesInfo[move].effect;
     u8 atkHpPct = gBattleMons[battlerAtk].hp * 100 / gBattleMons[battlerAtk].maxHP;
     u8 defHpPct = gBattleMons[battlerDef].hp * 100 / gBattleMons[battlerDef].maxHP;
 

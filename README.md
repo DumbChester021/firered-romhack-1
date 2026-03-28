@@ -25,7 +25,7 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - Battle accuracy (Hustle) and damage tracking use per-move category
 
 ### Modern Move Engine (Gen 9 Synced)
-- `gBattleMoves` structural array fully synchronized with the `pokeemerald-expansion` Gen 9 architecture, dropping legacy bitfields for explicit struct fields.
+- `gMovesInfo` structural array fully synchronized with the `pokeemerald-expansion` Gen 9 architecture, dropping legacy bitfields for explicit struct fields.
 - 927 moves up to `Tera Starstorm` populated with strictly accurate modern configurations (Power, Accuracy, PP, Priority, Type, and target constants).
 - Complete decoupling of AI heuristics and effect handlers from the rigid FireRed `EFFECT_` switch-cases in favor of dynamic `.additionalEffects` parsing logic!
 - Native C port of Gen 9 RHH AI heuristics for modern moves (Sucker Punch, Shell Smash, Tailwind, Acrobatics, Bug Bite) fully integrated into `AI_CheckBadMove` and `AI_CheckViability`.

@@ -26,16 +26,16 @@ moves hits these hard limits in the current struct:
 - 11 × `.flags & FLAG_*` bitfield access — `battle_script_commands.c`, `battle_util.c`
 - 7 × `u8 effect` local (silent truncation) — `battle_ai_main.c`
 - 19 × `LEVEL_UP_MOVE_LV/ID` bitmask + sentinel — `pokemon.c`
-- **0** ASM `gBattleMoves` references — struct expansion is ASM-safe
+- **0** ASM `gMovesInfo` references — struct expansion is ASM-safe
 
 ---
 
 ## Struct Comparison: FireRed vs RHH
 
-### FireRed `struct BattleMove` (`include/pokemon.h:238`)
+### FireRed `struct MoveInfo` (`include/pokemon.h:238`)
 
 ```c
-struct BattleMove {
+struct MoveInfo {
     u8  effect;               // max 255 effects — HARD LIMIT
     u8  power;                // max 255 power
     u8  type;
@@ -45,7 +45,7 @@ struct BattleMove {
     u8  target;
     s8  priority;
     u8  flags;                // 8-bit bitfield — HARD LIMIT (8 flags max)
-    u8  category;             // SPLIT_PHYSICAL/SPECIAL/STATUS (our addition)
+    u8  category;             // DAMAGE_CATEGORY_PHYSICAL/SPECIAL/STATUS (our addition)
 };
 // Total: 10 bytes
 ```
@@ -152,7 +152,7 @@ Port only what unblocks your immediate goals. Everything else stubs or ignores.
 **Changes to `include/pokemon.h`:**
 
 ```c
-struct BattleMove {
+struct MoveInfo {
     u16 effect;              // was u8 — now 65535 effects
     u8  power;
     u8  type;
@@ -192,9 +192,9 @@ struct BattleMove {
 **Files to update after struct change:**
 - `src/data/battle_moves.h` — replace `FLAG_*` macros with `.field = TRUE`, expand all `effect` values to match (they map 1:1 currently)
 - `include/constants/battle.h` — remove `FLAG_*` defines (or keep as compat macros → `0`)
-- `src/battle_script_commands.c` — all `gBattleMoves[move].flags & FLAG_X` → `gBattleMoves[move].makesContact` etc.
+- `src/battle_script_commands.c` — all `gMovesInfo[move].flags & FLAG_X` → `gMovesInfo[move].makesContact` etc.
 - `src/battle_ai_main.c` / `src/battle_ai_util.c` — same flag access pattern
-- `src/battle_util.c`, `src/battle_main.c` — scan for `gBattleMoves[x].flags`
+- `src/battle_util.c`, `src/battle_main.c` — scan for `gMovesInfo[x].flags`
 
 **Effort estimate:** 2–3 sessions. Mechanical, no logic changes.
 
@@ -228,7 +228,7 @@ struct AdditionalEffect {
     u8  chance; // 0=always, >0=percentage
 };
 
-struct BattleMove {
+struct MoveInfo {
     // ... existing fields ...
     u8 numAdditionalEffects;        // 0–3
     const struct AdditionalEffect *additionalEffects;

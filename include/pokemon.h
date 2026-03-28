@@ -235,7 +235,7 @@ struct SpeciesInfo
             u8 noFlip : 1;
 };
 
-struct BattleMove
+struct MoveInfo
 {
     // Core stats — match RHH MoveInfo layout (include/pokemon.h)
     u16 effect;               // was u8; RHH: u16 effect
@@ -307,7 +307,7 @@ struct BattleMove
 #define ADDITIONAL_EFFECTS(...) .additionalEffects = EFFECTS_ARR(__VA_ARGS__), \
                                 .numAdditionalEffects = ARRAY_COUNT(EFFECTS_ARR(__VA_ARGS__))
 
-// Per-effect descriptor inside gBattleMoves[move].additionalEffects[].
+// Per-effect descriptor inside gMovesInfo[move].additionalEffects[].
 // RHH source: pokeemerald-expansion/include/pokemon.h struct AdditionalEffect
 struct AdditionalEffect
 {
@@ -356,7 +356,7 @@ struct Evolution
 
 #define GET_SHINY_VALUE(otId, personality) (HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality))
 
-extern const struct BattleMove gBattleMoves[];
+extern const struct MoveInfo gMovesInfo[];
 extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;

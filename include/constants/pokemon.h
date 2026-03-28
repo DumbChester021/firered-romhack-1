@@ -238,7 +238,7 @@
 #define EV_ITEM_RAISE_LIMIT 100
 
 // Battle move flags — these are now struct fields in BattleMove, not bitfield flags.
-// Access as: gBattleMoves[move].makesContact, .ignoresProtect, etc.
+// Access as: gMovesInfo[move].makesContact, .ignoresProtect, etc.
 // These defines are REMOVED. Do not add new FLAG_* constants here.
 //
 // Old → New field mapping:
@@ -250,9 +250,9 @@
 //   FLAG_KINGS_ROCK_AFFECTED   → .ignoresKingsRock == 0  (inverted)
 
 // Battle move category (physical/special split)
-#define SPLIT_PHYSICAL 0
-#define SPLIT_SPECIAL  1
-#define SPLIT_STATUS   2
+#define DAMAGE_CATEGORY_PHYSICAL 0
+#define DAMAGE_CATEGORY_SPECIAL  1
+#define DAMAGE_CATEGORY_STATUS   2
 
 // Growth rates
 #define GROWTH_MEDIUM_FAST 0

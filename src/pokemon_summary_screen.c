@@ -2098,16 +2098,16 @@ static void BufferMonMoveI(u8 i) {
 
   sMonSummaryScreen->numMoves++;
   sMonSummaryScreen->moveTypes[i] =
-      gBattleMoves[sMonSummaryScreen->moveIds[i]].type;
+      gMovesInfo[sMonSummaryScreen->moveIds[i]].type;
   StringCopy(sMonSummaryScreen->summary.moveNameStrBufs[i],
              gMoveNames[sMonSummaryScreen->moveIds[i]]);
 
   if (i >= 4 && sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE) {
     ConvertIntToDecimalStringN(sMonSummaryScreen->summary.moveCurPpStrBufs[i],
-                               gBattleMoves[sMonSummaryScreen->moveIds[i]].pp,
+                               gMovesInfo[sMonSummaryScreen->moveIds[i]].pp,
                                STR_CONV_MODE_LEFT_ALIGN, 3);
     ConvertIntToDecimalStringN(sMonSummaryScreen->summary.moveMaxPpStrBufs[i],
-                               gBattleMoves[sMonSummaryScreen->moveIds[i]].pp,
+                               gMovesInfo[sMonSummaryScreen->moveIds[i]].pp,
                                STR_CONV_MODE_LEFT_ALIGN, 3);
   } else {
     ConvertIntToDecimalStringN(
@@ -2127,22 +2127,22 @@ static void BufferMonMoveI(u8 i) {
   sMonSkillsPrinterXpos->maxPp[i] = GetRightAlignXpos_NDigits(
       2, sMonSummaryScreen->summary.moveMaxPpStrBufs[i]);
 
-  if (gBattleMoves[sMonSummaryScreen->moveIds[i]].power <= 1)
+  if (gMovesInfo[sMonSummaryScreen->moveIds[i]].power <= 1)
     StringCopy(sMonSummaryScreen->summary.movePowerStrBufs[i],
                gText_ThreeHyphens);
   else
     ConvertIntToDecimalStringN(
         sMonSummaryScreen->summary.movePowerStrBufs[i],
-        gBattleMoves[sMonSummaryScreen->moveIds[i]].power,
+        gMovesInfo[sMonSummaryScreen->moveIds[i]].power,
         STR_CONV_MODE_RIGHT_ALIGN, 3);
 
-  if (gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy == 0)
+  if (gMovesInfo[sMonSummaryScreen->moveIds[i]].accuracy == 0)
     StringCopy(sMonSummaryScreen->summary.moveAccuracyStrBufs[i],
                gText_ThreeHyphens);
   else
     ConvertIntToDecimalStringN(
         sMonSummaryScreen->summary.moveAccuracyStrBufs[i],
-        gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy,
+        gMovesInfo[sMonSummaryScreen->moveIds[i]].accuracy,
         STR_CONV_MODE_RIGHT_ALIGN, 3);
 }
 
@@ -2800,7 +2800,7 @@ static void PokeSum_PrintSelectedMoveStats(void) {
       BlitMenuInfoIcon(
           sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO],
           GetCategoryIconId(
-              gBattleMoves[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos]]
+              gMovesInfo[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos]]
                   .category),
           92, 0);
 
@@ -2842,11 +2842,11 @@ static void PokeSum_PrintAbilityNameAndDesc(void) {
 
 static u8 GetCategoryIconId(u8 category) {
   switch (category) {
-  case SPLIT_PHYSICAL:
+  case DAMAGE_CATEGORY_PHYSICAL:
     return MENU_INFO_ICON_PHYSICAL;
-  case SPLIT_SPECIAL:
+  case DAMAGE_CATEGORY_SPECIAL:
     return MENU_INFO_ICON_SPECIAL;
-  case SPLIT_STATUS:
+  case DAMAGE_CATEGORY_STATUS:
   default:
     return MENU_INFO_ICON_STATUS;
   }

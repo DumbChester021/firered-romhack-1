@@ -3,7 +3,7 @@
 audit_move_engine.py — Pre-flight check before BattleMove struct expansion.
 
 Detects all code sites that MUST change when:
-  - struct BattleMove gains u16 effect (was u8), named flag fields (was u8 bitfield)
+  - struct MoveInfo gains u16 effect (was u8), named flag fields (was u8 bitfield)
   - struct LevelUpMove changes from packed u16 to { u16 move; u16 level; }
 
 Usage:
@@ -70,8 +70,8 @@ CATEGORIES = [
         "description": "u8 local storing .effect — will silently truncate when effect becomes u16",
         "severity": "ERROR",
         "patterns": [
-            re.compile(r'\bu8\s+\w*[Ee]ffect\w*\s*=\s*gBattleMoves\['),
-            re.compile(r'\bu8\s+\w*[Ee]ffect\w*\s*=\s*.*gBattleMoves\[.*\]\.effect'),
+            re.compile(r'\bu8\s+\w*[Ee]ffect\w*\s*=\s*gMovesInfo\['),
+            re.compile(r'\bu8\s+\w*[Ee]ffect\w*\s*=\s*.*gMovesInfo\[.*\]\.effect'),
         ],
     },
     {
@@ -119,7 +119,7 @@ CATEGORIES = [
         "description": "ASM directly referencing BattleMove struct offsets (should be zero)",
         "severity": "ERROR",
         "patterns": [
-            re.compile(r'gBattleMoves', re.IGNORECASE),
+            re.compile(r'gMovesInfo', re.IGNORECASE),
         ],
         "extensions": {".s", ".inc"},
     },

@@ -51,14 +51,14 @@ def verify_constants():
     if m:
         check("NUMBER_OF_MON_TYPES == 19", m.group(1) == "19", f"got {m.group(1)}")
 
-    m = re.search(r"#define\s+SPLIT_PHYSICAL\s+(\d+)", src)
-    check("SPLIT_PHYSICAL defined", m is not None)
+    m = re.search(r"#define\s+DAMAGE_CATEGORY_PHYSICAL\s+(\d+)", src)
+    check("DAMAGE_CATEGORY_PHYSICAL defined", m is not None)
 
-    m = re.search(r"#define\s+SPLIT_SPECIAL\s+(\d+)", src)
-    check("SPLIT_SPECIAL defined", m is not None)
+    m = re.search(r"#define\s+DAMAGE_CATEGORY_SPECIAL\s+(\d+)", src)
+    check("DAMAGE_CATEGORY_SPECIAL defined", m is not None)
 
-    m = re.search(r"#define\s+SPLIT_STATUS\s+(\d+)", src)
-    check("SPLIT_STATUS defined", m is not None)
+    m = re.search(r"#define\s+DAMAGE_CATEGORY_STATUS\s+(\d+)", src)
+    check("DAMAGE_CATEGORY_STATUS defined", m is not None)
 
 # ─── 2. BattleMove struct ────────────────────────────────────────────────────
 
@@ -66,8 +66,8 @@ def verify_struct():
     print("\n── BattleMove struct (include/pokemon.h) ──")
     src = read_file("include/pokemon.h")
 
-    struct_match = re.search(r"struct BattleMove\s*\{([^}]+)\}", src, re.DOTALL)
-    check("struct BattleMove found", struct_match is not None)
+    struct_match = re.search(r"struct MoveInfo\s*\{([^}]+)\}", src, re.DOTALL)
+    check("struct MoveInfo found", struct_match is not None)
     if struct_match:
         body = struct_match.group(1)
         check("category field exists", "category" in body)
@@ -183,15 +183,15 @@ def verify_move_categories():
           f"{len(missing_category)} missing: {', '.join(missing_category[:10])}")
 
     spot_checks = {
-        "MOVE_POUND": "SPLIT_PHYSICAL",
-        "MOVE_EMBER": "SPLIT_SPECIAL",
-        "MOVE_GROWL": "SPLIT_STATUS",
-        "MOVE_FIRE_PUNCH": "SPLIT_PHYSICAL",
-        "MOVE_FLAMETHROWER": "SPLIT_SPECIAL",
-        "MOVE_SWORDS_DANCE": "SPLIT_STATUS",
-        "MOVE_WATERFALL": "SPLIT_PHYSICAL",
-        "MOVE_GUST": "SPLIT_SPECIAL",
-        "MOVE_BITE": "SPLIT_PHYSICAL",
+        "MOVE_POUND": "DAMAGE_CATEGORY_PHYSICAL",
+        "MOVE_EMBER": "DAMAGE_CATEGORY_SPECIAL",
+        "MOVE_GROWL": "DAMAGE_CATEGORY_STATUS",
+        "MOVE_FIRE_PUNCH": "DAMAGE_CATEGORY_PHYSICAL",
+        "MOVE_FLAMETHROWER": "DAMAGE_CATEGORY_SPECIAL",
+        "MOVE_SWORDS_DANCE": "DAMAGE_CATEGORY_STATUS",
+        "MOVE_WATERFALL": "DAMAGE_CATEGORY_PHYSICAL",
+        "MOVE_GUST": "DAMAGE_CATEGORY_SPECIAL",
+        "MOVE_BITE": "DAMAGE_CATEGORY_PHYSICAL",
     }
 
     for move_name, exp_cat in spot_checks.items():
@@ -210,8 +210,8 @@ def verify_damage_calc():
     print("\n── Damage calculation (src/pokemon.c) ──")
     src = read_file("src/pokemon.c")
 
-    check("Uses SPLIT_PHYSICAL in CalculateBaseDamage", "SPLIT_PHYSICAL" in src)
-    check("Uses SPLIT_SPECIAL in CalculateBaseDamage", "SPLIT_SPECIAL" in src)
+    check("Uses DAMAGE_CATEGORY_PHYSICAL in CalculateBaseDamage", "DAMAGE_CATEGORY_PHYSICAL" in src)
+    check("Uses DAMAGE_CATEGORY_SPECIAL in CalculateBaseDamage", "DAMAGE_CATEGORY_SPECIAL" in src)
     check("No old IS_TYPE_PHYSICAL macro in pokemon.c", "IS_TYPE_PHYSICAL" not in src)
     check("No old IS_TYPE_SPECIAL macro in pokemon.c", "IS_TYPE_SPECIAL" not in src)
 

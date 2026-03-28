@@ -72,8 +72,8 @@ When porting AI functions, the prerequisite renames include:
 
 | Current FireRed Name | RHH Name | Action |
 |---|---|---|
-| `gBattleMoves` | `gMovesInfo` | Rename globally when touching AI port |
-| `SPLIT_PHYSICAL` etc. | `DAMAGE_CATEGORY_PHYSICAL` | Rename globally |
+| `gMovesInfo` | `gMovesInfo` | Rename globally when touching AI port |
+| `DAMAGE_CATEGORY_PHYSICAL` etc. | `DAMAGE_CATEGORY_PHYSICAL` | Rename globally |
 | `gBattleMons[x].status2` bitfield | `gBattleMons[x].volatiles.*` | Structural change — port volatiles struct |
 | `.additionalEffects[i]` direct | `GetMoveAdditionalEffectById()` | Port the accessor function |
 | `.numAdditionalEffects` direct | `GetMoveAdditionalEffectCount()` | Port the accessor function |

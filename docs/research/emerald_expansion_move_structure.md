@@ -11,11 +11,11 @@ Local clone: `/mnt/data/Github/rh-hideout/pokeemerald-expansion`
 | Aspect | FireRed Decomp | pokeemerald-expansion (RHH) |
 |--------|---------------|----------------------------|
 | **Move count** | 354 (Gen 1-3 only) | 848 base + Z-Moves + Max Moves (Gen 1-9) |
-| **Move stats** | Separate `gBattleMoves[]` array in `battle_moves.h` | Unified `gMovesInfo[]` in `moves_info.h` — **name, description, stats, flags, contest data, and animation pointer all in one struct** |
+| **Move stats** | Separate `gMovesInfo[]` array in `battle_moves.h` | Unified `gMovesInfo[]` in `moves_info.h` — **name, description, stats, flags, contest data, and animation pointer all in one struct** |
 | **Move names** | Separate file: `move_names.h`, ALLCAPS, max 12 chars | Inline `.name = COMPOUND_STRING("Mixed Case")` in `moves_info.h`. Mixed case. `HANDLE_EXPANDED_MOVE_NAME()` for names >12 chars |
 | **Move descriptions** | Separate file: `move_descriptions.c` (string + pointer array) | Inline `.description = COMPOUND_STRING(...)` in `moves_info.h` |
 | **Flags** | Bitfield `.flags` (`FLAG_MAKES_CONTACT \| FLAG_PROTECT_AFFECTED \| ...`) | Individual booleans: `.makesContact = TRUE`, `.punchingMove = TRUE`, `.windMove = TRUE`, `.slicingMove = TRUE`, etc. |
-| **Category** | `SPLIT_PHYSICAL / SPLIT_SPECIAL / SPLIT_STATUS` | `DAMAGE_CATEGORY_PHYSICAL / DAMAGE_CATEGORY_SPECIAL / DAMAGE_CATEGORY_STATUS` |
+| **Category** | `DAMAGE_CATEGORY_PHYSICAL / DAMAGE_CATEGORY_SPECIAL / DAMAGE_CATEGORY_STATUS` | `DAMAGE_CATEGORY_PHYSICAL / DAMAGE_CATEGORY_SPECIAL / DAMAGE_CATEGORY_STATUS` |
 | **Secondary effects** | `.effect` + `.secondaryEffectChance` | `.additionalEffects = ADDITIONAL_EFFECTS({.moveEffect = ..., .chance = ...})` macro — supports multiple effects |
 | **Animation** | Separate `gBattleAnims_Moves` table in `battle_anim_scripts.s` | Inline `.battleAnimScript = Move_POUND` in `moves_info.h` |
 | **Contest data** | Separate `contest_moves.h` | Inline `.contestEffect`, `.contestCategory`, `.contestComboStarterId`, `.contestComboMoves` in `moves_info.h` |
@@ -92,7 +92,7 @@ vs FireRed equivalent (spread across 4+ files):
     .target = MOVE_TARGET_SELECTED,
     .priority = 0,
     .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED | ...,
-    .category = SPLIT_PHYSICAL,
+    .category = DAMAGE_CATEGORY_PHYSICAL,
 },
 // move_names.h:        [MOVE_FIRE_PUNCH] = _("FIRE PUNCH"),
 // move_descriptions.c: gMoveDescription_FirePunch[] = _("...");

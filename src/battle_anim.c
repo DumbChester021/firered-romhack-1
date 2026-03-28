@@ -1791,7 +1791,7 @@ static u8 GetBattleAnimMoveTargets(u8 battlerArgIndex, u8 *targets)
     u32 battlerAnimId = gBattleAnimArgs[battlerArgIndex];
     u32 i;
     u32 ignoredTgt = gBattlerAttacker;
-    u16 targetFlags = gBattleMoves[gAnimMoveIndex].target;
+    u16 targetFlags = gMovesInfo[gAnimMoveIndex].target;
 
     switch (battlerAnimId)
     {

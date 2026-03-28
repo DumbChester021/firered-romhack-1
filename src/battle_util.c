@@ -321,7 +321,7 @@ u8 TrySetCantSelectMoveBattleScript(void)
         limitations++;
     }
 
-    if (gDisableStructs[gActiveBattler].tauntTimer != 0 && gBattleMoves[move].power == 0)
+    if (gDisableStructs[gActiveBattler].tauntTimer != 0 && gMovesInfo[move].power == 0)
     {
         gCurrentMove = move;
         gSelectionBattleScripts[gActiveBattler] = BattleScript_SelectingNotAllowedMoveTaunt;
@@ -386,7 +386,7 @@ u8 CheckMoveLimitations(u8 battlerId, u8 unusableMoves, u8 check)
         if (gBattleMons[battlerId].moves[i] == gLastMoves[battlerId] && check & MOVE_LIMITATION_TORMENTED && gBattleMons[battlerId].status2 & STATUS2_TORMENT)
             unusableMoves |= gBitTable[i];
         // Taunt
-        if (gDisableStructs[battlerId].tauntTimer && check & MOVE_LIMITATION_TAUNT && gBattleMoves[gBattleMons[battlerId].moves[i]].power == 0)
+        if (gDisableStructs[battlerId].tauntTimer && check & MOVE_LIMITATION_TAUNT && gMovesInfo[gBattleMons[battlerId].moves[i]].power == 0)
             unusableMoves |= gBitTable[i];
         // Imprison
         if (GetImprisonedMovesCount(battlerId, gBattleMons[battlerId].moves[i]) && check & MOVE_LIMITATION_IMPRISON)
@@ -1312,7 +1312,7 @@ u8 AtkCanceller_UnableToUseMove(void)
             {
                 if (Random() % 5)
                 {
-                    if (!gBattleMoves[gCurrentMove].thawsUser) // unfreezing via a move effect happens in case 13
+                    if (!gMovesInfo[gCurrentMove].thawsUser) // unfreezing via a move effect happens in case 13
                     {
                         gBattlescriptCurrInstr = BattleScript_MoveUsedIsFrozen;
                         gHitMarker |= HITMARKER_NO_ATTACKSTRING;
@@ -1383,7 +1383,7 @@ u8 AtkCanceller_UnableToUseMove(void)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_TAUNTED: // taunt
-            if (gDisableStructs[gBattlerAttacker].tauntTimer && gBattleMoves[gCurrentMove].power == 0)
+            if (gDisableStructs[gBattlerAttacker].tauntTimer && gMovesInfo[gCurrentMove].power == 0)
             {
                 gProtectStructs[gBattlerAttacker].usedTauntedMove = 1;
                 CancelMultiTurnMoves(gBattlerAttacker);
@@ -1513,7 +1513,7 @@ u8 AtkCanceller_UnableToUseMove(void)
         case CANCELLER_THAW: // move thawing
             if (gBattleMons[gBattlerAttacker].status1 & STATUS1_FREEZE)
             {
-                if (gBattleMoves[gCurrentMove].thawsUser)
+                if (gMovesInfo[gCurrentMove].thawsUser)
                 {
                     gBattleMons[gBattlerAttacker].status1 &= ~STATUS1_FREEZE;
                     BattleScriptPushCursor();
@@ -1894,7 +1894,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 switch (gLastUsedAbility)
                 {
                 case ABILITY_VOLT_ABSORB:
-                    if (moveType == TYPE_ELECTRIC && gBattleMoves[move].power != 0)
+                    if (moveType == TYPE_ELECTRIC && gMovesInfo[move].power != 0)
                     {
                         if (gProtectStructs[gBattlerAttacker].notFirstStrike)
                             gBattlescriptCurrInstr = BattleScript_MoveHPDrain;
@@ -1905,7 +1905,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     }
                     break;
                 case ABILITY_WATER_ABSORB:
-                    if (moveType == TYPE_WATER && gBattleMoves[move].power != 0)
+                    if (moveType == TYPE_WATER && gMovesInfo[move].power != 0)
                     {
                         if (gProtectStructs[gBattlerAttacker].notFirstStrike)
                             gBattlescriptCurrInstr = BattleScript_MoveHPDrain;
@@ -1967,7 +1967,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
             case ABILITY_COLOR_CHANGE:
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                  && move != MOVE_STRUGGLE
-                 && gBattleMoves[move].power != 0
+                 && gMovesInfo[move].power != 0
                  && TARGET_TURN_DAMAGED
                  && !IS_BATTLER_OF_TYPE(battler, moveType)
                  && gBattleMons[battler].hp != 0)
@@ -1984,7 +1984,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                  && gBattleMons[gBattlerAttacker].hp != 0
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                  && TARGET_TURN_DAMAGED
-                 && (gBattleMoves[move].makesContact))
+                 && (gMovesInfo[move].makesContact))
                 {
                     gBattleMoveDamage = gBattleMons[gBattlerAttacker].maxHP / 16;
                     if (gBattleMoveDamage == 0)
@@ -1999,7 +1999,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                  && gBattleMons[gBattlerAttacker].hp != 0
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                  && TARGET_TURN_DAMAGED
-                 && (gBattleMoves[move].makesContact)
+                 && (gMovesInfo[move].makesContact)
                  && (Random() % 10) == 0)
                 {
                     do
@@ -2022,7 +2022,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                  && gBattleMons[gBattlerAttacker].hp != 0
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                  && TARGET_TURN_DAMAGED
-                 && (gBattleMoves[move].makesContact)
+                 && (gMovesInfo[move].makesContact)
                  && (Random() % 3) == 0)
                 {
                     gBattleCommunication[MOVE_EFFECT_BYTE] = MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_POISON;
@@ -2037,7 +2037,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                  && gBattleMons[gBattlerAttacker].hp != 0
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                  && TARGET_TURN_DAMAGED
-                 && (gBattleMoves[move].makesContact)
+                 && (gMovesInfo[move].makesContact)
                  && (Random() % 3) == 0)
                 {
                     gBattleCommunication[MOVE_EFFECT_BYTE] = MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_PARALYSIS;
@@ -2051,7 +2051,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                  && gBattleMons[gBattlerAttacker].hp != 0
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
-                 && (gBattleMoves[move].makesContact)
+                 && (gMovesInfo[move].makesContact)
                  && TARGET_TURN_DAMAGED
                  && (Random() % 3) == 0)
                 {
@@ -2066,7 +2066,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                  && gBattleMons[gBattlerAttacker].hp != 0
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
-                 && (gBattleMoves[move].makesContact)
+                 && (gMovesInfo[move].makesContact)
                  && TARGET_TURN_DAMAGED
                  && gBattleMons[gBattlerTarget].hp != 0
                  && (Random() % 3) == 0
@@ -3001,7 +3001,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                     && TARGET_TURN_DAMAGED
                     && (Random() % 100) < battlerHoldEffectParam
-                    && gBattleMoves[gCurrentMove].ignoresKingsRock == FALSE
+                    && gMovesInfo[gCurrentMove].ignoresKingsRock == FALSE
                     && gBattleMons[gBattlerTarget].hp)
                 {
                     gBattleCommunication[MOVE_EFFECT_BYTE] = MOVE_EFFECT_FLINCH;
@@ -3060,7 +3060,7 @@ u8 GetMoveTarget(u16 move, u8 setTarget)
     if (setTarget != NO_TARGET_OVERRIDE)
         moveTarget = setTarget - 1;
     else
-        moveTarget = gBattleMoves[move].target;
+        moveTarget = gMovesInfo[move].target;
 
     switch (moveTarget)
     {
@@ -3075,7 +3075,7 @@ u8 GetMoveTarget(u16 move, u8 setTarget)
             {
                 targetBattler = Random() % gBattlersCount;
             } while (targetBattler == gBattlerAttacker || side == GetBattlerSide(targetBattler) || gAbsentBattlerFlags & gBitTable[targetBattler]);
-            if (gBattleMoves[move].type == TYPE_ELECTRIC
+            if (gMovesInfo[move].type == TYPE_ELECTRIC
                 && AbilityBattleEffects(ABILITYEFFECT_COUNT_OTHER_SIDE, gBattlerAttacker, ABILITY_LIGHTNING_ROD, 0, 0)
                 && gBattleMons[targetBattler].ability != ABILITY_LIGHTNING_ROD)
             {
@@ -3285,10 +3285,10 @@ u8 CalcSecondaryEffectChance(u8 battler, const struct AdditionalEffect *addition
 bool8 MoveHasAdditionalEffect(u16 move, u16 moveEffect)
 {
     u8 i;
-    for (i = 0; i < gBattleMoves[move].numAdditionalEffects; i++)
+    for (i = 0; i < gMovesInfo[move].numAdditionalEffects; i++)
     {
-        if (gBattleMoves[move].additionalEffects[i].moveEffect == moveEffect
-            && !gBattleMoves[move].additionalEffects[i].self)
+        if (gMovesInfo[move].additionalEffects[i].moveEffect == moveEffect
+            && !gMovesInfo[move].additionalEffects[i].self)
             return TRUE;
     }
     return FALSE;
@@ -3298,11 +3298,11 @@ bool8 MoveHasAdditionalEffect(u16 move, u16 moveEffect)
 bool8 MoveHasAdditionalEffectWithChance(u16 move, u16 moveEffect, u8 chance)
 {
     u8 i;
-    for (i = 0; i < gBattleMoves[move].numAdditionalEffects; i++)
+    for (i = 0; i < gMovesInfo[move].numAdditionalEffects; i++)
     {
-        if (gBattleMoves[move].additionalEffects[i].moveEffect == moveEffect
-            && gBattleMoves[move].additionalEffects[i].chance == chance
-            && !gBattleMoves[move].additionalEffects[i].self)
+        if (gMovesInfo[move].additionalEffects[i].moveEffect == moveEffect
+            && gMovesInfo[move].additionalEffects[i].chance == chance
+            && !gMovesInfo[move].additionalEffects[i].self)
             return TRUE;
     }
     return FALSE;
@@ -3312,10 +3312,10 @@ bool8 MoveHasAdditionalEffectWithChance(u16 move, u16 moveEffect, u8 chance)
 bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect)
 {
     u8 i;
-    for (i = 0; i < gBattleMoves[move].numAdditionalEffects; i++)
+    for (i = 0; i < gMovesInfo[move].numAdditionalEffects; i++)
     {
-        if (gBattleMoves[move].additionalEffects[i].moveEffect == moveEffect
-            && gBattleMoves[move].additionalEffects[i].self)
+        if (gMovesInfo[move].additionalEffects[i].moveEffect == moveEffect
+            && gMovesInfo[move].additionalEffects[i].self)
             return TRUE;
     }
     return FALSE;

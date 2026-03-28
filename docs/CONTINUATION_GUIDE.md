@@ -45,7 +45,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 
 ### What Changed
 
-#### `struct BattleMove` (`include/pokemon.h`)
+#### `struct MoveInfo` (`include/pokemon.h`)
 - `effect`: `u8` → `u16` — allows >255 effect IDs
 - `target`: `u8` → `u16` — expanded to fit Gen 9 flags (e.g. `MOVE_TARGET_ALL_BATTLERS` = 288)
 - `flags` bitfield removed — replaced with 7 named fields:
@@ -146,7 +146,7 @@ All 927 Moves from Generation 9 (up to Tera Starstorm) are now perfectly importe
 ### Phase 9: Legacy Effect Macro Purge and Array Finalization — Complete
 The move engine has been completely decoupled from FireRed's legacy switch-case structure and synced 100% with the RHH Gen 9 `.additionalEffects` array system.
 - Replaced dead heuristic dependencies (`EFFECT_HIGH_CRITICAL`, `EFFECT_RECHARGE`, `EFFECT_FAKE_OUT`, `EFFECT_ALWAYS_HIT`) inside `battle_ai_main.c` and `battle_script_commands.c` with native evaluations like `criticalHitStage` and `accuracy == 0`.
-- Upgraded `struct BattleMove` configuration with `thawsUser`, `onChargeTurnOnly`, and `criticalHitStage` inside `include/pokemon.h`.
+- Upgraded `struct MoveInfo` configuration with `thawsUser`, `onChargeTurnOnly`, and `criticalHitStage` inside `include/pokemon.h`.
 - Perfectly synced `include/constants/battle_move_effects.h` with RHH.
 - Decoupled `gBattleScriptsForMoveEffects` from `data/battle_scripts_1.s` into a highly scalable C table: `src/data/battle_scripts_for_move_effects.h`.
 
@@ -183,12 +183,12 @@ Comprehensive audit of all ported Gen 4+ moves against RHH reference, plus struc
 - `MOVE_EFFECT_TERA_BLAST` (62) — structural port for Tera Blast (no-op without Tera system)
 
 #### `ignoresSubstitute` field
-- Added `ignoresSubstitute:1` bitfield to `struct BattleMove` in `include/pokemon.h`
+- Added `ignoresSubstitute:1` bitfield to `struct MoveInfo` in `include/pokemon.h`
 - Engine check in `Cmd_attackcanceler` (`src/battle_script_commands.c`): sets `HITMARKER_IGNORE_SUBSTITUTE` when flag is set
 - Applied to all 31 sound-based moves matching RHH
 
 #### `metronomeBanned` field
-- Added `metronomeBanned:1` bitfield to `struct BattleMove` in `include/pokemon.h`
+- Added `metronomeBanned:1` bitfield to `struct MoveInfo` in `include/pokemon.h`
 - Engine check in `Cmd_metronome` (`src/battle_script_commands.c`): skips moves with flag set
 - Applied to 153 moves matching RHH (includes gimmick moves: Tera, Mega, Z-Move, Dynamax)
 - All gimmick-related moves are banned even though gimmick systems aren't yet implemented
@@ -214,8 +214,8 @@ Added 6 more per-move ban flags matching RHH:
 - `dampBanned` (4 moves) — data-only (Damp check currently routes through battle scripts; will wire flag when RHH-style canceler is ported)
 
 #### Phase 13 — Remaining Follow-ups
-- **`copycatBanned` engine check**: Copycat (`EFFECT_COPYCAT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].copycatBanned` check.
-- **`instructBanned` engine check**: Instruct (`EFFECT_INSTRUCT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].instructBanned` check.
+- **`copycatBanned` engine check**: Copycat (`EFFECT_COPYCAT`) is stubbed to `EFFECT_HIT`. When implemented, add `gMovesInfo[move].copycatBanned` check.
+- **`instructBanned` engine check**: Instruct (`EFFECT_INSTRUCT`) is stubbed to `EFFECT_HIT`. When implemented, add `gMovesInfo[move].instructBanned` check.
 - **`gravityBanned` engine check**: Wire into Gravity field effect handler when Gravity is implemented.
 - **`meFirstBanned` engine check**: Wire into Me First handler when implemented.
 - **`dampBanned` engine check**: Wire into RHH-style `CancelerExplodingDamp` when move canceler is ported.
@@ -335,16 +335,18 @@ python3 tools/verify_data.py             # validates Fairy/P-S split/TM data
 
 Names/structures that still differ from RHH and need renaming when touched:
 
-| Current FireRed | RHH Name | Scope | Priority |
+| Current FireRed | RHH Name | Scope | Status |
 |---|---|---|---|
-| `gBattleMoves` | `gMovesInfo` | Global array + all references | High (blocks AI port) |
-| `struct BattleMove` | `struct MoveInfo` | Header + all references | High (blocks AI port) |
-| `SPLIT_PHYSICAL/SPECIAL/STATUS` | `DAMAGE_CATEGORY_*` | Constants + all move data | Medium |
-| `MOVE_TARGET_*` | `TARGET_*` (some differ) | Constants | Low |
+| `MOVE_TARGET_*` | `TARGET_*` (some differ) | Constants | Pending |
 | `gBattleMons[x].status2` bitfield | `gBattleMons[x].volatiles.*` struct | Major structural change | Future |
 | `sBattler_AI` | Various AI locals | AI functions | When porting AI |
 
-This table should be updated as convergence progresses. When a rename is completed, remove the row.
+Completed renames:
+- `struct BattleMove` → `struct MoveInfo` (7 files)
+- `gBattleMoves` → `gMovesInfo` (29 files, 246 occurrences)
+- `SPLIT_PHYSICAL/SPECIAL/STATUS` → `DAMAGE_CATEGORY_*` (14 files, 891 occurrences)
+
+This table should be updated as convergence progresses.
 
 ---
 

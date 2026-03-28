@@ -20,7 +20,7 @@ s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness)
     s32 dmg;
     u8 flags;
 
-    if (gBattleMoves[move].power < 2)
+    if (gMovesInfo[move].power < 2)
     {
         if (typeEffectiveness != NULL)
             *typeEffectiveness = 0;
@@ -60,7 +60,7 @@ s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness)
 // accounting for move priority.
 bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 move)
 {
-    s8 priority = gBattleMoves[move].priority;
+    s8 priority = gMovesInfo[move].priority;
     u16 spdAtk = gBattleMons[battlerAtk].speed;
     u16 spdDef = gBattleMons[battlerDef].speed;
 
@@ -76,8 +76,8 @@ bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 move)
 // Returns TRUE if battlerAtk definitively strikes after battlerDef.
 bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef)
 {
-    s8 priorityAtk = (moveAtk != 0) ? gBattleMoves[moveAtk].priority : 0;
-    s8 priorityDef = (moveDef != 0) ? gBattleMoves[moveDef].priority : 0;
+    s8 priorityAtk = (moveAtk != 0) ? gMovesInfo[moveAtk].priority : 0;
+    s8 priorityDef = (moveDef != 0) ? gMovesInfo[moveDef].priority : 0;
     u16 spdAtk = gBattleMons[battlerAtk].speed;
     u16 spdDef = gBattleMons[battlerDef].speed;
 
@@ -98,7 +98,7 @@ bool8 AI_HasMoveEffect(u8 battlerAtk, u16 effect)
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         u16 move = gBattleMons[battlerAtk].moves[i];
-        if (move != MOVE_NONE && gBattleMoves[move].effect == effect)
+        if (move != MOVE_NONE && gMovesInfo[move].effect == effect)
             return TRUE;
     }
     return FALSE;
@@ -140,7 +140,7 @@ static u8 AI_GetTypeEffectiveness(u16 move, u8 battlerAtk, u8 battlerDef)
 {
     u8 flags;
 
-    if (gBattleMoves[move].power < 2)
+    if (gMovesInfo[move].power < 2)
         return AI_EFFECTIVENESS_x0;
 
     flags = TypeCalc(move, battlerAtk, battlerDef);
@@ -243,9 +243,9 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
                 continue;
 
             // RHH lines 105-113: important status moves (keep mon in field).
-            if (gBattleMoves[aiMove].power == 0)
+            if (gMovesInfo[aiMove].power == 0)
             {
-                u16 effect = gBattleMoves[aiMove].effect;
+                u16 effect = gMovesInfo[aiMove].effect;
                 if (effect == EFFECT_REFLECT        || effect == EFFECT_LIGHT_SCREEN
                  || effect == EFFECT_EXPLOSION       || effect == EFFECT_DESTINY_BOND
                  || effect == EFFECT_LEECH_SEED
@@ -281,7 +281,7 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
                 u16 foeMove = gBattleMons[opposingBattler].moves[j];
-                if (foeMove == MOVE_NONE || gBattleMoves[foeMove].power < 2)
+                if (foeMove == MOVE_NONE || gMovesInfo[foeMove].power < 2)
                     continue;
                 // If foe has a move super-effective vs us, that's the equivalent
                 // of the type chart showing >= 2x for their type vs ours.
@@ -298,7 +298,7 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
             u16 playerMove = gBattleMons[opposingBattler].moves[i];
-            if (playerMove == MOVE_NONE || gBattleMoves[playerMove].power < 2)
+            if (playerMove == MOVE_NONE || gMovesInfo[playerMove].power < 2)
                 continue;
             damageTaken = AI_CalcDamage(playerMove, opposingBattler, battler, NULL);
             if (damageTaken > maxDamageTaken)
@@ -433,7 +433,7 @@ static bool8 ShouldSwitchIfWonderGuard(u8 battler, u8 opposingBattler, u8 *outSl
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         u16 move = gBattleMons[battler].moves[i];
-        if (move == MOVE_NONE || gBattleMoves[move].power < 2)
+        if (move == MOVE_NONE || gMovesInfo[move].power < 2)
             continue;
         if (AI_GetTypeEffectiveness(move, battler, opposingBattler) >= AI_EFFECTIVENESS_x2)
             return FALSE;
@@ -453,7 +453,7 @@ static bool8 ShouldSwitchIfWonderGuard(u8 battler, u8 opposingBattler, u8 *outSl
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
             u16 candMove = GetMonData(&party[i], MON_DATA_MOVE1 + j, NULL);
-            if (candMove == MOVE_NONE || gBattleMoves[candMove].power < 2)
+            if (candMove == MOVE_NONE || gMovesInfo[candMove].power < 2)
                 continue;
             if (AI_GetTypeEffectivenessForPartyMon(candMove, &party[i]) >= AI_EFFECTIVENESS_x2)
             {
@@ -485,7 +485,7 @@ static bool8 ShouldSwitchIfEncored(u8 battler)
         if (encoredMove == MOVE_NONE)
             return FALSE;
         // If the encored move has no power (status), it's wasteful. Switch.
-        if (gBattleMoves[encoredMove].power < 2)
+        if (gMovesInfo[encoredMove].power < 2)
             return TRUE;
     }
     return FALSE;
@@ -557,7 +557,7 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 battler, u8 opposingBattler,
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
             move = GetMonData(&party[i], MON_DATA_MOVE1 + j, NULL);
-            if (move == MOVE_NONE || gBattleMoves[move].power < 2)
+            if (move == MOVE_NONE || gMovesInfo[move].power < 2)
                 continue;
 
             // RHH: move must be super-effective vs opponent (the "FindMonWith...SuperEffective" part).
@@ -693,7 +693,7 @@ u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef)
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
             u16 move = gBattleMons[battlerAtk].moves[j];
-            if (move == MOVE_NONE || gBattleMoves[move].power < 2)
+            if (move == MOVE_NONE || gMovesInfo[move].power < 2)
                 continue;
             if (AI_GetTypeEffectiveness(move, battlerAtk, battlerDef) >= AI_EFFECTIVENESS_x2)
                 return PARTY_SIZE; // already have SE coverage, don't switch
@@ -764,7 +764,7 @@ bool8 HasMoveWithCategory(u8 battler, u8 category)
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         u16 move = gBattleMons[battler].moves[i];
-        if (move != MOVE_NONE && move != MOVE_UNAVAILABLE && gBattleMoves[move].category == category)
+        if (move != MOVE_NONE && move != MOVE_UNAVAILABLE && gMovesInfo[move].category == category)
             return TRUE;
     }
     return FALSE;
