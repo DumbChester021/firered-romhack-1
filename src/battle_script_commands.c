@@ -7860,10 +7860,9 @@ static void Cmd_copymovepermanently(void)
     gChosenMove = MOVE_UNAVAILABLE;
 
     if (!(gBattleMons[gBattlerAttacker].status2 & STATUS2_TRANSFORMED)
-        && gLastPrintedMoves[gBattlerTarget] != MOVE_STRUGGLE
         && gLastPrintedMoves[gBattlerTarget] != MOVE_NONE
         && gLastPrintedMoves[gBattlerTarget] != MOVE_UNAVAILABLE
-        && gLastPrintedMoves[gBattlerTarget] != MOVE_SKETCH)
+        && !gBattleMoves[gLastPrintedMoves[gBattlerTarget]].sketchBanned)
     {
         s32 i;
 

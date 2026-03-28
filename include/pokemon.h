@@ -277,6 +277,12 @@ struct BattleMove
     u8  sleepTalkBanned:1;       // RHH: sleepTalkBanned
     u8  instructBanned:1;        // RHH: instructBanned
     u8  encoreBanned:1;          // RHH: encoreBanned
+    u8  gravityBanned:1;         // RHH: gravityBanned (moves that fail under Gravity)
+    u8  meFirstBanned:1;         // RHH: meFirstBanned
+    u8  parentalBondBanned:1;    // RHH: parentalBondBanned — STUB (no Parental Bond yet)
+    u8  skyBattleBanned:1;       // RHH: skyBattleBanned — STUB (no Sky Battles)
+    u8  sketchBanned:1;          // RHH: sketchBanned
+    u8  dampBanned:1;            // RHH: dampBanned (blocked by Damp ability)
 
     // Effect-based hack replacements — port of RHH MoveInfo fields.
     // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.

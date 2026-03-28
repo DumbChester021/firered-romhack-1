@@ -35,7 +35,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **Gen 4+ Moves (Batches 1 & 2)** | ✅ Done | Roost, Confide, Round, Captivate, Tera Blast, Giga Impact, Bulldoze, Trailblaze, Work Up, Power-Up Punch, Zen Headbutt |
 | **preproc Tool Upgrade** | ✅ Done | C++ compiler tool upgraded for keyword args (`x=0`) |
 | **Battle Script Effect Hooks** | ✅ Done | Restored Gen 1 functionality for Two-Turn moves and basic stat modifications. |
-| **RHH Faithfulness Audit** | ✅ Done | EFFECT_RECOIL, EFFECT_STRUGGLE, ignoresSubstitute, metronomeBanned (153 moves) |
+| **RHH Faithfulness Audit** | ✅ Done | EFFECT_RECOIL, EFFECT_STRUGGLE, ignoresSubstitute, 13 ban flags (all RHH flags ported) |
 
 ---
 
@@ -204,11 +204,21 @@ Added 6 additional per-move ban flags matching RHH:
 
 **Deprecated:** Removed `sMovesForbiddenToCopy` hardcoded array and `IsInvalidForSleepTalkOrAssist()` helper. All move restriction checks now use per-move bitfield flags matching RHH architecture.
 
-#### Still Needed (Phase 13 Follow-up)
-- **`copycatBanned` engine check**: Copycat (`EFFECT_COPYCAT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].copycatBanned` check in its handler.
-- **`instructBanned` engine check**: Instruct (`EFFECT_INSTRUCT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].instructBanned` check in its handler.
-- **Additional RHH ban flags not yet ported**: `gravityBanned`, `meFirstBanned`, `parentalBondBanned`, `skyBattleBanned`, `sketchBanned`, `dampBanned` — these exist in RHH's struct but aren't ported yet. Port when the relevant mechanics are implemented.
-- **`MOVE_NONE` special case for assistBanned**: RHH marks `MOVE_NONE` with `.assistBanned = TRUE`. Our `MOVE_NONE` entry is index 0 in the array and the Assist handler already checks `move == MOVE_NONE` before checking flags, so this is functionally handled.
+#### Additional ban flags — Complete
+Added 6 more per-move ban flags matching RHH:
+- `gravityBanned` (10 moves) — data-only (Gravity not yet implemented)
+- `meFirstBanned` (17 moves) — data-only (Me First not yet implemented)
+- `parentalBondBanned` (9 moves) — data-only (Parental Bond ability not yet implemented)
+- `skyBattleBanned` (41 moves) — data-only (Sky Battles not planned)
+- `sketchBanned` (3 moves) — engine check in `Cmd_copymovepermanently()` (replaced hardcoded MOVE_STRUGGLE/MOVE_SKETCH checks)
+- `dampBanned` (4 moves) — data-only (Damp check currently routes through battle scripts; will wire flag when RHH-style canceler is ported)
+
+#### Phase 13 — Remaining Follow-ups
+- **`copycatBanned` engine check**: Copycat (`EFFECT_COPYCAT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].copycatBanned` check.
+- **`instructBanned` engine check**: Instruct (`EFFECT_INSTRUCT`) is stubbed to `EFFECT_HIT`. When implemented, add `gBattleMoves[move].instructBanned` check.
+- **`gravityBanned` engine check**: Wire into Gravity field effect handler when Gravity is implemented.
+- **`meFirstBanned` engine check**: Wire into Me First handler when implemented.
+- **`dampBanned` engine check**: Wire into RHH-style `CancelerExplodingDamp` when move canceler is ported.
 
 ---
 
