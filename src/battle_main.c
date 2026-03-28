@@ -4504,3 +4504,128 @@ static void HandleAction_ActionFinished(void)
     gBattleScripting.multihitMoveEffect = 0;
     gBattleResources->battleScriptsStack->size = 0;
 }
+
+// RHH: GetBattlerTotalSpeedStat (pokeemerald-expansion/src/battle_main.c:4744)
+// Returns effective speed after applying stat stages, abilities, items, status, weather.
+// Gen 5+ features (Surge Surfer, Slow Start, etc.) guarded by #ifdef until those abilities are added.
+u32 GetBattlerTotalSpeedStat(u8 battler, u8 ability, u8 holdEffect)
+{
+    u32 speed = gBattleMons[battler].speed;
+
+    // Stat stages
+    speed *= gStatStageRatios[gBattleMons[battler].statStages[STAT_SPEED]][0];
+    speed /= gStatStageRatios[gBattleMons[battler].statStages[STAT_SPEED]][1];
+
+    // Weather abilities (Swift Swim / Chlorophyll are Gen 3 and always present)
+    if (gBattleWeather & B_WEATHER_ANY)
+    {
+        if (ability == ABILITY_SWIFT_SWIM && (gBattleWeather & B_WEATHER_RAIN))
+            speed *= 2;
+        else if (ability == ABILITY_CHLOROPHYLL && (gBattleWeather & B_WEATHER_SUN))
+            speed *= 2;
+#ifdef ABILITY_SAND_RUSH
+        else if (ability == ABILITY_SAND_RUSH && (gBattleWeather & B_WEATHER_SANDSTORM))
+            speed *= 2;
+#endif
+#ifdef ABILITY_SLUSH_RUSH
+        else if (ability == ABILITY_SLUSH_RUSH && (gBattleWeather & B_WEATHER_ICY_ANY))
+            speed *= 2;
+#endif
+    }
+
+    // Other ability modifiers
+#ifdef ABILITY_QUICK_FEET
+    if (ability == ABILITY_QUICK_FEET && (gBattleMons[battler].status1 & STATUS1_ANY))
+        speed = (speed * 150) / 100;
+#endif
+#ifdef ABILITY_SURGE_SURFER
+    if (ability == ABILITY_SURGE_SURFER && (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN))
+        speed *= 2;
+#endif
+#ifdef ABILITY_SLOW_START
+    if (ability == ABILITY_SLOW_START && gBattleMons[battler].volatiles.slowStartTimer != 0)
+        speed /= 2;
+#endif
+#ifdef ABILITY_UNBURDEN
+    if (ability == ABILITY_UNBURDEN && gBattleMons[battler].volatiles.unburdenActive)
+        speed *= 2;
+#endif
+
+    // Item effects
+    if (holdEffect == HOLD_EFFECT_MACHO_BRACE)
+        speed /= 2;
+#ifdef HOLD_EFFECT_POWER_ITEM
+    else if (holdEffect == HOLD_EFFECT_POWER_ITEM)
+        speed /= 2;
+#endif
+#ifdef HOLD_EFFECT_IRON_BALL
+    else if (holdEffect == HOLD_EFFECT_IRON_BALL)
+        speed /= 2;
+#endif
+#ifdef HOLD_EFFECT_CHOICE_SCARF
+    else if (holdEffect == HOLD_EFFECT_CHOICE_SCARF)
+        speed = (speed * 150) / 100;
+#endif
+#ifdef HOLD_EFFECT_QUICK_POWDER
+    else if (holdEffect == HOLD_EFFECT_QUICK_POWDER
+          && gBattleMons[battler].species == SPECIES_DITTO
+          && !(gBattleMons[battler].volatiles.transformed))
+        speed *= 2;
+#endif
+
+    // Tailwind
+    if (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_TAILWIND)
+        speed *= 2;
+
+    // Paralysis halves speed (Gen 3-6: divide by 4)
+    if (gBattleMons[battler].status1 & STATUS1_PARALYSIS
+#ifdef ABILITY_QUICK_FEET
+        && ability != ABILITY_QUICK_FEET
+#endif
+    )
+        speed /= 4;
+
+#ifdef SIDE_STATUS_SWAMP
+    if (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_SWAMP)
+        speed /= 4;
+#endif
+
+    return speed;
+}
+
+// RHH: GetBattleMovePriority (pokeemerald-expansion/src/battle_main.c:4824)
+// Returns move priority, elevated by ability effects where applicable.
+// Gimmick checks (Z-Move, Dynamax) and Gen 5+ abilities guarded by #ifdef.
+s32 GetBattleMovePriority(u8 battler, u8 ability, u16 move)
+{
+    s32 priority = GetMovePriority(move);
+
+#ifdef ABILITY_GALE_WINGS
+    if (ability == ABILITY_GALE_WINGS && GetMoveType(move) == TYPE_FLYING)
+    {
+        priority++;
+    }
+    else
+#endif
+#ifdef ABILITY_PRANKSTER
+    if (IsBattleMoveStatus(move) && ability == ABILITY_PRANKSTER)
+    {
+        gProtectStructs[battler].pranksterElevated = 1;
+        priority++;
+    }
+    else
+#endif
+#ifdef ABILITY_TRIAGE
+    if (ability == ABILITY_TRIAGE && IsHealingMove(move))
+    {
+        priority += 3;
+    }
+    else
+#endif
+    {
+        (void)battler;
+        (void)ability;
+    }
+
+    return priority;
+}

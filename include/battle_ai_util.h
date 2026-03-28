@@ -3,6 +3,14 @@
 
 #include "global.h"
 
+// RHH: ConsiderPriority enum (pokeemerald-expansion/include/battle_ai_util.h:65-69)
+// Controls whether AI_WhoStrikesFirst checks move priority before comparing speed.
+enum ConsiderPriority
+{
+    DONT_CONSIDER_PRIORITY,
+    CONSIDER_PRIORITY,
+};
+
 // ============================================================================
 // AI_EFFECTIVENESS_x* constants
 // RHH source: include/battle_ai_util.h (AI_EFFECTIVENESS_* enum)
@@ -21,11 +29,14 @@
 // Sets *typeEffectiveness to the MOVE_RESULT_* flags from TypeCalc.
 s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness);
 
-// Returns TRUE if battlerAtk moves before battlerDef for the given move (accounts for priority).
-bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 move);
+// RHH: AI_WhoStrikesFirst (pokeemerald-expansion/src/battle_ai_util.c:1450)
+// Returns AI_IS_FASTER or AI_IS_SLOWER by comparing speeds (and optionally priorities).
+s32 AI_WhoStrikesFirst(u8 battlerAtk, u8 battlerDef, u16 aiMove, u16 playerMove, enum ConsiderPriority considerPriority);
 
-// Extrapolates AI_WhoStrikesFirst logic to strictly evaluate predict priority safely.
-bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef);
+// RHH 5-param wrappers (pokeemerald-expansion/include/battle_ai_util.h:80-81)
+// Returns TRUE if battlerAtk moves before (or slower than) battlerDef.
+bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 aiMove, u16 playerMove, enum ConsiderPriority considerPriority);
+bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 aiMove, u16 playerMove, enum ConsiderPriority considerPriority);
 
 // Returns TRUE if any of battlerAtk's moves have the given effect ID.
 bool8 AI_HasMoveEffect(u8 battlerAtk, u16 effect);
@@ -61,5 +72,9 @@ bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect);
 bool8 HasMoveWithCategory(u8 battler, u8 category);
 bool8 BattlerStatCanRise(u8 battler, u8 stat);
 u32 GetBattlerSideSpeedAverage(u8 battler);
+
+// RHH: SetBattlerAiData (pokeemerald-expansion/src/battle_ai_main.c:615)
+// Populates gAiLogicData fields for one battler. Call for both battlers before scoring.
+void SetBattlerAiData(u8 battler, struct AiLogicData *aiData);
 
 #endif // GUARD_BATTLE_AI_UTIL_H

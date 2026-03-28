@@ -1,11 +1,14 @@
 #include "global.h"
 #include "battle.h"
 #include "battle_anim.h"
+#include "battle_ai_main.h"
 #include "battle_ai_util.h"
+#include "battle_main.h"
 #include "battle_script_commands.h"
 #include "battle_util.h"
 #include "pokemon.h"
 #include "random.h"
+#include "item.h"
 #include "constants/battle.h"
 #include "constants/moves.h"
 #include "constants/battle_move_effects.h"
@@ -56,39 +59,76 @@ s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness)
     return dmg;
 }
 
-// AI_IsFaster: Returns TRUE if battlerAtk moves before battlerDef for the given move,
-// accounting for move priority.
-bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 move)
+// RHH: AI_WhoStrikesFirst (pokeemerald-expansion/src/battle_ai_util.c:1450)
+// Compares speeds (and optionally move priorities) and returns AI_IS_FASTER or AI_IS_SLOWER.
+// HOLD_EFFECT_LAGGING_TAIL and ABILITY_STALL guarded by #ifdef until those constants are added.
+s32 AI_WhoStrikesFirst(u8 battlerAtk, u8 battlerDef, u16 aiMove, u16 playerMove, enum ConsiderPriority considerPriority)
 {
-    s8 priority = gMovesInfo[move].priority;
-    u16 spdAtk = gBattleMons[battlerAtk].speed;
-    u16 spdDef = gBattleMons[battlerDef].speed;
+    u32 speedAI, speedPlayer;
+    u8 abilityAI     = gAiLogicData->abilities[battlerAtk];
+    u8 abilityPlayer = gAiLogicData->abilities[battlerDef];
+    u8 holdEffAI     = gAiLogicData->holdEffects[battlerAtk];
+    u8 holdEffPlayer = gAiLogicData->holdEffects[battlerDef];
 
-    if (priority > 0)
-        return TRUE;
-    if (priority < 0)
-        return FALSE;
+    if (considerPriority == CONSIDER_PRIORITY)
+    {
+        s32 aiPriority     = GetBattleMovePriority(battlerAtk, abilityAI,     aiMove);
+        s32 playerPriority = GetBattleMovePriority(battlerDef, abilityPlayer, playerMove);
 
-    return spdAtk >= spdDef;
+        if (aiPriority > playerPriority)
+            return AI_IS_FASTER;
+        else if (aiPriority < playerPriority)
+            return AI_IS_SLOWER;
+    }
+
+    speedAI     = GetBattlerTotalSpeedStat(battlerAtk, abilityAI,     holdEffAI);
+    speedPlayer = GetBattlerTotalSpeedStat(battlerDef, abilityPlayer, holdEffPlayer);
+
+#ifdef HOLD_EFFECT_LAGGING_TAIL
+    if (holdEffAI == HOLD_EFFECT_LAGGING_TAIL && holdEffPlayer != HOLD_EFFECT_LAGGING_TAIL)
+        return AI_IS_SLOWER;
+    else if (holdEffAI != HOLD_EFFECT_LAGGING_TAIL && holdEffPlayer == HOLD_EFFECT_LAGGING_TAIL)
+        return AI_IS_FASTER;
+#endif
+#ifdef ABILITY_STALL
+    if (abilityAI == ABILITY_STALL && abilityPlayer != ABILITY_STALL)
+        return AI_IS_SLOWER;
+    else if (abilityAI != ABILITY_STALL && abilityPlayer == ABILITY_STALL)
+        return AI_IS_FASTER;
+#endif
+
+    if (speedAI > speedPlayer)
+    {
+#ifdef STATUS_FIELD_TRICK_ROOM
+        if (gFieldStatuses & STATUS_FIELD_TRICK_ROOM)
+            return AI_IS_SLOWER;
+#endif
+        return AI_IS_FASTER;
+    }
+    else if (speedAI == speedPlayer)
+    {
+        return AI_IS_FASTER; // tie → assume AI acts first
+    }
+    else
+    {
+#ifdef STATUS_FIELD_TRICK_ROOM
+        if (gFieldStatuses & STATUS_FIELD_TRICK_ROOM)
+            return AI_IS_FASTER;
+#endif
+        return AI_IS_SLOWER;
+    }
 }
 
-// AI_IsSlower: Extrapolates AI_WhoStrikesFirst from RHH context for predictive priority evaluations.
-// Returns TRUE if battlerAtk definitively strikes after battlerDef.
-bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef)
+// RHH: AI_IsFaster / AI_IsSlower wrappers (pokeemerald-expansion/src/battle_ai_util.c)
+// Thin wrappers around AI_WhoStrikesFirst for call-site convenience.
+bool8 AI_IsFaster(u8 battlerAtk, u8 battlerDef, u16 aiMove, u16 playerMove, enum ConsiderPriority considerPriority)
 {
-    s8 priorityAtk = (moveAtk != 0) ? gMovesInfo[moveAtk].priority : 0;
-    s8 priorityDef = (moveDef != 0) ? gMovesInfo[moveDef].priority : 0;
-    u16 spdAtk = gBattleMons[battlerAtk].speed;
-    u16 spdDef = gBattleMons[battlerDef].speed;
+    return AI_WhoStrikesFirst(battlerAtk, battlerDef, aiMove, playerMove, considerPriority) == AI_IS_FASTER;
+}
 
-    if (priorityAtk > priorityDef)
-        return FALSE;
-    if (priorityAtk < priorityDef)
-        return TRUE;
-
-    // In a speed tie, the result is technically a coinflip, but for AI safety logic
-    // we assume it is NOT definitively slower unless speed is strictly less.
-    return spdAtk < spdDef;
+bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 aiMove, u16 playerMove, enum ConsiderPriority considerPriority)
+{
+    return AI_WhoStrikesFirst(battlerAtk, battlerDef, aiMove, playerMove, considerPriority) == AI_IS_SLOWER;
 }
 
 // AI_HasMoveEffect: Returns TRUE if any of battlerAtk's current moves have the given effect ID.
@@ -312,7 +352,7 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
         // RHH lines 163-168: if we can KO despite bad matchup, don't switch.
         if (maxDamageDealt >= (s32)gBattleMons[opposingBattler].hp)
         {
-            if (AI_IsFaster(battler, opposingBattler, 0))
+            if (AI_IsFaster(battler, opposingBattler, MOVE_NONE, MOVE_NONE, DONT_CONSIDER_PRIORITY))
                 return FALSE;
         }
 
@@ -800,4 +840,29 @@ u32 GetBattlerSideSpeedAverage(u8 battler)
         return 0;
 
     return totalSpeed / numAlive;
+}
+
+// RHH: SetBattlerAiData (pokeemerald-expansion/src/battle_ai_main.c:615-634)
+// Populates per-battler fields in gAiLogicData for use by AI scoring helpers.
+// Simplified: FireRed lacks RHH's knowledge-inference system (AI_DecideKnownAbilityForTurn,
+// AI_DecideHoldEffectForTurn, GetBattlerTotalSpeedStat, recording helpers), so we read
+// battle state directly. The struct fields are identical to RHH's; only the population
+// method is simplified here — replace each field with the full RHH version as those
+// helpers are ported.
+void SetBattlerAiData(u8 battler, struct AiLogicData *aiData)
+{
+    u8 ability    = gBattleMons[battler].ability;   // TODO: AI_DecideKnownAbilityForTurn
+    u16 item      = gBattleMons[battler].item;
+    u8 holdEffect = ItemId_GetHoldEffect(item);     // TODO: AI_DecideHoldEffectForTurn
+
+    aiData->abilities[battler]       = ability;
+    aiData->items[battler]           = item;
+    aiData->holdEffects[battler]     = holdEffect;
+    aiData->holdEffectParams[battler] = ItemId_GetHoldEffectParam(item);
+    aiData->lastUsedMove[battler]    = (gLastMoves[battler] == MOVE_UNAVAILABLE)
+                                       ? MOVE_NONE : gLastMoves[battler];
+    aiData->hpPercents[battler]      = (gBattleMons[battler].maxHP == 0) ? 0
+                                       : gBattleMons[battler].hp * 100 / gBattleMons[battler].maxHP;
+    aiData->moveLimitations[battler] = CheckMoveLimitations(battler, 0, MOVE_LIMITATIONS_ALL);
+    aiData->speedStats[battler]      = GetBattlerTotalSpeedStat(battler, ability, holdEffect);
 }

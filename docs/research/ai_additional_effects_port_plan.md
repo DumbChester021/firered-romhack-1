@@ -1,119 +1,140 @@
 # AI Additional Effects Scoring — Port Plan
 
-## Problem
+## Goal
 
-FireRed's AI has no scoring for `additionalEffects[]` on moves. RHH evaluates these via two functions:
+Port `AI_CalcAdditionalEffectScore()` from RHH 100% faithfully (no stubs, no adaptations).
+This is the scoring system for `additionalEffects[]` on moves — the gap between FireRed's
+current ASM-based AI and RHH's modern AI.
 
-1. **`AI_CalcMoveEffectScore()`** (~1500 lines) — scores primary move effects (EFFECT_*)
-2. **`AI_CalcAdditionalEffectScore()`** (~355 lines) — scores secondary effects from `additionalEffects[]`
+## Affected Moves (Current Codebase)
 
-Both are called from `AI_CheckViability()` in `src/battle_ai_main.c`.
-
-## Affected Moves (Current)
-
-| Move | Additional Effect | Self? | Chance | AI Scoring Needed |
+| Move | Additional Effect | Self? | Chance | Effect Once Ported |
 |---|---|---|---|---|
 | Bulldoze | MOVE_EFFECT_SPD_MINUS_1 | no | 100% | `IncreaseStatDownScore(STAT_SPEED)` |
 | Trailblaze | MOVE_EFFECT_SPD_PLUS_1 | yes | 100% | `IncreaseStatUpScore(STAT_CHANGE_SPEED)` |
 | Power-Up Punch | MOVE_EFFECT_ATK_PLUS_1 | yes | 100% | `IncreaseStatUpScore(STAT_CHANGE_ATK)` |
-| Giga Impact | MOVE_EFFECT_RECHARGE | yes | guaranteed | NOT in AdditionalEffectScore — handled by CalcMoveEffectScore |
-| Zen Headbutt | MOVE_EFFECT_FLINCH | no | 20% | Filtered out (not guaranteed) — matches RHH |
-| Work Up | none (EFFECT_ATTACK_SPATK_UP) | — | — | Already scored by existing switch-case |
+| Giga Impact | MOVE_EFFECT_RECHARGE | yes | guaranteed | No scoring (falls through to default) |
+| Zen Headbutt | MOVE_EFFECT_FLINCH | no | 20% | Filtered by MoveEffectIsGuaranteed |
+| Work Up | none (EFFECT_ATTACK_SPATK_UP) | — | — | Scored by existing effect switch |
 
-## Completed Infrastructure (This Session)
+## Completed Infrastructure (Committed)
 
-### Ported (compiles, in codebase)
-1. **`GetMoveAdditionalEffectCount()`** — inline in `include/pokemon.h:325`
-2. **`GetMoveAdditionalEffectById()`** — inline in `include/pokemon.h:330`
-3. **`MoveEffectIsGuaranteed()`** — `src/battle_util.c:3283`
-4. **`MoveIsAffectedBySheerForce()`** — `src/battle_util.c:3290`
-5. **`IsSheerForceAffected()`** — `src/battle_util.c:3305` (ifdef'd for ABILITY_SHEER_FORCE)
-6. **`struct AiLogicData`** — `include/battle.h:471` (full struct definition)
-7. **`gAiLogicData`** — allocated in `src/battle_util2.c`, extern in `include/battle.h`
-8. **`.sheerForceOverride`** field added to `struct AdditionalEffect`
-9. **Declarations** — all new functions declared in `include/battle_util.h`
+| Function / Type | Location | Status |
+|---|---|---|
+| `GetMoveAdditionalEffectCount()` | `include/pokemon.h` inline | ✅ Done |
+| `GetMoveAdditionalEffectById()` | `include/pokemon.h` inline | ✅ Done |
+| `GetMoveEffect()` | `include/pokemon.h` inline | ✅ Done |
+| `GetMovePriority()` | `include/pokemon.h` inline | ✅ Done |
+| `GetMovePower()` | `include/pokemon.h` inline | ✅ Done |
+| `MoveEffectIsGuaranteed()` | `src/battle_util.c` | ✅ Done |
+| `MoveIsAffectedBySheerForce()` | `src/battle_util.c` | ✅ Done |
+| `IsSheerForceAffected()` | `src/battle_util.c` (ifdef'd) | ✅ Done |
+| `.sheerForceOverride` in AdditionalEffect | `include/pokemon.h` | ✅ Done |
+| `struct AiLogicData` | `include/battle.h` | ✅ Done |
+| `gAiLogicData` (allocated) | `src/battle_util2.c` | ✅ Done |
+| `enum AIScore` | `include/battle_ai_main.h` | ✅ Done |
+| `ADJUST_SCORE` / `ADJUST_SCORE_PTR` | `include/battle_ai_main.h` | ✅ Done |
+| `enum StatChange` | `include/battle_ai_main.h` | ✅ Done |
+| `SetBattlerAiData()` (simplified) | `src/battle_ai_util.c` | ✅ Done (TODO: update fields) |
+| Python extraction tool | `tools/port_ai_scoring.py` | ✅ Done |
 
-### Python Extraction Tool
-- `tools/port_ai_scoring.py` — brace-depth parser, extracts RHH functions + dependency analysis
-- `tools/staging/ai_port/` — 12 extracted functions (715 lines total)
-- Run: `python3 tools/port_ai_scoring.py --check-deps`
+## Complete Ordered Port Chain (Bottom-Up, 100% Faithful)
 
-## Remaining Work — Dependency Tree
+Port in this exact order — each step may unlock the next.
 
-### Tier 1: AI Score Constants (next session, ~30 min)
-Port from `include/battle_ai_util.h`:
-- `enum AIScore` — NO_INCREASE, WEAK_EFFECT, DECENT_EFFECT, GOOD_EFFECT, BEST_EFFECT, BAD_EFFECT
-- `ADJUST_SCORE()` macro
-- `ADJUST_SCORE_PTR()` macro
+### Tier A: Constants + Speed Infrastructure ✅ DONE
+1. ✅ `enum ConsiderPriority` {DONT_CONSIDER_PRIORITY, CONSIDER_PRIORITY} → `include/battle_ai_util.h`
+2. ✅ `UNKNOWN_NO_OF_HITS` (= UINT32_MAX) → `include/battle_ai_main.h`
+3. ✅ `AI_IS_FASTER/AI_IS_SLOWER` return values (#define 1/-1) → `include/battle_ai_main.h`
+4. ✅ `GetBattleMovePriority()` → `src/battle_main.c` (Gen 5+ ability checks #ifdef'd)
+5. ✅ `GetBattlerTotalSpeedStat()` → `src/battle_main.c` (Gen 5+ abilities/items #ifdef'd)
+6. ✅ `AI_WhoStrikesFirst()` → `src/battle_ai_util.c` (LAGGING_TAIL/STALL/TRICK_ROOM #ifdef'd)
+7. ✅ Updated `AI_IsFaster()`/`AI_IsSlower()` to RHH 5-param signature + updated 4 callers
+8. ✅ Updated `SetBattlerAiData()` field `speedStats` to use `GetBattlerTotalSpeedStat()`
 
-### Tier 2: SetBattlerAiData (~1 hour)
-Port `SetBattlerAiData()` from `src/battle_ai_main.c:615-634`. Deps:
-- `AI_DecideKnownAbilityForTurn()` — can simplify to `gBattleMons[battler].ability` initially
-- `AI_DecideHoldEffectForTurn()` — can simplify to `GetBattlerHoldEffect(battler)` initially
-- `GetBattlerHoldEffectParam()` — may already exist
-- `GetHealthPercentage()` — trivial: `hp * 100 / maxHP`
-- `GetBattlerTotalSpeedStat()` — exists or can be derived
-- `CheckMoveLimitations()` — likely exists
-- `IsAiBattlerAssumingStab()` / `RecordMovesBasedOnStab()` — can stub initially
+### Tier B: Move Array + Move Query Helpers
+9. `GetMovesArray()` — RHH `src/battle_ai_util.c` — returns `gBattleMons[battler].moves`
+10. `HasMoveWithEffect()` — 12 lines, needs 9 + `GetMoveEffect()` (done)
+11. `HasMoveThatChangesKOThreshold()` — 34 lines, needs 9+10 + accessors (done)
 
-### Tier 3: Stat Scoring Helpers (~2 hours)
-**`IncreaseStatUpScoreInternal()`** (123 lines) — deep deps:
-- `NoOfHitsForTargetToFaintBattler()` — needs damage calc (stub: return UNKNOWN_NO_OF_HITS)
-- `GetIncomingMoveSpeedCheck()` — 11 lines, needs `gAiLogicData->predictedMove`
-- `GetStatBeingChanged()` / `GetStagesOfStatChange()` — utility functions (~60 lines combined)
-- `ShouldRaiseAnyStat()` — 36 lines
-- `HasMoveThatChangesKOThreshold()` — 34 lines, needs damage calc (stub: return FALSE)
-- `IsBattlerPredictedToSwitch()` — 13 lines
-- `GetBattlerParty()` — likely exists
-- `HasMoveWithEffect()` — 12 lines
+### Tier C: Battler State Helpers
+12. `GetBattlerParty()` — returns `gPlayerParty`/`gEnemyParty` by battler side
+13. `GetBattlerSecondaryDamage()` — 16 lines, needs:
+    - `GetLeechSeedDamage()` — 1 line (use gStatuses3[battler] & STATUS3_LEECHSEED)
+    - `GetNightmareDamage()` — 1 line (use status1 nightmare bit)
+    - `GetCurseDamage()` — 1 line (use status2 cursed bit)
+    - `GetTrapDamage()` — 1 line (use status2 wrapped bits)
+    - `GetPoisonDamage()` — 1 line (use status1 poison)
+    - `GetWeatherDamage()` — ~10 lines (use gBattleWeather)
+14. `DoesAbilityRaiseStatsWhenLowered()` — 12 lines, pure switch (CONTRARY/COMPETITIVE/DEFIANT)
+15. `IsBattlerPredictedToSwitch()` — 13 lines, needs `gAiThinkingStruct->aiFlags[]` as array
+    - **Blocker**: RHH has `u64 aiFlags[MAX_BATTLERS_COUNT]`, FireRed has `u32 aiFlags` (single)
+    - This is a structural change — defer or alias
 
-**`IncreaseStatDownScore()`** (72 lines) — deps:
-- `GetBattlerSecondaryDamage()` — 16 lines
-- `DoesAbilityRaiseStatsWhenLowered()` — 12 lines
-- `GetIncomingMoveSpeedCheck()` — shared with above
-- `IsBattlerTrapped()` — 30 lines
+### Tier D: Stat Change Helpers (self-contained)
+16. `GetStatBeingChanged()` — 32 lines, pure switch on StatChange → needs `enum StatChange` (done)
+17. `GetStagesOfStatChange()` — 29 lines, pure switch on StatChange
 
-### Tier 4: AI_CalcAdditionalEffectScore (~1 hour)
-The main function (355 lines) — once Tiers 1-3 are done, this is a direct copy.
-Additional deps only for switch cases we don't currently need:
-- `IsAdditionalEffectBlocked()` — 10 lines
-- Status scoring: `IncreasePoisonScore()`, `IncreaseBurnScore()`, etc. — 22-40 lines each
-- Weather/terrain/screen helpers — small functions
-- `AI_ShouldCopyStatChanges()`, `AI_ShouldSetUpHazards()`, etc.
+### Tier E: Setup Logic
+18. `CanAiPredictMove()` — needed by GetIncomingMoveSpeedCheck
+19. `GetIncomingMoveSpeedCheck()` — 11 lines, needs CanAiPredictMove + gAiLogicData->predictingMove
+20. `AI_IsAbilityOnSide()` — needed by ShouldRaiseAnyStat, IsBattlerTrapped
+21. `AreBattlersStatsMaxed()` — needed by ShouldRaiseAnyStat
+22. `ShouldRaiseAnyStat()` — 36 lines, needs 14+20+21 + many more (deep deps)
+    - Consider porting after its deeper deps
 
-### Tier 5: Wire into AI_CheckViability
-Add call at end of `AI_CheckViability()`:
-```c
-score += AI_CalcAdditionalEffectScore(battlerAtk, battlerDef, move, gAiLogicData);
+### Tier F: KO Calc (damage infrastructure prerequisite)
+23. `AI_CalcDamage()` — RHH's full version (our version is simplified)
+24. `GetNoOfHitsToKOBattler()` — needs AI_CalcDamage
+25. `NoOfHitsForTargetToFaintBattler()` — 16 lines, needs 24
+
+### Tier G: Trap Helper
+26. `AI_CanBattlerEscape()` — needed by IsBattlerTrapped
+27. `CountUsablePartyMons()` — needed by IsBattlerTrapped
+28. `IsBattlerTrapped()` — 30 lines, needs 26+27 + gAiLogicData fields + volatiles struct
+
+### Tier H: Status Scoring Helpers
+29. `IncreasePoisonScore()` / `IncreaseBurnScore()` / `IncreaseParalyzeScore()` / `IncreaseSleepScore()` / `IncreaseConfusionScore()`
+    - Each: 20-40 lines, need AI_CanPoison/AI_CanBurn etc.
+
+### Tier I: Core Stat Scoring (needs A-G)
+30. `IncreaseStatDownScore()` — 72 lines, needs: 7+14+13+10+19+28
+31. `IncreaseStatUpScoreInternal()` — 123 lines, needs: 7+25+22+18+10+16+17+gAiThinkingStruct.aiFlags[battler]
+32. `IncreaseStatUpScore()` / `IncreaseStatUpScoreContrary()` — wrappers for 31
+
+### Tier J: Main Function (needs A-I)
+33. Various small helpers (IsAdditionalEffectBlocked, ShouldTrap, etc.)
+34. `AI_CalcAdditionalEffectScore()` — 355 lines — port in full
+35. Wire into `AI_CheckViability()`
+
+## Key Structural Blockers
+
+| Blocker | Description | Impact |
+|---|---|---|
+| `gAiThinkingStruct->aiFlags[battler]` | RHH uses per-battler `u64 aiFlags[4]`, FireRed uses single `u32 aiFlags` | Blocks IsBattlerPredictedToSwitch, IncreaseStatUpScoreInternal |
+| `struct Volatiles volatiles` | RHH uses named struct, FireRed uses `u32 status2` bitfield | Blocks IsBattlerTrapped, IncreaseStatDownScore (leechSeed/cursed/root fields) |
+| `GetBattlerTotalSpeedStat()` | Needs full speed stat formula (modifiers, weather, items) | Blocks AI_WhoStrikesFirst |
+
+These blockers don't prevent ALL porting — they block specific code paths.
+IsBattlerPredictedToSwitch and full IncreaseStatUpScoreInternal may need these resolved first.
+Others (IncreaseStatDownScore speed path, GetStatBeingChanged/GetStagesOfStatChange) can proceed now.
+
+## Port Session Plan
+
+- **Session A**: ✅ Tier A steps 1-8 (speed infrastructure + AI_IsFaster update)
+- **Session B (next)**: Tiers B+D (GetMovesArray, HasMoveWithEffect, GetStatBeingChanged, GetStagesOfStatChange)
+- **Session C**: Tier C part (GetBattlerSecondaryDamage + secondary-dmg helpers)
+- **Session D**: Tier E (CanAiPredictMove, GetIncomingMoveSpeedCheck, ShouldRaiseAnyStat)
+- **Session E**: Tier F+G (damage calc, IsBattlerTrapped)
+- **Session F**: Tiers H+I (status helpers, IncreaseStatDown/UpScore)
+- **Session G**: Tier J (AI_CalcAdditionalEffectScore + wire)
+
+## Tool Usage
+
+Extract any function from RHH:
+```bash
+python3 tools/port_ai_scoring.py -f FunctionName --check-deps
+# output: tools/staging/ai_port/FunctionName.c
 ```
 
-## Porting Strategy — Incremental Convergence
-
-**DO NOT read full RHH functions into LLM context.** Use `tools/port_ai_scoring.py`.
-
-### Approach: Full Port with Temporary Stubs
-1. Port the full 355-line `AI_CalcAdditionalEffectScore` body from RHH (100% faithful)
-2. Port all helper functions that are small (<30 lines) directly
-3. For helpers with deep deps (damage calc, prediction), create temporary stubs that return safe defaults
-4. Each stub is marked `// STUB: Port from RHH src/battle_ai_util.c:XXXX`
-5. Stubs are replaced with real implementations as convergence progresses
-
-### Why Full Port (not minimal)?
-- Per project convergence rules: "no adaptations, port everything"
-- The function is a clean switch-case — all cases compile even if some deps are stubbed
-- Future moves automatically get scoring as their effects are already handled
-- Stubs produce conservative behavior (no score change) which is safe
-
-## Session Estimate
-- Tier 1: 1 session (~30 min)
-- Tier 2: 1 session (~1 hour)
-- Tier 3: 1-2 sessions (~2-3 hours)
-- Tier 4+5: 1 session (~1 hour)
-- **Total: 3-4 sessions to complete full port**
-
-## Notes
-- `MoveEffectIsGuaranteed()` filters out non-100% effects (Zen Headbutt's 20% flinch won't be scored — matches RHH)
-- Self-targeting effects (`.self = TRUE`) use attacker stats, opponent-targeting use defender stats
-- ABILITY_CONTRARY inverts stat change scoring
-- `IsSheerForceAffected()` is ifdef'd since ABILITY_SHEER_FORCE (Gen 5) isn't in our constants yet
-- EWRAM is at 98.87% — `gAiLogicData` pointer costs only 4 bytes, struct is heap-allocated
+All staged extractions in `tools/staging/ai_port/`.

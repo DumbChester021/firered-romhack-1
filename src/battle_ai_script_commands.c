@@ -176,6 +176,11 @@ u8 BattleAI_ChooseMoveOrAction(void)
 
     RecordLastUsedMoveByTarget();
 
+    // Populate gAiLogicData for both battlers before any scoring begins.
+    // RHH: SetBattlerAiData is called per-battler from CalcBattlerAiMovesData.
+    SetBattlerAiData(gBattlerAttacker, gAiLogicData);
+    SetBattlerAiData(gBattlerTarget, gAiLogicData);
+
     // Smart switching: evaluate before move scoring.
     // If the trainer has AI_SCRIPT_SMART_SWITCHING and a better benched mon
     // exists for the current matchup, switch now instead of using a move.

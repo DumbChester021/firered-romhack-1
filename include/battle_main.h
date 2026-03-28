@@ -95,4 +95,10 @@ void RunBattleScriptCommands_PopCallbacksStack(void);
 void RunBattleScriptCommands(void);
 bool8 TryRunFromBattle(u8 battler);
 
+// RHH: Speed and priority helpers (pokeemerald-expansion/include/battle_main.h:99-101)
+// GetBattlerTotalSpeedStat: base speed + stat stages + ability/item/status modifiers.
+// GetBattleMovePriority: move priority + ability elevations (Prankster etc.).
+u32 GetBattlerTotalSpeedStat(u8 battler, u8 ability, u8 holdEffect);
+s32 GetBattleMovePriority(u8 battler, u8 ability, u16 move);
+
 #endif // GUARD_BATTLE_MAIN_H

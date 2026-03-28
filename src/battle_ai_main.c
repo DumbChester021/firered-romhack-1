@@ -642,7 +642,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     case EFFECT_SUCKER_PUNCH:
         if ((HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_STATUS) && (Random() % 100 < 50))
-         || AI_IsSlower(battlerAtk, battlerDef, move, 0))
+         || AI_IsSlower(battlerAtk, battlerDef, move, MOVE_NONE, CONSIDER_PRIORITY))
             return score - 10;
         break;
 
@@ -702,7 +702,7 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     u8 defType2    = GetBattlerType2(battlerDef);
     u8 atkType1    = GetBattlerType1(battlerAtk);
     u8 atkType2    = GetBattlerType2(battlerAtk);
-    bool8 faster   = AI_IsFaster(battlerAtk, battlerDef, move);
+    bool8 faster   = AI_IsFaster(battlerAtk, battlerDef, move, MOVE_NONE, CONSIDER_PRIORITY);
     u8 typeFlags   = TypeCalc(move, battlerAtk, battlerDef);
     bool8 superEff = (typeFlags & MOVE_RESULT_SUPER_EFFECTIVE) != 0;
     bool8 notVeryEff = (typeFlags & MOVE_RESULT_NOT_VERY_EFFECTIVE) != 0;
@@ -1443,7 +1443,7 @@ static s32 AI_TryToFaint(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     if (gBattleMons[battlerDef].hp <= dmg)
     {
         // Prefer priority move if we'd be outsped (it gets the kill safely)
-        if (gMovesInfo[move].priority > 0 && !AI_IsFaster(battlerAtk, battlerDef, move))
+        if (gMovesInfo[move].priority > 0 && !AI_IsFaster(battlerAtk, battlerDef, move, MOVE_NONE, CONSIDER_PRIORITY))
             return score + 7;
         return score + 5;
     }

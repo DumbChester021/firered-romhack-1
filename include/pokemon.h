@@ -369,6 +369,21 @@ static inline const struct AdditionalEffect *GetMoveAdditionalEffectById(u16 mov
     return &gMovesInfo[moveId].additionalEffects[effect];
 }
 
+static inline u16 GetMoveEffect(u16 moveId)
+{
+    return gMovesInfo[moveId].effect;
+}
+
+static inline u8 GetMovePriority(u16 moveId)
+{
+    return gMovesInfo[moveId].priority;
+}
+
+static inline u8 GetMovePower(u16 moveId)
+{
+    return gMovesInfo[moveId].power;
+}
+
 extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;
