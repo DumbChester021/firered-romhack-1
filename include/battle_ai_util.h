@@ -95,6 +95,15 @@ u32 GetBattlerSecondaryDamage(u8 battlerId);
 // Returns TRUE for Contrary/Competitive/Defiant — abilities that benefit from stat drops.
 bool32 DoesAbilityRaiseStatsWhenLowered(u8 ability);
 
+// RHH: Tier E — setup logic helpers
+bool32 CanAiPredictMove(u8 battlerId);
+bool32 IsBattlerPredictedToSwitch(u8 battler);
+u16 GetIncomingMoveSpeedCheck(u8 battler, u8 opposingBattler, struct AiLogicData *aiData);
+bool32 AreBattlersStatsMaxed(u8 battlerId);
+u32 CountPositiveStatStages(u8 battlerId);
+bool32 AI_IsAbilityOnSide(u8 battlerId, u8 ability);
+bool32 ShouldRaiseAnyStat(u8 battlerAtk, u8 battlerDef);
+
 // RHH: SetBattlerAiData (pokeemerald-expansion/src/battle_ai_main.c:615)
 // Populates gAiLogicData fields for one battler. Call for both battlers before scoring.
 void SetBattlerAiData(u8 battler, struct AiLogicData *aiData);

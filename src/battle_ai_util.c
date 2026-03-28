@@ -1189,6 +1189,120 @@ static u32 GetStagesOfStatChange(enum StatChange statChange)
 }
 
 // =============================================================================
+// Tier E: Setup logic (pokeemerald-expansion/src/battle_ai_util.c:182-2227)
+// CanAiPredictMove, IsBattlerPredictedToSwitch, GetIncomingMoveSpeedCheck,
+// AreBattlersStatsMaxed, CountPositiveStatStages, AI_IsAbilityOnSide, ShouldRaiseAnyStat
+// =============================================================================
+
+// RHH: CanAiPredictMove (pokeemerald-expansion/src/battle_ai_util.c:182)
+// Returns TRUE if the AI_FLAG_PREDICT_MOVE flag is set for any battler.
+bool32 CanAiPredictMove(u8 battlerId)
+{
+#ifdef AI_FLAG_PREDICT_MOVE
+    if (IsAiFlagPresent(AI_FLAG_PREDICT_MOVE))
+        return TRUE;
+#endif
+    (void)battlerId;
+    return FALSE;
+}
+
+// RHH: IsBattlerPredictedToSwitch (pokeemerald-expansion/src/battle_ai_util.c:190)
+// Returns TRUE if the AI predicts the given battler will switch this turn.
+// RHH checks per-battler aiFlags[battlerIndex]. FireRed has a single aiFlags — use
+// AI_FLAG_PREDICT_SWITCH when that constant is added; until then always returns FALSE.
+bool32 IsBattlerPredictedToSwitch(u8 battler)
+{
+#ifdef AI_FLAG_PREDICT_SWITCH
+    if (IsAiFlagPresent(AI_FLAG_PREDICT_SWITCH))
+    {
+        if (gAiLogicData->predictingSwitch && gAiLogicData->shouldSwitch & (1u << battler))
+            return TRUE;
+    }
+#else
+    (void)battler;
+#endif
+    return FALSE;
+}
+
+// RHH: GetIncomingMoveSpeedCheck (pokeemerald-expansion/src/battle_ai_util.c:213)
+// Returns the predicted opposing move for speed-check purposes, or MOVE_NONE.
+u16 GetIncomingMoveSpeedCheck(u8 battler, u8 opposingBattler, struct AiLogicData *aiData)
+{
+    if (aiData->predictingMove && CanAiPredictMove(battler))
+    {
+        if (GetMovePower(aiData->predictedMove[opposingBattler]) != 0
+         && GetMoveEffect(aiData->predictedMove[opposingBattler]) != EFFECT_FIRST_TURN_ONLY)
+            return aiData->predictedMove[opposingBattler];
+    }
+    return MOVE_NONE;
+}
+
+// RHH: AreBattlersStatsMaxed (pokeemerald-expansion/src/battle_ai_util.c:2471)
+// Returns TRUE if all of battler's combat stats are at +6 (MAX_STAT_STAGE).
+bool32 AreBattlersStatsMaxed(u8 battlerId)
+{
+    u8 statId;
+    for (statId = STAT_ATK; statId < NUM_BATTLE_STATS; statId++)
+    {
+        if (gBattleMons[battlerId].statStages[statId] < MAX_STAT_STAGE)
+            return FALSE;
+    }
+    return TRUE;
+}
+
+// RHH: CountPositiveStatStages (pokeemerald-expansion/src/battle_ai_util.c:2491)
+// Returns the number of stats currently above the default stage.
+u32 CountPositiveStatStages(u8 battlerId)
+{
+    u32 count = 0;
+    u8 statId;
+    for (statId = STAT_ATK; statId < NUM_BATTLE_STATS; statId++)
+    {
+        if (gBattleMons[battlerId].statStages[statId] > DEFAULT_STAT_STAGE)
+            count++;
+    }
+    return count;
+}
+
+// RHH: AI_IsAbilityOnSide (pokeemerald-expansion/src/battle_ai_util.c:1799)
+// Returns TRUE if the given ability is present on the battler or its partner.
+bool32 AI_IsAbilityOnSide(u8 battlerId, u8 ability)
+{
+    if (IsBattlerAlive(battlerId) && gAiLogicData->abilities[battlerId] == ability)
+        return TRUE;
+    if (IsBattlerAlive(BATTLE_PARTNER(battlerId)) && gAiLogicData->abilities[BATTLE_PARTNER(battlerId)] == ability)
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: ShouldRaiseAnyStat (pokeemerald-expansion/src/battle_ai_util.c:2192)
+// Returns FALSE if stat raising is inadvisable (dead to residuals, stats maxed,
+// Unaware/Opportunist on opposing side, etc.).
+// Gen 5+ yawn/Opportunist/Sturdy checks are #ifdef-guarded until those are ported.
+bool32 ShouldRaiseAnyStat(u8 battlerAtk, u8 battlerDef)
+{
+    if (AreBattlersStatsMaxed(battlerAtk))
+        return FALSE;
+
+#ifdef ABILITY_UNAWARE
+    if (AI_IsAbilityOnSide(battlerDef, ABILITY_UNAWARE))
+        return FALSE;
+#endif
+
+    // Don't set up if AI will die to residual damage anyway
+    if (GetBattlerSecondaryDamage(battlerAtk) >= gBattleMons[battlerAtk].hp)
+        return FALSE;
+
+#ifdef ABILITY_OPPORTUNIST
+    if (AI_IsAbilityOnSide(battlerDef, ABILITY_OPPORTUNIST))
+        return FALSE;
+#endif
+
+    (void)battlerDef;
+    return TRUE;
+}
+
+// =============================================================================
 // AI Helpers for Gen 4+ Moves (RHH Faithful Ports)
 // =============================================================================
 

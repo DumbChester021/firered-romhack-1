@@ -767,4 +767,28 @@ extern u8 gBattleTerrain;
 extern struct MultiBattlePokemonTx gMultiPartnerParty[3];
 extern u16 gRandomTurnNumber;
 
+// Forward declaration — GetBattlerSide is defined in battle_anim.h.
+u8 GetBattlerSide(u8 battlerId);
+
+// RHH: GetSideParty / GetBattlerParty (pokeemerald-expansion/include/battle.h:1132-1140)
+static inline struct Pokemon *GetSideParty(u8 side)
+{
+    return (side == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
+}
+
+static inline struct Pokemon *GetBattlerParty(u8 battler)
+{
+    return GetSideParty(GetBattlerSide(battler));
+}
+
+// RHH: IsBattlerAlive (pokeemerald-expansion/include/battle.h:1058)
+static inline bool32 IsBattlerAlive(u8 battler)
+{
+    if (battler >= gBattlersCount)
+        return FALSE;
+    if (gBattleMons[battler].hp == 0)
+        return FALSE;
+    return TRUE;
+}
+
 #endif // GUARD_BATTLE_H

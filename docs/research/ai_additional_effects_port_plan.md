@@ -76,13 +76,14 @@ Port in this exact order — each step may unlock the next.
 16. ✅ `GetStatBeingChanged()` — static in `src/battle_ai_util.c`
 17. ✅ `GetStagesOfStatChange()` — static in `src/battle_ai_util.c`
 
-### Tier E: Setup Logic
-18. `CanAiPredictMove()` — needed by GetIncomingMoveSpeedCheck
-19. `GetIncomingMoveSpeedCheck()` — 11 lines, needs CanAiPredictMove + gAiLogicData->predictingMove
-20. `AI_IsAbilityOnSide()` — needed by ShouldRaiseAnyStat, IsBattlerTrapped
-21. `AreBattlersStatsMaxed()` — needed by ShouldRaiseAnyStat
-22. `ShouldRaiseAnyStat()` — 36 lines, needs 14+20+21 + many more (deep deps)
-    - Consider porting after its deeper deps
+### Tier E: Setup Logic ✅ DONE
+18. ✅ `CanAiPredictMove()` — returns FALSE until AI_FLAG_PREDICT_MOVE added
+19. ✅ `IsBattlerPredictedToSwitch()` — returns FALSE until AI_FLAG_PREDICT_SWITCH added
+20. ✅ `GetIncomingMoveSpeedCheck()` — uses aiData->predictingMove/predictedMove
+21. ✅ `AI_IsAbilityOnSide()` — checks battler + partner ability
+22. ✅ `AreBattlersStatsMaxed()` / `CountPositiveStatStages()`
+23. ✅ `ShouldRaiseAnyStat()` — Unaware/Opportunist/yawn/Sturdy checks #ifdef-guarded
+Also: ✅ `IsBattlerAlive()`, `GetBattlerParty()`, `GetSideParty()` — inlines in include/battle.h
 
 ### Tier F: KO Calc (damage infrastructure prerequisite)
 23. `AI_CalcDamage()` — RHH's full version (our version is simplified)
@@ -125,7 +126,8 @@ Others (IncreaseStatDownScore speed path, GetStatBeingChanged/GetStagesOfStatCha
 - **Session A**: ✅ Tier A steps 1-8 (speed infrastructure + AI_IsFaster update)
 - **Session B**: ✅ Tiers B+D (BattlerHasAi, IsAiBattlerAware, GetMovesArray, HasMoveWithEffect, HasMoveThatChangesKOThreshold, GetStatBeingChanged, GetStagesOfStatChange)
 - **Session C**: ✅ Tier C partial (GetBattlerSecondaryDamage + 6 helpers, DoesAbilityRaiseStatsWhenLowered)
-- **Session D (next)**: Tier E (GetIncomingMoveSpeedCheck, ShouldRaiseAnyStat) + remaining Tier C (GetBattlerParty, IsBattlerPredictedToSwitch)
+- **Session D**: ✅ Tier E done (CanAiPredictMove, IsBattlerPredictedToSwitch, GetIncomingMoveSpeedCheck, AI_IsAbilityOnSide, AreBattlersStatsMaxed, CountPositiveStatStages, ShouldRaiseAnyStat, IsBattlerAlive, GetBattlerParty)
+- **Session E (next)**: Tiers H+I — IncreasePoisonScore/BurnScore/etc., IncreaseStatDownScore, IncreaseStatUpScoreInternal
 - **Session C**: Tier C part (GetBattlerSecondaryDamage + secondary-dmg helpers)
 - **Session D**: Tier E (CanAiPredictMove, GetIncomingMoveSpeedCheck, ShouldRaiseAnyStat)
 - **Session E**: Tier F+G (damage calc, IsBattlerTrapped)
