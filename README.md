@@ -1,6 +1,6 @@
 # Pokémon FireRed Romhack
 
-A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ mechanical updates and quality-of-life improvements.
+A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ mechanical updates, RHH-faithful architecture ports, and quality-of-life improvements.
 
 ## Features (vs. pret/pokefirered)
 
@@ -13,7 +13,7 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
   - Steel no longer resists Ghost and Dark (Gen 6 change)
 - 18 Pokémon species reclassified with Fairy typing:
   Cleffa, Clefairy, Clefable, Igglybuff, Jigglypuff, Wigglytuff, Mr. Mime, Togepi, Togetic, Marill, Azumarill, Snubbull, Granbull, Azurill, Mawile, Ralts, Kirlia, Gardevoir
-- Updated Sweet Kiss, Moonlight and Charm to TYPE_FAIRY from TYPE_NORMAL  
+- Updated Sweet Kiss, Moonlight and Charm to TYPE_FAIRY from TYPE_NORMAL
 - Fairy type label, icon, and TM/HM palette graphics
 - Union Room type filter includes Fairy
 
@@ -25,14 +25,37 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - Battle accuracy (Hustle) and damage tracking use per-move category
 
 ### Modern Move Engine (Gen 9 Synced)
-- `gMovesInfo` structural array fully synchronized with the `pokeemerald-expansion` Gen 9 architecture, dropping legacy bitfields for explicit struct fields.
-- 927 moves up to `Tera Starstorm` populated with strictly accurate modern configurations (Power, Accuracy, PP, Priority, Type, and target constants).
-- Complete decoupling of AI heuristics and effect handlers from the rigid FireRed `EFFECT_` switch-cases in favor of dynamic `.additionalEffects` parsing logic!
-- Native C port of Gen 9 RHH AI heuristics for modern moves (Sucker Punch, Shell Smash, Tailwind, Acrobatics, Bug Bite) fully integrated into `AI_CheckBadMove` and `AI_CheckViability`.
-- Native configuration flags like `.thawsUser`, `.onChargeTurnOnly`, and `.criticalHitStage` adopted natively over hacky legacy macros.
-- Upgraded `CMD_ARGS` macro pipeline to parse RHH syntax exactly (e.g. `tryhealhalfhealth BS_TARGET, BattleScript_AlreadyAtFullHp`).
-- Assembly `preproc` compiler tool upgraded to fully support RHH's Python-style named keyword arguments (`x=0, y=0`), enabling 1:1 animation script ports.
-- RHH Gen 4+ battle animation scripts (alongside their missing C-engine SpriteTemplates and AffineAnims) can be perfectly ported 1:1 natively into FireRed without visual compromise.
+- `gMovesInfo` structural array fully synchronized with the `pokeemerald-expansion` Gen 9 architecture, dropping legacy bitfields for explicit struct fields
+- 927 moves up to `Tera Starstorm` populated with strictly accurate modern configurations (Power, Accuracy, PP, Priority, Type, and target constants)
+- Complete decoupling of AI heuristics and effect handlers from legacy `EFFECT_` switch-cases in favor of dynamic `.additionalEffects` parsing logic
+- Native configuration flags like `.thawsUser`, `.onChargeTurnOnly`, and `.criticalHitStage` adopted over legacy macros
+- 13 per-move ban flags matching RHH (`metronomeBanned`, `mimicBanned`, `copycatBanned`, `assistBanned`, `sleepTalkBanned`, `instructBanned`, `encoreBanned`, `gravityBanned`, `meFirstBanned`, `parentalBondBanned`, `skyBattleBanned`, `sketchBanned`, `dampBanned`)
+- `ignoresSubstitute` bitfield applied to all 31 sound-based moves
+- Upgraded `CMD_ARGS` macro pipeline to parse RHH syntax exactly
+- Assembly `preproc` compiler tool upgraded to support RHH's Python-style named keyword arguments (`x=0, y=0`), enabling 1:1 animation script ports
+
+### Battle AI Engine (RHH C Port)
+- All 9 AI flags ported from ASM to C with RHH-faithful dispatch table
+- Smart switching logic — faithful RHH port with Gen 3 mechanics
+- Gen 4+ AI heuristics (Sucker Punch, Shell Smash, Tailwind, Acrobatics, Bug Bite) integrated into `AI_CheckBadMove` and `AI_CheckViability`
+- Wild Pokémon AI initialization fix — ported RHH scaling AI logic
+- Full `AI_CalcAdditionalEffectScore` pipeline (26 functions, weather/field/terrain scoring)
+- `struct AiLogicData` with `simulatedDmg[4][4][4]` damage precalculation
+- Status scoring chains: `IncreasePoisonScore`, `IncreaseBurnScore`, `IncreaseParalyzeScore`, `IncreaseSleepScore`, `IncreaseConfusionScore`
+- Stat scoring: `IncreaseStatUpScore`, `IncreaseStatDownScore` with Contrary awareness
+- Weather/field status AI: `ShouldSetWeather`, `ShouldClearWeather`, `CalcWeatherScore`, `BenefitsFromGravity`, `BenefitsFromTrickRoom`
+- Full documentation: [docs/battle_ai_architecture.md](docs/battle_ai_architecture.md)
+
+### Volatiles Migration (`struct Volatiles`)
+- Replaced `u32 status2` + `gStatuses3[MAX_BATTLERS_COUNT]` with RHH-style `struct Volatiles` (100+ named bitfields)
+- All ~370 call sites migrated via automated Python tool
+- `struct BattlerState` with `switchIn:1` replaces `STATUS3_INTIMIDATE_POKES`/`STATUS3_TRACE`
+
+### Type System Modernization (`types[3]`)
+- Replaced `u8 type1; u8 type2; u8 unknown;` with `u8 types[3]` array (3-slot type system matching RHH)
+- Macros: `IS_BATTLER_OF_TYPE`, `SET_BATTLER_TYPE`, `RESTORE_BATTLER_TYPE`, `IS_BATTLER_TYPELESS`
+- Roost-aware `GetBattlerTypes` + `RemoveBattlerType` helpers
+- 86 call sites migrated via automated Python tool
 
 ### Running Shoes
 - Running shoes enabled from the start (no item pickup required)
@@ -54,6 +77,17 @@ A fork of [pret/pokefirered](https://github.com/pret/pokefirered) with Gen 6+ me
 - Set to `GEN_3` for classic behavior (faint from poison, white-out)
 - Set to `GEN_4` for Gen 4 behavior (survive at 1HP, poison cured)
 - Generation constants `GEN_1`–`GEN_9` and `GEN_LATEST` added for future config toggles
+
+### Instant & Faster Text Speed
+- Added `OPTIONS_TEXT_SPEED_INSTANT` to the Options menu (4th speed setting)
+- RHH-style `RunTextPrinters` repeat-loop for instant rendering while preserving `\p` prompts
+- Uses delay=1 (not 0) to prevent printer deactivation that skips prompts
+
+### Quality of Life
+- Gen 6+ auto-lowercase naming screen keyboard (auto-switches to lowercase after first capital letter)
+- Modern compiler (`arm-none-eabi-gcc`) is now the default — no need to pass `MODERN=1`
+- Legacy `agbcc` build still available via `make MODERN=0` if needed
+- EWRAM optimization: `sMapTilesBackup` moved to heap (98.88% → 92.65% EWRAM usage)
 
 ### Bug Fixes (pret-documented)
 All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` / `#ifdef UBFIX` guards are enabled unconditionally. These include:
@@ -83,13 +117,9 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 - **Trainer class lookup** — class lookup bug (`trainer_class_lookups.h`)
 - **Party menu memory leak** — switching tilemap buffers never freed (`party_menu.c`) *(additionally fixed — was only commented)*
 - **AI Heuristics**
-  - `AI_CountAlivePokemon`: Counts alive party members not currently on field.
-  - `AI_IsSlower`: Predicts speed order safely handling trick room (if ported) and switch priorities.
-  - `BattlerStatCanRise`: Checks if battler stat stages can be increased depending on abilities like Contrary.
-
-### Gen 4+ Extension Stubstem
-- Modern compiler (`arm-none-eabi-gcc`) is now the default — no need to pass `MODERN=1`
-- Legacy `agbcc` build still available via `make MODERN=0` if needed
+  - `AI_CountAlivePokemon`: Counts alive party members not currently on field
+  - `AI_IsSlower`: Predicts speed order safely handling trick room and switch priorities
+  - `BattlerStatCanRise`: Checks if battler stat stages can be increased depending on abilities like Contrary
 
 ## Active Test/Debug Changes
 
@@ -100,28 +130,36 @@ All bugs documented in the pret/pokefirered decompilation with `#ifdef BUGFIX` /
 
 ## Planned Features
 
-- Day/Night Cycle (Implmented but imperfect with bugs, as a Feature Branch for now)
-- EV/IV Summary Screen
+> Items marked ✅ have been implemented. See the continuation guide for details.
+
+### Gameplay Mechanics
+- Mega Evolution
+- Modern EXP Share
 - Forgettable HMs / HM Item Replacement
 - BW-style Repel System
-- Modern EXP Share
-- Decapitalization
-- Poison Survival — ✅ Implemented as configurable `OW_POISON_DAMAGE`
-- Updated Learnsets / Base Stats
-- Mega Evolution
-- Follower Pokémon
+- Day/Night Cycle *(implemented but imperfect with bugs — feature branch)*
+
+### Content Expansion
 - Expanded Pokédex (Gen 4+ species)
-- Nature/Ability Display Colors
-- Text input auto change to small case after first letter
-- Faster text writer speeds
-- Display IMG can be hooked via conversations, scripts etc.. could show items, trainers etc..
-- Transparent Textboxes
+- Updated Learnsets / Base Stats
 - Updated Sprites
-- Removal of Last Events replay
-- New Moves (See [docs/NEW_MOVES_LIST.md](docs/NEW_MOVES_LIST.md)) - ✅ Batch 1 Implemented
+- New Moves — ✅ Batch 1 & 2 implemented (see [docs/NEW_MOVES_LIST.md](docs/NEW_MOVES_LIST.md))
 - Items
 - Abilities
+- Follower Pokémon
 
+### UI / Visual
+- EV/IV Summary Screen
+- Nature/Ability Display Colors
+- Transparent Textboxes
+- Display IMG hooks (show items, trainers via conversations/scripts)
+- Decapitalization
+- Removal of Last Events replay
+
+### Already Implemented
+- ✅ Instant & Faster text speed
+- ✅ Auto-lowercase after first capital letter on naming screen
+- ✅ Poison Survival — configurable `OW_POISON_DAMAGE`
 
 ## Building
 
@@ -146,4 +184,4 @@ python3 tools/verify_data.py
 ## Credits
 
 - [pret/pokefirered](https://github.com/pret/pokefirered) — base decompilation
-- [RHH/pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) — reference for Physical/Special split icons and `OW_POISON_DAMAGE` pattern
+- [RHH/pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) — reference for Gen 9 move engine, battle AI, Physical/Special split, `OW_POISON_DAMAGE`, animation infrastructure, and text speed patterns
