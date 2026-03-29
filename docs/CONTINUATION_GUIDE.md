@@ -465,6 +465,17 @@ Infrastructure additions:
 **Misc Quality of Life (2026-03-29, COMPLETE):**
 - Ported Gen 6+ auto-lowercase naming screen keyboard feature matching RHH `SwapKeyboardToLowerAfterFirstCapitalLetter`.
 
+**Instant & Faster Text Speed (2026-03-30, COMPLETE):**
+- Added `OPTIONS_TEXT_SPEED_INSTANT 3` to `include/constants/global.h`.
+- Added `gText_TextSpeedInstant` string `"INSTANT"` in `src/strings.c` + declared in `include/strings.h`.
+- `src/option_menu.c`: bumped text speed item count 3→4, added `gText_TextSpeedInstant` to display array.
+- `src/new_menu_helpers.c`: `sTextSpeedFrameDelays[OPTIONS_TEXT_SPEED_INSTANT] = 1` (not 0 — see below), updated bounds check to `> OPTIONS_TEXT_SPEED_INSTANT`. Added `IsTextSpeedInstant()` helper.
+- `src/text.c`: added `[OPTIONS_TEXT_SPEED_INSTANT] = 6` to `sWindowVerticalScrollSpeeds`. Added `|| IsTextSpeedInstant()` to the delay-clear condition in `RenderText()`.
+- `src/braille_text.c`: added `[OPTIONS_TEXT_SPEED_INSTANT] = 6` to `sScrollDistances`.
+- `src/text_printer.c`: `RunTextPrinters()` now loops `RenderFont()` in a `do...while(isInstant)` loop, breaking on `RENDER_UPDATE` (prompt/wait) or `RENDER_FINISH`. This matches RHH's `RunTextPrinters` repeat-loop pattern.
+- `src/berry_crush.c`: `OPTIONS_TEXT_SPEED_INSTANT` → `game->textSpeed = 1`.
+- **Critical design note:** Instant delay must be **1** (not 0). FireRed's `AddTextPrinter` treats `speed==0` as "render all text and deactivate printer immediately" — this skips `\p` prompts, causing text to flash and vanish. RHH uses delay=1 + a per-frame render loop instead. Build: clean. Verify: 71/0/0.
+
 **Next sessions (architecture-first order):**
 *Note: EWRAM Option 2 (`gDecompressionBuffer`) was skipped due to structural incompatibility: Mystery Gift uses it as executable memory, and FR-exclusive overlay systems (help/save_failed) enforce hardcoded 16KB framebuffer offsets which lack RHH equivalents.*
 

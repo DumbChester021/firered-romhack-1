@@ -4,6 +4,7 @@
 #include "quest_log.h"
 #include "graphics.h"
 #include "dynamic_placeholder_text_util.h"
+#include "new_menu_helpers.h"
 #include "constants/songs.h"
 
 #define TAG_CURSOR 0x8000
@@ -34,9 +35,10 @@ static const u8 sDoubleArrowTiles2[] = INCBIN_U8("graphics/fonts/down_arrow_4.4b
 
 static const u8 sDownArrowYCoords[]           = { 0, 16, 32, 16 };
 static const u8 sWindowVerticalScrollSpeeds[] = {
-    [OPTIONS_TEXT_SPEED_SLOW] = 1,
-    [OPTIONS_TEXT_SPEED_MID] = 2,
-    [OPTIONS_TEXT_SPEED_FAST] = 4,
+    [OPTIONS_TEXT_SPEED_SLOW]    = 1,
+    [OPTIONS_TEXT_SPEED_MID]     = 2,
+    [OPTIONS_TEXT_SPEED_FAST]    = 4,
+    [OPTIONS_TEXT_SPEED_INSTANT] = 6,
 };
 
 static const struct GlyphWidthFunc sGlyphWidthFuncs[] = {
@@ -636,7 +638,7 @@ u16 RenderText(struct TextPrinter *textPrinter)
     switch (textPrinter->state)
     {
     case RENDER_STATE_HANDLE_CHAR:
-        if (JOY_HELD(A_BUTTON | B_BUTTON) && subStruct->hasPrintBeenSpedUp)
+        if ((JOY_HELD(A_BUTTON | B_BUTTON) && subStruct->hasPrintBeenSpedUp) || IsTextSpeedInstant())
             textPrinter->delayCounter = 0;
 
         if (textPrinter->delayCounter && textPrinter->textSpeed)

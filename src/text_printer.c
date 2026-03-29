@@ -1,6 +1,7 @@
 #include "global.h"
 #include "window.h"
 #include "text.h"
+#include "new_menu_helpers.h"
 
 static EWRAM_DATA struct TextPrinter sTempTextPrinter = {0};
 static EWRAM_DATA struct TextPrinter sTextPrinters[NUM_TEXT_PRINTERS] = {0};
@@ -115,24 +116,32 @@ bool16 AddTextPrinter(struct TextPrinterTemplate *textSubPrinter, u8 speed, void
 void RunTextPrinters(void)
 {
     int i;
+    bool32 isInstant;
 
     for (i = 0; i < NUM_TEXT_PRINTERS; ++i)
     {
         if (sTextPrinters[i].active)
         {
-            u16 renderCmd = RenderFont(&sTextPrinters[i]);
-            switch (renderCmd)
+            isInstant = IsTextSpeedInstant();
+            do
             {
-            case RENDER_PRINT:
-                CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
-            case RENDER_UPDATE:
-                if (sTextPrinters[i].callback != NULL)
-                    sTextPrinters[i].callback(&sTextPrinters[i].printerTemplate, renderCmd);
-                break;
-            case RENDER_FINISH:
-                sTextPrinters[i].active = FALSE;
-                break;
-            }
+                u16 renderCmd = RenderFont(&sTextPrinters[i]);
+                switch (renderCmd)
+                {
+                case RENDER_PRINT:
+                    CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
+                    break;
+                case RENDER_UPDATE:
+                    if (sTextPrinters[i].callback != NULL)
+                        sTextPrinters[i].callback(&sTextPrinters[i].printerTemplate, renderCmd);
+                    isInstant = FALSE;
+                    break;
+                case RENDER_FINISH:
+                    sTextPrinters[i].active = FALSE;
+                    isInstant = FALSE;
+                    break;
+                }
+            } while (isInstant && sTextPrinters[i].active);
         }
     }
 }
