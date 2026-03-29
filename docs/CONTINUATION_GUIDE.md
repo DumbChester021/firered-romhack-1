@@ -415,16 +415,36 @@ Infrastructure additions:
 - `MOVE_EFFECT_FEINT`, `MOVE_EFFECT_INCINERATE`, `MOVE_EFFECT_SALT_CURE`, `MOVE_EFFECT_GRAVITY`, terrain MOVE_EFFECTs, `MOVE_EFFECT_DEFOG`, `MOVE_EFFECT_HAZE`, `MOVE_EFFECT_REFLECT`, `MOVE_EFFECT_LIGHT_SCREEN`, `MOVE_EFFECT_TORMENT_SIDE` added to `constants/battle.h`
 - `AI_EFFECT_*` constants + `LOW_ACCURACY_THRESHOLD` added to `include/battle_ai_util.h`
 
-Deferred (own sessions):
-- `WeatherChecker` (`battle_ai_field_statuses.c`, 603 lines)
-- `ShouldCureStatusInternal` (80+ lines) — `ShouldCureStatus` is stub returning FALSE
-- `ShouldSetWeather`/`ShouldClearWeather` are stubs (FALSE after weather check)
+**Tier J Supplement — WeatherChecker + FieldStatusChecker + ShouldCureStatusInternal (2026-03-29, COMPLETE):**
 
-**NEXT SESSION: WeatherChecker port** OR add more Gen 4+ moves.
+Functions ported:
+- `WeatherChecker`, `FieldStatusChecker`, `CalcWeatherScore` (in `src/battle_ai_field_statuses.c`)
+- `DoesAbilityBenefitFromWeather`, `BenefitsFromSun/Rain/Sandstorm/Hail` (static, field_statuses.c)
+- `IsLightSensitiveMove`, `HasLightSensitiveMove` (static, field_statuses.c)
+- Terrain `BenefitsFrom*` stubs (Gen6+, field_statuses.c)
+- `ShouldCureStatusInternal` (static), `ShouldCureStatus`, `ShouldCureStatusWithItem`
+- `IsTargetingPartner`, `HasThawingMove`, `DoesBattlerBenefitFromAllVolatileStatus` (static)
+- `IsWeatherActive`, `HasDamagingMoveOfType`, `HasMoveWithFlag`, `IsBattle1v1`
+- `HasNonVolatileMoveEffect`, `HasBattlerSideMoveWithAdditionalEffect`
 
-**Future sessions:**
-- Port `WeatherChecker` from `battle_ai_field_statuses.c` (603 lines, own session)
-- Port `ShouldCureStatusInternal` (80+ lines, deferred)
+Infrastructure additions:
+- `struct FieldTimer` + `gFieldStatuses`/`gFieldTimers` globals (battle.h, battle_main.c)
+- `ABILITY_SOLAR_POWER = 94` added to `constants/abilities.h`
+- `ShouldSetWeather`/`ShouldClearWeather` wired to `WeatherChecker` (no longer stubs)
+- `ShouldSetFieldStatus`/`ShouldClearFieldStatus` wired to `FieldStatusChecker`
+- `AI_CheckViability` weather cases replaced with `CalcWeatherScore`
+- `enum FieldEffectOutcome`, `enum WeatherState`, `enum BattleWeather` added
+- `B_WEATHER_ICY_ANY`, `B_WEATHER_DAMAGING_ANY`, `B_WEATHER_PRIMAL_ANY` composite flags
+- `MoveFlag` typedef (function pointer for move flag tests)
+- Build: clean. Verify: 71/0/0.
+
+**CURRENT STATUS: Tiers A–J + all supplements COMPLETE. AI scoring pipeline fully wired.**
+
+**Next sessions (choose one):**
+- Add Gen4+ moves (Stealth Rock, Roost, U-turn, etc.)
+- Port terrain mechanics (Gen6+) — implement `BenefitsFromElectricTerrain` etc.
+- Port Trick Room scoring (implement `gFieldStatuses`/`gFieldTimers` tracking)
+- Re-audit AI for full RHH faithfulness (long-term: after gen-latest mechanics added)
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 

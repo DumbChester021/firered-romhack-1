@@ -153,27 +153,24 @@ TASK EXECUTION PROTOCOL
 CURRENT ACTIVE WORK (as of 2026-03-29)
 
 Active branch: feature-AI-upgrade
-TIERS A–J COMPLETE: Full AI additionalEffects scoring infrastructure ported.
+TIERS A–J + ALL SUPPLEMENTS COMPLETE: Full AI scoring pipeline ported.
 * Build: clean. Verify: 71/0/0.
 * AI_CalcAdditionalEffectScore DONE (src/battle_ai_main.c, static)
-* Wired into AI_CheckViability() — all secondary effects scored
-* GetAIEffectGroup + GetAIEffectGroupFromMove DONE (full port, no stubs)
-* HasMoveWithAIEffect DONE (fully functional, not a stub)
-* All 26 Tier J helper functions DONE (see CONTINUATION_GUIDE.md for full list)
+* WeatherChecker + FieldStatusChecker DONE (src/battle_ai_field_statuses.c)
+* ShouldCureStatusInternal DONE (fully functional, not a stub)
+* CalcWeatherScore DONE and wired into AI_CheckViability
+* ShouldSetWeather/ShouldClearWeather wired to WeatherChecker (not stubs)
+* ShouldSetFieldStatus/ShouldClearFieldStatus wired to FieldStatusChecker
+* struct FieldTimer + gFieldStatuses/gFieldTimers globals added
 
-EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
+EWRAM usage is at 98.87%+ — be very careful about adding EWRAM_DATA globals.
+gFieldStatuses (u32) + gFieldTimers (16 bytes) were added — watch usage.
 Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.
 
 NEXT SESSION options:
-1. WeatherChecker port (battle_ai_field_statuses.c, 603 lines — own session)
-2. ShouldCureStatusInternal port (80+ lines)
-3. New Gen 4+ moves batch 3
-
-EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
-Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.
-
-EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
-Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.
+1. Add Gen4+ moves (Stealth Rock, Roost, U-turn, Trick Room, etc.)
+2. Port terrain mechanics (Gen6+) — implement BenefitsFromElectricTerrain etc.
+3. Re-audit for full RHH faithfulness (long-term, after gen-latest mechanics)
 
 ---
 
