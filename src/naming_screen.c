@@ -1484,12 +1484,25 @@ static bool8 HandleKeyboardEvent(void)
     }
 }
 
+static void SwapKeyboardToLowerAfterFirstCapitalLetter(void)
+{
+    if (sNamingScreen->currentPage != KBPAGE_LETTERS_UPPER)
+        return;
+
+    if (GetTextEntryPosition() != 1)
+        return;
+
+    MainState_StartPageSwap();
+}
+
 static bool8 KeyboardKeyHandler_Character(u8 input)
 {
     TryStartButtonFlash(BUTTON_COUNT, FALSE, FALSE);
     if (input == INPUT_A_BUTTON)
     {
         bool8 textFull = AddTextCharacter();
+
+        SwapKeyboardToLowerAfterFirstCapitalLetter();
 
         SquishCursor();
         if (textFull)
