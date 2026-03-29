@@ -3378,6 +3378,171 @@ u8 GetBattlerType2(u8 battlerId)
     return type;
 }
 
+// RHH: IsNonVolatileStatusBlocked (pokeemerald-expansion/src/battle_util.c:5509)
+// For CHECK_TRIGGER (AI path): returns TRUE if battleScript was set (status is blocked).
+static bool32 IsNonVolatileStatusBlocked(const u8 *battleScript, enum ResultOption option)
+{
+    if (battleScript != NULL)
+    {
+        if (option == RUN_SCRIPT)
+        {
+            // RHH runs the blocking script here; add full scripting path when needed.
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: IsSafeguardProtected (pokeemerald-expansion/src/battle_util.c:5231)
+// Gen 3: no ABILITY_INFILTRATOR — safeguard always blocks from opponent.
+static bool32 IsSafeguardProtected(u8 battlerDef)
+{
+    return (gSideStatuses[GetBattlerSide(battlerDef)] & SIDE_STATUS_SAFEGUARD) != 0;
+}
+
+// RHH: CanSetNonVolatileStatus (pokeemerald-expansion/src/battle_util.c:5342)
+// Returns TRUE if battlerDef can have the status set. Gen 4+ abilities/terrains #ifdef'd.
+bool32 CanSetNonVolatileStatus(u8 battlerAtk, u8 battlerDef, u8 abilityAtk, u8 abilityDef, u16 effect, enum ResultOption option)
+{
+    const u8 *battleScript = NULL;
+    (void)abilityAtk; // used by Gen 7+ ABILITY_CORROSION path
+
+    switch (effect)
+    {
+    case MOVE_EFFECT_POISON:
+    case MOVE_EFFECT_TOXIC:
+        if (gBattleMons[battlerDef].status1 & (STATUS1_POISON | STATUS1_TOXIC_POISON))
+        {
+            battleScript = BattleScript_AlreadyPoisoned;
+        }
+        // Gen 7+: ABILITY_CORROSION bypasses type immunity — #ifdef when ported
+        else if (IS_BATTLER_OF_TYPE(battlerDef, TYPE_POISON) || IS_BATTLER_OF_TYPE(battlerDef, TYPE_STEEL))
+        {
+            battleScript = BattleScript_NotAffected;
+        }
+        else if (abilityDef == ABILITY_IMMUNITY)
+        {
+            battleScript = BattleScript_ImmunityProtected;
+        }
+        // Gen 8+: ABILITY_PASTEL_VEIL — #ifdef when ported
+        break;
+
+    case MOVE_EFFECT_PARALYSIS:
+        if (gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS)
+        {
+            battleScript = BattleScript_AlreadyParalyzed;
+        }
+        // Gen 6+: Electric types immune — #ifdef when ported
+        else if (abilityDef == ABILITY_LIMBER)
+        {
+            battleScript = BattleScript_ImmunityProtected;
+        }
+        break;
+
+    case MOVE_EFFECT_BURN:
+        if (gBattleMons[battlerDef].status1 & STATUS1_BURN)
+        {
+            battleScript = BattleScript_AlreadyBurned;
+        }
+        else if (IS_BATTLER_OF_TYPE(battlerDef, TYPE_FIRE))
+        {
+            battleScript = BattleScript_NotAffected;
+        }
+        else if (abilityDef == ABILITY_WATER_VEIL || abilityDef == ABILITY_MAGMA_ARMOR)
+        {
+            battleScript = BattleScript_ImmunityProtected;
+        }
+        // Gen 7+: ABILITY_WATER_BUBBLE, Gen 9+: ABILITY_THERMAL_EXCHANGE — #ifdef when ported
+        break;
+
+    case MOVE_EFFECT_SLEEP:
+        if (gBattleMons[battlerDef].status1 & STATUS1_SLEEP)
+        {
+            battleScript = BattleScript_AlreadyAsleep;
+        }
+        else if (UproarWakeUpCheck(battlerDef))
+        {
+            battleScript = BattleScript_CantMakeAsleep;
+        }
+        else if (abilityDef == ABILITY_VITAL_SPIRIT || abilityDef == ABILITY_INSOMNIA)
+        {
+            battleScript = BattleScript_PrintAbilityMadeIneffective;
+        }
+        // Gen 6+: Electric Terrain, Gen 6+: ABILITY_SWEET_VEIL — #ifdef when ported
+        break;
+
+    case MOVE_EFFECT_FREEZE:
+        if (gBattleMons[battlerDef].status1 & STATUS1_FREEZE)
+        {
+            battleScript = BattleScript_AlreadyBurned; // RHH reuses this script label
+        }
+        else if (IS_BATTLER_OF_TYPE(battlerDef, TYPE_ICE))
+        {
+            battleScript = BattleScript_NotAffected;
+        }
+        else if (abilityDef == ABILITY_MAGMA_ARMOR)
+        {
+            battleScript = BattleScript_NotAffected;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    if (IsNonVolatileStatusBlocked(battleScript, option))
+        return FALSE;
+
+    // Checks that apply to all non-volatile statuses
+    // Gen 7+: ABILITY_COMATOSE, Gen 9+: ABILITY_PURIFYING_SALT — #ifdef when ported
+    // Gen 6+: Misty Terrain, Gen 4+: Leaf Guard, Gen 6+: Flower Veil, Gen 7+: Shields Down — #ifdef when ported
+
+    if (IsSafeguardProtected(battlerDef))
+        battleScript = BattleScript_SafeguardProtected;
+    else if (gBattleMons[battlerDef].status1 & STATUS1_ANY)
+        battleScript = BattleScript_ButItFailed;
+
+    return !IsNonVolatileStatusBlocked(battleScript, option);
+}
+
+// RHH: CanBePoisoned (pokeemerald-expansion/src/battle_util.c:5265)
+bool32 CanBePoisoned(u8 battlerAtk, u8 battlerDef, u8 abilityAtk, u8 abilityDef)
+{
+    return CanSetNonVolatileStatus(battlerAtk, battlerDef, abilityAtk, abilityDef, MOVE_EFFECT_TOXIC, CHECK_TRIGGER);
+}
+
+// RHH: CanBeBurned (pokeemerald-expansion/src/battle_util.c:5279)
+bool32 CanBeBurned(u8 battlerAtk, u8 battlerDef, u8 abilityDef)
+{
+    return CanSetNonVolatileStatus(battlerAtk, battlerDef, ABILITY_NONE, abilityDef, MOVE_EFFECT_BURN, CHECK_TRIGGER);
+}
+
+// RHH: CanBeParalyzed (pokeemerald-expansion/src/battle_util.c:5292)
+bool32 CanBeParalyzed(u8 battlerAtk, u8 battlerDef, u8 abilityDef)
+{
+    return CanSetNonVolatileStatus(battlerAtk, battlerDef, ABILITY_NONE, abilityDef, MOVE_EFFECT_PARALYSIS, CHECK_TRIGGER);
+}
+
+// RHH: CanBeSlept (pokeemerald-expansion/src/battle_util.c:5243)
+// Sleep clause (link battle feature) omitted — FRLG is singleplayer only.
+bool32 CanBeSlept(u8 battlerAtk, u8 battlerDef, u8 abilityDef)
+{
+    return CanSetNonVolatileStatus(battlerAtk, battlerDef, ABILITY_NONE, abilityDef, MOVE_EFFECT_SLEEP, CHECK_TRIGGER);
+}
+
+// RHH: IsUsableWhileAsleepEffect (pokeemerald-expansion/src/battle_util.c:10780)
+bool32 IsUsableWhileAsleepEffect(u16 effect)
+{
+    switch (effect)
+    {
+    case EFFECT_SNORE:
+    case EFFECT_SLEEP_TALK:
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
 // RHH: IsBattlerGrounded (pokeemerald-expansion/src/battle_util.c:5985)
 // Gen 3 subset: Levitate and Flying type are the only airborne checks.
 // Ingrain (STATUS3_ROOTED) grounds the battler in Gen 3.

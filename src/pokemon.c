@@ -6461,3 +6461,15 @@ u8 *MonSpritesGfxManager_GetSpritePtr(u8 spriteNum)
         return sMonSpritesGfxManager->spritePointers[spriteNum];
     }
 }
+
+// RHH: GetSpeciesBaseAttack (pokeemerald-expansion/src/pokemon.c:3706)
+u32 GetSpeciesBaseAttack(u16 species)
+{
+    return gSpeciesInfo[species].baseAttack;
+}
+
+// RHH: GetSpeciesBaseSpAttack (pokeemerald-expansion/src/pokemon.c:3714)
+u32 GetSpeciesBaseSpAttack(u16 species)
+{
+    return gSpeciesInfo[species].baseSpAttack;
+}

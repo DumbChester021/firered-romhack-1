@@ -532,4 +532,8 @@ struct MonSpritesGfxManager *CreateMonSpritesGfxManager(u8 battlePosition, u8 mo
 void DestroyMonSpritesGfxManager(void);
 u8 *MonSpritesGfxManager_GetSpritePtr(u8 bufferId);
 
+// RHH: Species base-stat accessors (pokeemerald-expansion/src/pokemon.c:3706-3717)
+u32 GetSpeciesBaseAttack(u16 species);
+u32 GetSpeciesBaseSpAttack(u16 species);
+
 #endif // GUARD_POKEMON_H

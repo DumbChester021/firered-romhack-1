@@ -112,4 +112,21 @@ bool32 IsBattlerGrounded(u8 battler, u8 ability, u8 holdEffect);
 bool32 AreBattlersOfOppositeGender(u8 battler1, u8 battler2);
 u16 GetBattlerAbility(u8 battlerId);
 
+// RHH: ResultOption — controls whether CanSetNonVolatileStatus runs scripts or just checks.
+// pokeemerald-expansion/include/battle_util.h:28-32
+enum ResultOption
+{
+    CHECK_TRIGGER, // Check without running scripts or setting flags.
+    RUN_SCRIPT,    // Run the blocking battle script.
+};
+
+// RHH: Status-can-set query chain
+// pokeemerald-expansion/src/battle_util.c:5243-5342
+bool32 CanSetNonVolatileStatus(u8 battlerAtk, u8 battlerDef, u8 abilityAtk, u8 abilityDef, u16 effect, enum ResultOption option);
+bool32 CanBePoisoned(u8 battlerAtk, u8 battlerDef, u8 abilityAtk, u8 abilityDef);
+bool32 CanBeBurned(u8 battlerAtk, u8 battlerDef, u8 abilityDef);
+bool32 CanBeParalyzed(u8 battlerAtk, u8 battlerDef, u8 abilityDef);
+bool32 CanBeSlept(u8 battlerAtk, u8 battlerDef, u8 abilityDef);
+bool32 IsUsableWhileAsleepEffect(u16 effect);
+
 #endif // GUARD_BATTLE_UTIL_H

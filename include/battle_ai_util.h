@@ -172,4 +172,9 @@ void GetAIPartyIndexes(u8 battler, s32 *firstId, s32 *lastId);
 s32 CountUsablePartyMons(u8 battlerId);
 bool32 IsBattlerTrapped(u8 battlerAtk, u8 battlerDef);
 
+// RHH: Tier F-G supplement
+// (pokeemerald-expansion/src/battle_ai_util.c:2513, 1589)
+bool32 CanIndexMoveFaintTarget(u8 battlerAtk, u8 battlerDef, u32 moveIndex, enum DamageCalcContext calcContext);
+void GetBestDmgMovesFromBattler(u8 battlerAtk, u8 battlerDef, enum DamageCalcContext calcContext, u16 *bestMoves);
+
 #endif // GUARD_BATTLE_AI_UTIL_H

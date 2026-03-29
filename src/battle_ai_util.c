@@ -1197,32 +1197,23 @@ static u32 GetStagesOfStatChange(enum StatChange statChange)
 // =============================================================================
 
 // RHH: CanAiPredictMove (pokeemerald-expansion/src/battle_ai_util.c:182)
-// Returns TRUE if the AI_FLAG_PREDICT_MOVE flag is set for any battler.
 bool32 CanAiPredictMove(u8 battlerId)
 {
-#ifdef AI_FLAG_PREDICT_MOVE
     if (IsAiFlagPresent(AI_FLAG_PREDICT_MOVE))
         return TRUE;
-#endif
     (void)battlerId;
     return FALSE;
 }
 
 // RHH: IsBattlerPredictedToSwitch (pokeemerald-expansion/src/battle_ai_util.c:190)
-// Returns TRUE if the AI predicts the given battler will switch this turn.
-// RHH checks per-battler aiFlags[battlerIndex]. FireRed has a single aiFlags — use
-// AI_FLAG_PREDICT_SWITCH when that constant is added; until then always returns FALSE.
 bool32 IsBattlerPredictedToSwitch(u8 battler)
 {
-#ifdef AI_FLAG_PREDICT_SWITCH
     if (IsAiFlagPresent(AI_FLAG_PREDICT_SWITCH))
     {
         if (gAiLogicData->predictingSwitch && gAiLogicData->shouldSwitch & (1u << battler))
             return TRUE;
     }
-#else
     (void)battler;
-#endif
     return FALSE;
 }
 
@@ -1696,6 +1687,68 @@ bool32 CanTargetFaintAi(u8 battlerDef, u8 battlerAtk)
 }
 
 // ============================================================================
+// Tier F-G supplement: CanIndexMoveFaintTarget, GetBestDmgMovesFromBattler
+// RHH source: pokeemerald-expansion/src/battle_ai_util.c:2513-2527, 1589-1629
+// ============================================================================
+
+// RHH: CanIndexMoveFaintTarget (pokeemerald-expansion/src/battle_ai_util.c:2513)
+bool32 CanIndexMoveFaintTarget(u8 battlerAtk, u8 battlerDef, u32 moveIndex, enum DamageCalcContext calcContext)
+{
+    s32 dmg;
+    u16 *moves = gBattleMons[battlerAtk].moves;
+
+    if (IsDoubleBattle() && battlerDef == BATTLE_PARTNER(battlerAtk))
+        dmg = gAiLogicData->simulatedDmg[battlerAtk][battlerDef][moveIndex].maximum;
+    else
+        dmg = AI_GetDamage(battlerAtk, battlerDef, moveIndex, calcContext, gAiLogicData);
+
+    if ((s32)gBattleMons[battlerDef].hp <= dmg && !CanEndureHit(battlerAtk, battlerDef, moves[moveIndex]))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: GetBestDmgMovesFromBattler (pokeemerald-expansion/src/battle_ai_util.c:1589)
+void GetBestDmgMovesFromBattler(u8 battlerAtk, u8 battlerDef, enum DamageCalcContext calcContext, u16 *bestMoves)
+{
+    struct AiLogicData *aiData = gAiLogicData;
+    u32 bestDmg = 0;
+    u16 *moves = GetMovesArray(battlerAtk);
+    u32 moveLimitations = aiData->moveLimitations[battlerAtk];
+    u32 countBestMoves = 0;
+
+    if (CanAIFaintTarget(battlerAtk, battlerDef, 1))
+    {
+        for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+        {
+            if (CanIndexMoveFaintTarget(battlerAtk, battlerDef, moveIndex, AI_ATTACKING))
+                bestMoves[countBestMoves++] = moves[moveIndex];
+        }
+    }
+    else
+    {
+        for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+        {
+            if (IsMoveUnusable(moveIndex, moves[moveIndex], moveLimitations)
+             || GetMovePower(moves[moveIndex]) == 0
+             || AI_GetDamage(battlerAtk, battlerDef, moveIndex, calcContext, aiData) == 0)
+                continue;
+
+            if (bestDmg < AI_GetDamage(battlerAtk, battlerDef, moveIndex, calcContext, aiData))
+            {
+                countBestMoves = 0;
+                bestDmg = AI_GetDamage(battlerAtk, battlerDef, moveIndex, calcContext, aiData);
+                *bestMoves = 0;
+                bestMoves[countBestMoves++] = moves[moveIndex];
+            }
+            else if (bestDmg == AI_GetDamage(battlerAtk, battlerDef, moveIndex, calcContext, aiData))
+            {
+                bestMoves[countBestMoves++] = moves[moveIndex];
+            }
+        }
+    }
+}
+
+// ============================================================================
 // Tier I: Stat Down/Up Scoring
 // RHH source: pokeemerald-expansion/src/battle_ai_util.c:2390-2461, 4825-4978
 // ============================================================================
@@ -1916,55 +1969,315 @@ enum AIScore IncreaseStatUpScoreContrary(u8 battlerAtk, u8 battlerDef, enum Stat
 
 // RHH: IncreasePoisonScore (pokeemerald-expansion/src/battle_ai_util.c:4980-5001)
 // TODO: Replace stub with full port once AI_CanPoison + CanBePoisoned are ported.
+// RHH: HasDamagingMove (pokeemerald-expansion/src/battle_ai_util.c:3206)
+static bool32 HasDamagingMove(u8 battler)
+{
+    u16 *moves = GetMovesArray(battler);
+    u32 moveIndex;
+    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+            && GetMovePower(moves[moveIndex]) > 0)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: HasUsableWhileAsleepMove (pokeemerald-expansion/src/battle_ai_util.c:2934)
+static bool32 HasUsableWhileAsleepMove(u8 battler)
+{
+    u16 *moves = GetMovesArray(battler);
+    u32 moveIndex;
+    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+            && IsUsableWhileAsleepEffect(GetMoveEffect(moves[moveIndex])))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: HasMoveWithMoveEffectExcept (pokeemerald-expansion/src/battle_ai_util.c:2754)
+static bool32 HasMoveWithMoveEffectExcept(u8 battler, u16 moveEffect, u16 exception)
+{
+    u16 *moves = GetMovesArray(battler);
+    u32 moveIndex;
+    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+            && GetMoveEffect(moves[moveIndex]) != exception
+            && MoveHasAdditionalEffect(moves[moveIndex], moveEffect))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: IsPowerBasedOnStatus (pokeemerald-expansion/src/battle_ai_util.c:2702)
+// Returns TRUE if battler has a move with the given effect whose argument matches the status.
+static bool32 IsPowerBasedOnStatus(u8 battler, u16 effect, u32 argument)
+{
+    u16 *moves = GetMovesArray(battler);
+    u32 moveIndex;
+    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+            && GetMoveEffect(moves[moveIndex]) == effect
+            && (gMovesInfo[moves[moveIndex]].argument & argument))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: DoesPartnerHaveSameMoveEffect (pokeemerald-expansion/src/battle_ai_util.c:4349)
+static bool32 DoesPartnerHaveSameMoveEffect(u8 battlerAtkPartner, u8 battlerDef, u16 move, u16 partnerMove)
+{
+    if (!HasPartner(battlerAtkPartner))
+        return FALSE;
+    if (GetMoveEffect(move) == GetMoveEffect(partnerMove) && partnerMove != MOVE_NONE)
+    {
+        if (GetMoveTarget(move, 0) == MOVE_TARGET_SELECTED && GetMoveTarget(partnerMove, 0) == MOVE_TARGET_SELECTED)
+            return gBattleStruct->moveTarget[battlerAtkPartner] == battlerDef;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: PartnerMoveEffectIsStatusSameTarget (pokeemerald-expansion/src/battle_ai_util.c:4367)
+// Returns TRUE if the partner is targeting the same battlerDef with a non-volatile status move.
+static bool32 PartnerMoveEffectIsStatusSameTarget(u8 battlerAtkPartner, u8 battlerDef, u16 partnerMove)
+{
+    if (!HasPartner(battlerAtkPartner))
+        return FALSE;
+    if (partnerMove != MOVE_NONE && gBattleStruct->moveTarget[battlerAtkPartner] == battlerDef)
+    {
+        u16 effect = GetMoveEffect(partnerMove);
+        if (effect == EFFECT_TOXIC || effect == EFFECT_POISON
+         || effect == EFFECT_SLEEP || effect == EFFECT_PARALYZE
+         || effect == EFFECT_WILL_O_WISP || effect == EFFECT_YAWN)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: AI_CanBeConfused (pokeemerald-expansion/src/battle_ai_util.c:3705)
+static bool32 AI_CanBeConfused(u8 battlerAtk, u8 battlerDef, u16 move, u8 abilityDef)
+{
+    if (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)   // volatiles.confusionTurns > 0
+        return FALSE;
+    if (abilityDef == ABILITY_OWN_TEMPO)
+        return FALSE;
+    // Gen 6+: Misty Terrain — #ifdef when ported
+    if (gSideStatuses[GetBattlerSide(battlerDef)] & SIDE_STATUS_SAFEGUARD)
+        return FALSE;
+    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: AI_CanPoison (pokeemerald-expansion/src/battle_ai_util.c:3673)
+static bool32 AI_CanPoison(u8 battlerAtk, u8 battlerDef, u8 abilityAtk, u8 defAbility, u16 move, u16 partnerMove)
+{
+    if (!CanBePoisoned(battlerAtk, battlerDef, abilityAtk, defAbility))
+        return FALSE;
+    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+        return FALSE;
+    if (PartnerMoveEffectIsStatusSameTarget(BATTLE_PARTNER(battlerAtk), battlerDef, partnerMove))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: AI_CanBurn (pokeemerald-expansion/src/battle_ai_util.c:3719)
+static bool32 AI_CanBurn(u8 battlerAtk, u8 battlerDef, u8 defAbility, u8 battlerAtkPartner, u16 move, u16 partnerMove)
+{
+    if (!CanBeBurned(battlerAtk, battlerDef, defAbility))
+        return FALSE;
+    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+        return FALSE;
+    if (PartnerMoveEffectIsStatusSameTarget(battlerAtkPartner, battlerDef, partnerMove))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: AI_CanParalyze (pokeemerald-expansion/src/battle_ai_util.c:3684)
+static bool32 AI_CanParalyze(u8 battlerAtk, u8 battlerDef, u8 defAbility, u16 move, u16 partnerMove)
+{
+    if (!CanBeParalyzed(battlerAtk, battlerDef, defAbility))
+        return FALSE;
+    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+        return FALSE;
+    if (PartnerMoveEffectIsStatusSameTarget(BATTLE_PARTNER(battlerAtk), battlerDef, partnerMove))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: AI_CanPutToSleep (pokeemerald-expansion/src/battle_ai_util.c:3563)
+static bool32 AI_CanPutToSleep(u8 battlerAtk, u8 battlerDef, u8 defAbility, u16 move, u16 partnerMove)
+{
+    if (!CanBeSlept(battlerAtk, battlerDef, defAbility))
+        return FALSE;
+    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+        return FALSE;
+    if (PartnerMoveEffectIsStatusSameTarget(BATTLE_PARTNER(battlerAtk), battlerDef, partnerMove))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: AI_CanConfuse (pokeemerald-expansion/src/battle_ai_util.c:3705)
+static bool32 AI_CanConfuse(u8 battlerAtk, u8 battlerDef, u8 defAbility, u8 battlerAtkPartner, u16 move, u16 partnerMove)
+{
+    if (!AI_CanBeConfused(battlerAtk, battlerDef, move, defAbility))
+        return FALSE;
+    if (DoesPartnerHaveSameMoveEffect(battlerAtkPartner, battlerDef, move, partnerMove))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: IncreasePoisonScore (pokeemerald-expansion/src/battle_ai_util.c:4979)
 void IncreasePoisonScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
 {
     if (((AI_THINKING_STRUCT->aiFlags & AI_FLAG_TRY_TO_FAINT) && CanAIFaintTarget(battlerAtk, battlerDef, 0))
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_PSN
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_STATUS)
         return;
-    // AI_CanPoison + downstream deps (CanBePoisoned/CanSetNonVolatileStatus) not yet ported.
-    // Body will be filled when that infrastructure lands.
+
+    if (AI_CanPoison(battlerAtk, battlerDef, gAiLogicData->abilities[battlerAtk],
+                     gAiLogicData->abilities[battlerDef], move, gAiLogicData->partnerMove)
+        && gAiLogicData->hpPercents[battlerDef] > 20)
+    {
+        if (!HasDamagingMove(battlerDef))
+            ADJUST_SCORE_PTR(DECENT_EFFECT);
+
+        if (AI_THINKING_STRUCT->aiFlags & AI_FLAG_STALL && HasMoveWithEffect(battlerAtk, EFFECT_PROTECT))
+            ADJUST_SCORE_PTR(WEAK_EFFECT);
+
+        if (IsPowerBasedOnStatus(battlerAtk, EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_PSN_ANY)
+         || HasMoveWithEffect(battlerAtk, EFFECT_VENOM_DRENCH))
+            ADJUST_SCORE_PTR(DECENT_EFFECT);
+        else
+            ADJUST_SCORE_PTR(WEAK_EFFECT);
+    }
 }
 
-// RHH: IncreaseBurnScore (pokeemerald-expansion/src/battle_ai_util.c:5003-5042)
-// TODO: Replace stub with full port once AI_CanBurn is ported.
+// RHH: IncreaseBurnScore (pokeemerald-expansion/src/battle_ai_util.c:5003)
 void IncreaseBurnScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
 {
     if (((AI_THINKING_STRUCT->aiFlags & AI_FLAG_TRY_TO_FAINT) && CanAIFaintTarget(battlerAtk, battlerDef, 0))
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_BRN
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_STATUS)
         return;
-    // AI_CanBurn not yet ported.
+
+    if (AI_CanBurn(battlerAtk, battlerDef, gAiLogicData->abilities[battlerDef],
+                   BATTLE_PARTNER(battlerAtk), move, gAiLogicData->partnerMove))
+    {
+        if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL)
+            || (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_OMNISCIENT)
+                && GetSpeciesBaseAttack(gBattleMons[battlerDef].species) >= GetSpeciesBaseSpAttack(gBattleMons[battlerDef].species) + 10))
+        {
+            u16 defBestMoves[MAX_MON_MOVES] = {MOVE_NONE};
+            bool32 hasPhysical = FALSE;
+            u32 moveIndex;
+
+            GetBestDmgMovesFromBattler(battlerAtk, battlerDef, AI_DEFENDING, defBestMoves);
+
+            for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+            {
+                if (defBestMoves[moveIndex] == MOVE_NONE)
+                    break;
+                if (gMovesInfo[defBestMoves[moveIndex]].category == DAMAGE_CATEGORY_PHYSICAL)
+                {
+                    hasPhysical = TRUE;
+                    break;
+                }
+            }
+
+            if (hasPhysical)
+                ADJUST_SCORE_PTR(DECENT_EFFECT);
+            else
+                ADJUST_SCORE_PTR(WEAK_EFFECT);
+        }
+
+        if (IsPowerBasedOnStatus(battlerAtk, EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_BURN)
+         || IsPowerBasedOnStatus(BATTLE_PARTNER(battlerAtk), EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_BURN))
+            ADJUST_SCORE_PTR(WEAK_EFFECT);
+    }
 }
 
-// RHH: IncreaseParalyzeScore (pokeemerald-expansion/src/battle_ai_util.c:5044-5064)
-// TODO: Replace stub with full port once AI_CanParalyze is ported.
+// RHH: IncreaseParalyzeScore (pokeemerald-expansion/src/battle_ai_util.c:5044)
 void IncreaseParalyzeScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
 {
     if (((AI_THINKING_STRUCT->aiFlags & AI_FLAG_TRY_TO_FAINT) && CanAIFaintTarget(battlerAtk, battlerDef, 0))
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_PAR
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_STATUS)
         return;
-    // AI_CanParalyze not yet ported.
+
+    if (AI_CanParalyze(battlerAtk, battlerDef, gAiLogicData->abilities[battlerDef], move, gAiLogicData->partnerMove))
+    {
+        u32 atkSpeed = gAiLogicData->speedStats[battlerAtk];
+        u32 defSpeed = gAiLogicData->speedStats[battlerDef];
+
+        if ((defSpeed >= atkSpeed && defSpeed / 2 < atkSpeed)
+         || IsPowerBasedOnStatus(battlerAtk, EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_PARALYSIS)
+         || HasMoveWithMoveEffectExcept(battlerAtk, MOVE_EFFECT_FLINCH, EFFECT_FIRST_TURN_ONLY)
+         || (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)      // volatiles.infatuation
+         || (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION))       // volatiles.confusionTurns > 0
+            ADJUST_SCORE_PTR(GOOD_EFFECT);
+        else
+            ADJUST_SCORE_PTR(DECENT_EFFECT);
+    }
 }
 
-// RHH: IncreaseSleepScore (pokeemerald-expansion/src/battle_ai_util.c:5066-5096)
-// TODO: Replace stub with full port once AI_CanPutToSleep is ported.
+// RHH: IncreaseSleepScore (pokeemerald-expansion/src/battle_ai_util.c:5066)
 void IncreaseSleepScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
 {
     if (gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_SLP
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_STATUS)
         return;
-    // AI_CanPutToSleep not yet ported.
+
+    if ((AI_THINKING_STRUCT->aiFlags & AI_FLAG_TRY_TO_FAINT) && CanAIFaintTarget(battlerAtk, battlerDef, 0))
+    {
+        u16 bestMoves[MAX_MON_MOVES] = {MOVE_NONE};
+        u32 moveIndex;
+
+        GetBestDmgMovesFromBattler(battlerAtk, battlerDef, AI_ATTACKING, bestMoves);
+
+        for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+        {
+            if (GetMoveEffect(bestMoves[moveIndex]) != EFFECT_FOCUS_PUNCH && bestMoves[moveIndex] != MOVE_NONE)
+                return;
+        }
+    }
+
+    if (!AI_CanPutToSleep(battlerAtk, battlerDef, gAiLogicData->abilities[battlerDef], move, gAiLogicData->partnerMove))
+        return;
+
+    ADJUST_SCORE_PTR(DECENT_EFFECT);
+
+    if ((HasMoveWithEffect(battlerAtk, EFFECT_DREAM_EATER) || HasMoveWithEffect(battlerAtk, EFFECT_NIGHTMARE))
+     && !HasUsableWhileAsleepMove(battlerDef))
+        ADJUST_SCORE_PTR(WEAK_EFFECT);
+
+    if (IsPowerBasedOnStatus(battlerAtk, EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_SLEEP)
+     || IsPowerBasedOnStatus(BATTLE_PARTNER(battlerAtk), EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_SLEEP))
+        ADJUST_SCORE_PTR(WEAK_EFFECT);
 }
 
-// RHH: IncreaseConfusionScore (pokeemerald-expansion/src/battle_ai_util.c:5098-5115)
-// TODO: Replace stub with full port once AI_CanConfuse is ported.
+// RHH: IncreaseConfusionScore (pokeemerald-expansion/src/battle_ai_util.c:5098)
 void IncreaseConfusionScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
 {
     if (((AI_THINKING_STRUCT->aiFlags & AI_FLAG_TRY_TO_FAINT) && CanAIFaintTarget(battlerAtk, battlerDef, 0))
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_CONFUSION
             || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CURE_STATUS)
         return;
-    // AI_CanConfuse not yet ported.
+
+    if (AI_CanConfuse(battlerAtk, battlerDef, gAiLogicData->abilities[battlerDef],
+                      BATTLE_PARTNER(battlerAtk), move, gAiLogicData->partnerMove))
+    {
+        if ((gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS)
+         || (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)     // volatiles.infatuation
+         || (gAiLogicData->abilities[battlerAtk] == ABILITY_SERENE_GRACE
+             && HasMoveWithMoveEffectExcept(battlerAtk, MOVE_EFFECT_FLINCH, EFFECT_FIRST_TURN_ONLY)))
+            ADJUST_SCORE_PTR(GOOD_EFFECT);
+        else
+            ADJUST_SCORE_PTR(DECENT_EFFECT);
+    }
 }
