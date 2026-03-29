@@ -2,6 +2,7 @@
 #define GUARD_GLOBAL_H
 
 #include "config.h"
+#include "metaprogram.h"
 #include "gba/gba.h"
 #include <string.h>
 #include "constants/global.h"

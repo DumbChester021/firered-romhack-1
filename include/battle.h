@@ -26,7 +26,7 @@
 
 // Used to exclude moves learned temporarily by Transform or Mimic
 #define MOVE_IS_PERMANENT(battler, moveSlot)                        \
-   (!(gBattleMons[battler].status2 & STATUS2_TRANSFORMED)           \
+   (!(gBattleMons[battler].volatiles.transformed)           \
  && !(gDisableStructs[battler].mimickedMoves & gBitTable[moveSlot]))
 
 // Battle Actions
@@ -392,6 +392,34 @@ struct LinkBattlerHeader
     struct BattleEnigmaBerry battleEnigmaBerry;
 };
 
+// Per-battler state tracked across a battle turn. Ported from RHH struct BattlerState.
+// switchIn:1 replaces STATUS3_INTIMIDATE_POKES + STATUS3_TRACE from the old gStatuses3[].
+struct BattlerState
+{
+    u8 targetsDone[MAX_BATTLERS_COUNT];
+
+    u32 focusPunchBattlers:1;
+    u32 multipleSwitchInBattlers:1;
+    u32 alreadyStatusedMoveAttempt:1;
+    u32 forcedSwitch:1;
+    u32 storedHealingWish:1;
+    u32 storedLunarDance:1;
+    u32 usedEjectItem:1;
+    u32 usedMicleBerry:1;
+    u32 pursuitTarget:1;
+    u32 stompingTantrumTimer:2;
+    u32 canPickupItem:1;
+    u32 wasAboveHalfHp:1;
+    u32 selectionScriptFinished:1;
+    u32 lastMoveTarget:3;
+
+    u16 hpOnSwitchout;
+    u16 switchIn:1;        // replaces STATUS3_INTIMIDATE_POKES / STATUS3_TRACE
+    u16 fainted:1;
+    u16 isFirstTurn:2;
+    u16 padding:12;
+};
+
 struct BattleStruct
 {
     u8 turnEffectsTracker;
@@ -481,7 +509,9 @@ struct BattleStruct
     // RHH source: pokeemerald-expansion/include/battle.h BattleStruct.additionalEffectsCounter
     u8 additionalEffectsCounter;
     u8 padding_1E4[0x1B];
-}; // size == 0x200 bytes
+    // Phase B: per-battler state, replaces gStatuses3[] ability-trigger flags.
+    struct BattlerState battlerState[MAX_BATTLERS_COUNT];
+}; // size expands from 0x200 with battlerState (heap-alloc via sizeof)
 
 extern struct BattleStruct *gBattleStruct;
 
@@ -755,7 +785,6 @@ extern u8 gEffectBattler;
 extern u8 gMultiHitCounter;
 extern struct BattleScripting gBattleScripting;
 extern u8 gBattlerFainted;
-extern u32 gStatuses3[MAX_BATTLERS_COUNT];
 extern u8 gSentPokesToOpponent[2];
 extern const u8 *gBattlescriptCurrInstr;
 extern const u8 *gSelectionBattleScripts[MAX_BATTLERS_COUNT];

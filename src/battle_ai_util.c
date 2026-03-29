@@ -665,7 +665,7 @@ u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef)
     (void)oppSide;
 
     // RHH lines 1011-1012: don't switch if wrapped/prevented.
-    if (gBattleMons[battlerAtk].status2 & (STATUS2_WRAPPED | STATUS2_ESCAPE_PREVENTION))
+    if ((gBattleMons[battlerAtk].volatiles.wrapped || gBattleMons[battlerAtk].volatiles.escapePrevention))
         return PARTY_SIZE;
 
     // FRLG_STUB: STATUS3_ROOTED (Ingrain) check — add when Ingrain AI implemented.
@@ -893,9 +893,9 @@ static bool32 HasMoveThatChangesKOThreshold(u8 battlerId, u32 noOfHitsToFaint, b
 static u32 GetLeechSeedDamage(u8 battler)
 {
     u32 damage = 0;
-    if (gStatuses3[battler] & STATUS3_LEECHSEED)
+    if (gBattleMons[battler].volatiles.leechSeed)
     {
-        u8 seeder = gStatuses3[battler] & STATUS3_LEECHSEED_BATTLER;
+        u8 seeder = gBattleMons[battler].volatiles.leechSeed;
         if (gBattleMons[seeder].hp != 0)
         {
             damage = gBattleMons[battler].maxHP / 8;
@@ -910,7 +910,7 @@ static u32 GetLeechSeedDamage(u8 battler)
 static u32 GetNightmareDamage(u8 battlerId)
 {
     u32 damage = 0;
-    if ((gBattleMons[battlerId].status2 & STATUS2_NIGHTMARE)
+    if ((gBattleMons[battlerId].volatiles.nightmare)
      && (gBattleMons[battlerId].status1 & STATUS1_SLEEP))
     {
         damage = gBattleMons[battlerId].maxHP / 4;
@@ -924,7 +924,7 @@ static u32 GetNightmareDamage(u8 battlerId)
 static u32 GetCurseDamage(u8 battlerId)
 {
     u32 damage = 0;
-    if (gBattleMons[battlerId].status2 & STATUS2_CURSED)
+    if (gBattleMons[battlerId].volatiles.cursed)
     {
         damage = gBattleMons[battlerId].maxHP / 4;
         if (damage == 0)
@@ -938,7 +938,7 @@ static u32 GetCurseDamage(u8 battlerId)
 static u32 GetTrapDamage(u8 battler)
 {
     u32 damage = 0;
-    if (gBattleMons[battler].status2 & STATUS2_WRAPPED)
+    if (gBattleMons[battler].volatiles.wrapped)
     {
         damage = gBattleMons[battler].maxHP / 16;
         if (damage == 0)
@@ -1549,11 +1549,11 @@ bool32 IsBattlerTrapped(u8 battlerAtk, u8 battlerDef)
     if (AI_CanBattlerEscape(battlerDef))
         return FALSE;
 
-    if (gBattleMons[battlerDef].status2 & STATUS2_WRAPPED)
+    if (gBattleMons[battlerDef].volatiles.wrapped)
         return TRUE;
-    if (gBattleMons[battlerDef].status2 & STATUS2_ESCAPE_PREVENTION)
+    if (gBattleMons[battlerDef].volatiles.escapePrevention)
         return TRUE;
-    if (gStatuses3[battlerDef] & STATUS3_ROOTED)
+    if (gBattleMons[battlerDef].volatiles.root)
         return TRUE;
     // SKY_DROP volatile is Gen 5+ — #ifdef when ported
     // STATUS_FIELD_FAIRY_LOCK is Gen 6+ — #ifdef when ported
@@ -1581,7 +1581,7 @@ bool32 IsBattlerTrapped(u8 battlerAtk, u8 battlerDef)
 // Gen 3: INFILTRATOR doesn't exist; substitute always blocks non-sound moves.
 bool32 DoesSubstituteBlockMove(u8 battlerAtk, u8 battlerDef, u16 move)
 {
-    if (!(gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE))
+    if (!(gBattleMons[battlerDef].volatiles.substitute))
         return FALSE;
     if (MoveIgnoresSubstitute(move))
         return FALSE;
@@ -1732,9 +1732,9 @@ void GetBestDmgMovesFromBattler(u8 battlerAtk, u8 battlerDef, enum DamageCalcCon
 
 // RHH: IncreaseStatDownScore (pokeemerald-expansion/src/battle_ai_util.c:2390-2461)
 // volatile field translations:
-//   volatiles.leechSeed   → gStatuses3[battlerDef] & STATUS3_LEECHSEED
-//   volatiles.cursed      → gBattleMons[battlerDef].status2 & STATUS2_CURSED
-//   volatiles.root        → gStatuses3[battlerDef] & STATUS3_ROOTED
+//   volatiles.leechSeed   → gBattleMons[battlerDef].volatiles.leechSeed
+//   volatiles.cursed      → gBattleMons[battlerDef].volatiles.cursed
+//   volatiles.root        → gBattleMons[battlerDef].volatiles.root
 enum AIScore IncreaseStatDownScore(u8 battlerAtk, u8 battlerDef, u8 stat)
 {
     enum AIScore tempScore = NO_INCREASE;
@@ -1780,19 +1780,19 @@ enum AIScore IncreaseStatDownScore(u8 battlerAtk, u8 battlerDef, u8 stat)
         tempScore += WEAK_EFFECT;
         if (IsBattlerTrapped(battlerAtk, battlerDef))
             tempScore += DECENT_EFFECT;
-        if (gStatuses3[battlerDef] & STATUS3_LEECHSEED)   // volatiles.leechSeed
+        if (gBattleMons[battlerDef].volatiles.leechSeed)   // volatiles.leechSeed
             tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].status2 & STATUS2_CURSED)   // volatiles.cursed
+        if (gBattleMons[battlerDef].volatiles.cursed)   // volatiles.cursed
             tempScore += WEAK_EFFECT;
         break;
     case STAT_EVASION:
         if (gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY)
             tempScore += WEAK_EFFECT;
-        if (gStatuses3[battlerDef] & STATUS3_LEECHSEED)   // volatiles.leechSeed
+        if (gBattleMons[battlerDef].volatiles.leechSeed)   // volatiles.leechSeed
             tempScore += WEAK_EFFECT;
-        if (gStatuses3[battlerDef] & STATUS3_ROOTED)   // volatiles.root
+        if (gBattleMons[battlerDef].volatiles.root)   // volatiles.root
             tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].status2 & STATUS2_CURSED)   // volatiles.cursed
+        if (gBattleMons[battlerDef].volatiles.cursed)   // volatiles.cursed
             tempScore += WEAK_EFFECT;
         break;
     default:
@@ -2039,14 +2039,14 @@ static bool32 PartnerMoveEffectIsStatusSameTarget(u8 battlerAtkPartner, u8 battl
 // RHH: AI_CanBeConfused (pokeemerald-expansion/src/battle_ai_util.c:3705)
 static bool32 AI_CanBeConfused(u8 battlerAtk, u8 battlerDef, u16 move, u8 abilityDef)
 {
-    if (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)   // volatiles.confusionTurns > 0
+    if (gBattleMons[battlerDef].volatiles.confusionTurns)   // volatiles.confusionTurns > 0
         return FALSE;
     if (abilityDef == ABILITY_OWN_TEMPO)
         return FALSE;
     // Gen 6+: Misty Terrain — #ifdef when ported
     if (gSideStatuses[GetBattlerSide(battlerDef)] & SIDE_STATUS_SAFEGUARD)
         return FALSE;
-    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+    if (gBattleMons[battlerDef].volatiles.substitute && !MoveIgnoresSubstitute(move))
         return FALSE;
     return TRUE;
 }
@@ -2056,7 +2056,7 @@ static bool32 AI_CanPoison(u8 battlerAtk, u8 battlerDef, u8 abilityAtk, u8 defAb
 {
     if (!CanBePoisoned(battlerAtk, battlerDef, abilityAtk, defAbility))
         return FALSE;
-    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+    if (gBattleMons[battlerDef].volatiles.substitute && !MoveIgnoresSubstitute(move))
         return FALSE;
     if (PartnerMoveEffectIsStatusSameTarget(BATTLE_PARTNER(battlerAtk), battlerDef, partnerMove))
         return FALSE;
@@ -2068,7 +2068,7 @@ static bool32 AI_CanBurn(u8 battlerAtk, u8 battlerDef, u8 defAbility, u8 battler
 {
     if (!CanBeBurned(battlerAtk, battlerDef, defAbility))
         return FALSE;
-    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+    if (gBattleMons[battlerDef].volatiles.substitute && !MoveIgnoresSubstitute(move))
         return FALSE;
     if (PartnerMoveEffectIsStatusSameTarget(battlerAtkPartner, battlerDef, partnerMove))
         return FALSE;
@@ -2080,7 +2080,7 @@ static bool32 AI_CanParalyze(u8 battlerAtk, u8 battlerDef, u8 defAbility, u16 mo
 {
     if (!CanBeParalyzed(battlerAtk, battlerDef, defAbility))
         return FALSE;
-    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+    if (gBattleMons[battlerDef].volatiles.substitute && !MoveIgnoresSubstitute(move))
         return FALSE;
     if (PartnerMoveEffectIsStatusSameTarget(BATTLE_PARTNER(battlerAtk), battlerDef, partnerMove))
         return FALSE;
@@ -2092,7 +2092,7 @@ static bool32 AI_CanPutToSleep(u8 battlerAtk, u8 battlerDef, u8 defAbility, u16 
 {
     if (!CanBeSlept(battlerAtk, battlerDef, defAbility))
         return FALSE;
-    if (gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE && !MoveIgnoresSubstitute(move))
+    if (gBattleMons[battlerDef].volatiles.substitute && !MoveIgnoresSubstitute(move))
         return FALSE;
     if (PartnerMoveEffectIsStatusSameTarget(BATTLE_PARTNER(battlerAtk), battlerDef, partnerMove))
         return FALSE;
@@ -2195,8 +2195,8 @@ void IncreaseParalyzeScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
         if ((defSpeed >= atkSpeed && defSpeed / 2 < atkSpeed)
          || IsPowerBasedOnStatus(battlerAtk, EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_PARALYSIS)
          || HasMoveWithMoveEffectExcept(battlerAtk, MOVE_EFFECT_FLINCH, EFFECT_FIRST_TURN_ONLY)
-         || (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)      // volatiles.infatuation
-         || (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION))       // volatiles.confusionTurns > 0
+         || (gBattleMons[battlerDef].volatiles.infatuation)      // volatiles.infatuation
+         || (gBattleMons[battlerDef].volatiles.confusionTurns))       // volatiles.confusionTurns > 0
             ADJUST_SCORE_PTR(GOOD_EFFECT);
         else
             ADJUST_SCORE_PTR(DECENT_EFFECT);
@@ -2250,7 +2250,7 @@ void IncreaseConfusionScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
                       BATTLE_PARTNER(battlerAtk), move, gAiLogicData->partnerMove))
     {
         if ((gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS)
-         || (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)     // volatiles.infatuation
+         || (gBattleMons[battlerDef].volatiles.infatuation)     // volatiles.infatuation
          || (gAiLogicData->abilities[battlerAtk] == ABILITY_SERENE_GRACE
              && HasMoveWithMoveEffectExcept(battlerAtk, MOVE_EFFECT_FLINCH, EFFECT_FIRST_TURN_ONLY)))
             ADJUST_SCORE_PTR(GOOD_EFFECT);
@@ -2389,8 +2389,8 @@ bool32 ShouldTryToFlinch(u8 battlerAtk, u8 battlerDef, u8 atkAbility, u8 defAbil
     }
     else if (atkAbility == ABILITY_SERENE_GRACE
           || (gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS)
-          || (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)
-          || (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)
+          || (gBattleMons[battlerDef].volatiles.infatuation)
+          || (gBattleMons[battlerDef].volatiles.confusionTurns)
           || (AI_IsFaster(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, CONSIDER_PRIORITY)
               && CanTargetFaintAi(battlerDef, battlerAtk)))
     {

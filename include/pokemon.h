@@ -4,6 +4,7 @@
 #include "global.h"
 #include "sprite.h"
 #include "constants/pokemon.h"
+#include "constants/battle.h"
 
 struct PokemonSubstruct0
 {
@@ -167,6 +168,21 @@ struct BattleTowerPokemon
     /*0x2B*/ u8 friendship;
 };
 
+// Macros to expand VOLATILE_DEFINITIONS into struct bitfield declarations.
+// Each entry F(ENUM, fieldName, (type, maxValue), ...) becomes:
+//   type fieldName : BIT_SIZE(maxValue);   (single field)
+// or, when maxValue == 1:
+//   type fieldName;                         (1-bit flag)
+#define UNPACK_VOLATILE_STRUCT(_enum, _fieldName, _typeMaxValue, ...) INVOKE_WITH_(UNPACK_VOLATILE_STRUCT_, _fieldName, UNPACK_B(_typeMaxValue));
+#define UNPACK_VOLATILE_STRUCT_(_fieldName, _type, ...) _type FIRST(__VA_OPT__(_fieldName:BIT_SIZE(FIRST(__VA_ARGS__)),) _fieldName)
+
+// Per-battler volatile status struct. Replaces u32 status2 + gStatuses3[].
+// Ported 1:1 from pokeemerald-expansion struct Volatiles.
+struct Volatiles
+{
+    VOLATILE_DEFINITIONS(UNPACK_VOLATILE_STRUCT)
+};
+
 struct BattlePokemon
 {
     /*0x00*/ u16 species;
@@ -201,8 +217,8 @@ struct BattlePokemon
     /*0x44*/ u32 experience;
     /*0x48*/ u32 personality;
     /*0x4C*/ u32 status1;
-    /*0x50*/ u32 status2;
-    /*0x54*/ u32 otId;
+    /*0x50*/ struct Volatiles volatiles;
+    /*0x??*/ u32 otId;
 };
 
 struct SpeciesInfo

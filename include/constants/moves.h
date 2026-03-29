@@ -873,6 +873,8 @@
 #define MOVE_10_000_000_VOLT_THUNDERBOLT MOVE_10000000_VOLT_THUNDERBOLT
 
 #define MOVES_COUNT 848
+// Alias matching RHH naming (RHH includes Z/Max moves beyond MOVES_COUNT; we don't have those)
+#define MOVES_COUNT_ALL MOVES_COUNT
 
 #define MOVE_UNAVAILABLE 0xFFFF
 

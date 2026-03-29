@@ -476,13 +476,26 @@ Infrastructure additions:
 - `src/berry_crush.c`: `OPTIONS_TEXT_SPEED_INSTANT` → `game->textSpeed = 1`.
 - **Critical design note:** Instant delay must be **1** (not 0). FireRed's `AddTextPrinter` treats `speed==0` as "render all text and deactivate printer immediately" — this skips `\p` prompts, causing text to flash and vanish. RHH uses delay=1 + a per-frame render loop instead. Build: clean. Verify: 71/0/0.
 
+**Phase B — `struct Volatiles` migration (2026-03-30, COMPLETE):**
+
+Replaced `u32 status2` in `struct BattlePokemon` with `struct Volatiles volatiles` (100+ named bitfields from RHH's `VOLATILE_DEFINITIONS` X-macro). Removed `gStatuses3[MAX_BATTLERS_COUNT]` global. All ~370 call sites migrated.
+
+Key files/changes:
+- `include/config/battle.h` (NEW) — `B_*` timer constants for bitfield widths
+- `include/constants/battle.h` — `enum BattlerId`, `enum SemiInvulnerableState`, `VOLATILE_DEFINITIONS`, `enum VolatileId`, `LEECHSEEDED_BY()`
+- `include/pokemon.h` — `struct Volatiles` (UNPACK_VOLATILE_STRUCT macros), `struct BattlePokemon.volatiles`
+- `include/battle.h` — `struct BattlerState` with `switchIn:1` (replaces STATUS3_INTIMIDATE_POKES/TRACE), added `battlerState[4]` to `struct BattleStruct`
+- `src/battle_main.c` — removed `gStatuses3` EWRAM allocation
+- `include/battle_controllers.h` + `src/battle_controllers.c` — `BtlController_EmitStatusIconUpdate` signature: removed `status2` param
+- `tools/migrate_volatiles.py` — Python migration script (323 lines transformed across 9 files)
+- Build: clean. Verify: 71/0/0.
+
 **Next sessions (architecture-first order):**
 *Note: EWRAM Option 2 (`gDecompressionBuffer`) was skipped due to structural incompatibility: Mystery Gift uses it as executable memory, and FR-exclusive overlay systems (help/save_failed) enforce hardcoded 16KB framebuffer offsets which lack RHH equivalents.*
 
-1. **Phase B** — `struct Volatiles` migration (`u32 status2` → named bitfield struct, 1200+ occ, Python script) — unblocks all 4 terrain `BenefitsFrom*` functions
-2. **Phase C** — `types[3]` migration (`type1, type2` → `enum Type types[3]`) — enables Roost, Flying Press, dual-type mechanics
-3. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
-4. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
+1. **Phase C** — `types[3]` migration (`type1, type2` → `enum Type types[3]`) — enables Roost, Flying Press, dual-type mechanics
+2. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
+3. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 
@@ -490,7 +503,6 @@ Infrastructure additions:
 |---|---|---|---|---|
 | `MOVE_TARGET_*` bitmask `#define`s | `TARGET_*` sequential `enum` | Values + comparison semantics change | 911 occ, 12 files + engine bitwise checks | Future |
 | `gBattleMoveDamage` (single `s32`) | `moveDamage[MAX_BATTLERS_COUNT]` in struct | Global → per-battler array | 232 occ, deep engine refactor | Future |
-| `u32 status2` bitfield | `struct Volatiles volatiles` | Bitfield → named struct | 1200+ occ, every battle file | Future |
 | `u8 type1, type2` | `enum Type types[3]` | 2 fields → array of 3 | Struct layout + all access sites | Future |
 | `u8 gBattlerAttacker` | `enum BattlerId gBattlerAttacker` | Type safety (u8 → enum) | Type change only | Low |
 | `bool8` returns | `bool32` returns | Width change | Function signatures | Low |

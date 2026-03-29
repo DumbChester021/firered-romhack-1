@@ -87,4 +87,6 @@
 #define UBFIX
 #endif // UBFIX
 
+#include "config/battle.h"
+
 #endif // GUARD_CONFIG_H

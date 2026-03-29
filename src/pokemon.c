@@ -3973,7 +3973,7 @@ static void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex)
     for (i = 0; i < NUM_BATTLE_STATS; i++)
         gBattleMons[battlerId].statStages[i] = DEFAULT_STAT_STAGE;
 
-    gBattleMons[battlerId].status2 = 0;
+    memset(&gBattleMons[battlerId].volatiles, 0, sizeof(gBattleMons[battlerId].volatiles));
     UpdateSentPokesToOpponentValue(battlerId);
     ClearTemporarySpeciesSpriteData(battlerId, FALSE);
 }
@@ -4089,17 +4089,17 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
         case 0:
             // Cure infatuation
             if ((itemEffect[cmdIndex] & ITEM0_INFATUATION)
-                && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT && (gBattleMons[battleMonId].status2 & STATUS2_INFATUATION))
+                && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT && (gBattleMons[battleMonId].volatiles.infatuation))
             {
-                gBattleMons[battleMonId].status2 &= ~STATUS2_INFATUATION;
+                gBattleMons[battleMonId].volatiles.infatuation = 0;
                 retVal = FALSE;
             }
 
             // Dire Hit
             if ((itemEffect[cmdIndex] & ITEM0_DIRE_HIT)
-             && !(gBattleMons[gActiveBattler].status2 & STATUS2_FOCUS_ENERGY))
+             && !(gBattleMons[gActiveBattler].volatiles.focusEnergy))
             {
-                gBattleMons[gActiveBattler].status2 |= STATUS2_FOCUS_ENERGY;
+                gBattleMons[gActiveBattler].volatiles.focusEnergy = TRUE;
                 retVal = FALSE;
             }
 
@@ -4185,7 +4185,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
              && HealStatusConditions(mon, partyIndex, STATUS1_SLEEP, battleMonId) == 0)
             {
                 if (battleMonId != MAX_BATTLERS_COUNT)
-                    gBattleMons[battleMonId].status2 &= ~STATUS2_NIGHTMARE;
+                    gBattleMons[battleMonId].volatiles.nightmare = FALSE;
                 retVal = FALSE;
             }
             if ((itemEffect[cmdIndex] & ITEM3_POISON) && HealStatusConditions(mon, partyIndex, STATUS1_PSN_ANY | STATUS1_TOXIC_COUNTER, battleMonId) == 0)
@@ -4197,9 +4197,9 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
             if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && HealStatusConditions(mon, partyIndex, STATUS1_PARALYSIS, battleMonId) == 0)
                 retVal = FALSE;
             if ((itemEffect[cmdIndex] & ITEM3_CONFUSION)  // heal confusion
-             && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT && (gBattleMons[battleMonId].status2 & STATUS2_CONFUSION))
+             && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT && (gBattleMons[battleMonId].volatiles.confusionTurns))
             {
-                gBattleMons[battleMonId].status2 &= ~STATUS2_CONFUSION;
+                gBattleMons[battleMonId].volatiles.confusionTurns = 0;
                 retVal = FALSE;
             }
             break;
@@ -4614,11 +4614,11 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
         // status healing effects
         case 0:
             // Cure infatuation
-            if (itemEffect[cmdIndex] & ITEM0_INFATUATION && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && gBattleMons[battlerId].status2 & STATUS2_INFATUATION)
+            if (itemEffect[cmdIndex] & ITEM0_INFATUATION && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && gBattleMons[battlerId].volatiles.infatuation)
                 retVal = FALSE;
 
             // Dire Hit
-            if (itemEffect[cmdIndex] & ITEM0_DIRE_HIT && !(gBattleMons[gActiveBattler].status2 & STATUS2_FOCUS_ENERGY))
+            if (itemEffect[cmdIndex] & ITEM0_DIRE_HIT && !(gBattleMons[gActiveBattler].volatiles.focusEnergy))
                 retVal = FALSE;
 
             // X Attack
@@ -4678,7 +4678,7 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
             if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && PartyMonHasStatus(mon, partyIndex, STATUS1_PARALYSIS, battlerId))
                 retVal = FALSE;
             if (itemEffect[cmdIndex] & ITEM3_CONFUSION // heal confusion
-             && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && (gBattleMons[battlerId].status2 & STATUS2_CONFUSION))
+             && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && (gBattleMons[battlerId].volatiles.confusionTurns))
                 retVal = FALSE;
             break;
 

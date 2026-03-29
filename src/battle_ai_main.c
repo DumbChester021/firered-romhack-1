@@ -364,14 +364,14 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_FOCUS_ENERGY:
-        if (gBattleMons[battlerAtk].status2 & STATUS2_FOCUS_ENERGY)
+        if (gBattleMons[battlerAtk].volatiles.focusEnergy)
             return score - 10;
         break;
 
     case EFFECT_CONFUSE:
     case EFFECT_SWAGGER:
     case EFFECT_FLATTER:
-        if (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)
+        if (gBattleMons[battlerDef].volatiles.confusionTurns)
             return score - 5;
         if (defAbility == ABILITY_OWN_TEMPO)
             return score - 10;
@@ -398,14 +398,14 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_SUBSTITUTE:
-        if (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE)
+        if (gBattleMons[battlerAtk].volatiles.substitute)
             return score - 8;
         if (gBattleMons[battlerAtk].hp * 100 / gBattleMons[battlerAtk].maxHP <= 25)
             return score - 10;
         break;
 
     case EFFECT_LEECH_SEED:
-        if (gStatuses3[battlerDef] & STATUS3_LEECHSEED)
+        if (gBattleMons[battlerDef].volatiles.leechSeed)
             return score - 10;
         if (gBattleMons[battlerDef].type1 == TYPE_GRASS || gBattleMons[battlerDef].type2 == TYPE_GRASS)
             return score - 10;
@@ -428,12 +428,12 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_MEAN_LOOK:
-        if (gBattleMons[battlerDef].status2 & STATUS2_ESCAPE_PREVENTION)
+        if (gBattleMons[battlerDef].volatiles.escapePrevention)
             return score - 10;
         break;
 
     case EFFECT_NIGHTMARE:
-        if (gBattleMons[battlerDef].status2 & STATUS2_NIGHTMARE)
+        if (gBattleMons[battlerDef].volatiles.nightmare)
             return score - 10;
         if (!(defStatus & STATUS1_SLEEP))
             return score - 8;
@@ -452,12 +452,12 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_FORESIGHT:
-        if (gBattleMons[battlerDef].status2 & STATUS2_FORESIGHT)
+        if (gBattleMons[battlerDef].volatiles.foresight)
             return score - 10;
         break;
 
     case EFFECT_PERISH_SONG:
-        if (gStatuses3[battlerDef] & STATUS3_PERISH_SONG)
+        if (gBattleMons[battlerDef].volatiles.perishSong)
             return score - 10;
         break;
 
@@ -467,7 +467,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_ATTRACT:
-        if (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)
+        if (gBattleMons[battlerDef].volatiles.infatuation)
             return score - 10;
         if (defAbility == ABILITY_OBLIVIOUS)
             return score - 10;
@@ -540,7 +540,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_TORMENT:
-        if (gBattleMons[battlerDef].status2 & STATUS2_TORMENT)
+        if (gBattleMons[battlerDef].volatiles.torment)
             return score - 10;
         break;
 
@@ -570,7 +570,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_INGRAIN:
-        if (gStatuses3[battlerAtk] & STATUS3_ROOTED)
+        if (gBattleMons[battlerAtk].volatiles.root)
             return score - 10;
         break;
 
@@ -581,7 +581,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_IMPRISON:
-        if (gStatuses3[battlerAtk] & STATUS3_IMPRISONED_OTHERS)
+        if (gBattleMons[battlerAtk].volatiles.imprison)
             return score - 10;
         break;
 
@@ -591,7 +591,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_MUD_SPORT:
-        if (gStatuses3[battlerAtk] & STATUS3_MUDSPORT)
+        if (gBattleMons[battlerAtk].volatiles.mudSport)
             return score - 10;
         break;
 
@@ -617,7 +617,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_WATER_SPORT:
-        if (gStatuses3[battlerAtk] & STATUS3_WATERSPORT)
+        if (gBattleMons[battlerAtk].volatiles.waterSport)
             return score - 10;
         break;
 
@@ -697,9 +697,9 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     u8 defStgSpAtk = gBattleMons[battlerDef].statStages[STAT_SPATK];
     u8 defStgEva   = gBattleMons[battlerDef].statStages[STAT_EVASION];
     u8 defStatus1  = gBattleMons[battlerDef].status1;
-    u8 defStatus2  = gBattleMons[battlerDef].status2;
+    
     u8 atkStatus1  = gBattleMons[battlerAtk].status1;
-    u8 atkStatus2  = gBattleMons[battlerAtk].status2;
+    
     u8 defType1    = GetBattlerType1(battlerDef);
     u8 defType2    = GetBattlerType2(battlerDef);
     u8 atkType1    = GetBattlerType1(battlerAtk);
@@ -790,11 +790,11 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             { if ((Random() % 256) >= 50) score += 3; }
             else score += 3;
         }
-        if (gStatuses3[battlerDef] & STATUS3_LEECHSEED && (Random() % 100) >= 70)
+        if (gBattleMons[battlerDef].volatiles.leechSeed && (Random() % 100) >= 70)
             score += 3;
-        if (gStatuses3[battlerAtk] & STATUS3_ROOTED && (Random() % 256) >= 128)
+        if (gBattleMons[battlerAtk].volatiles.root && (Random() % 256) >= 128)
             score += 2;
-        if (defStatus2 & STATUS2_CURSED && (Random() % 100) >= 70)
+        if (gBattleMons[battlerDef].volatiles.cursed && (Random() % 100) >= 70)
             score += 3;
         if (atkHpPct <= 70 && atkStgEva != DEFAULT_STAT_STAGE
             && atkHpPct > 40 && defHpPct > 40
@@ -888,11 +888,11 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
             score -= 2;
         if (defStatus1 & STATUS1_TOXIC_POISON && (Random() % 100) >= 70)
             score += 2;
-        if (gStatuses3[battlerDef] & STATUS3_LEECHSEED && (Random() % 100) >= 70)
+        if (gBattleMons[battlerDef].volatiles.leechSeed && (Random() % 100) >= 70)
             score += 2;
-        if (gStatuses3[battlerAtk] & STATUS3_ROOTED && (Random() % 256) >= 128)
+        if (gBattleMons[battlerAtk].volatiles.root && (Random() % 256) >= 128)
             score += 1;
-        if (defStatus2 & STATUS2_CURSED && (Random() % 100) >= 70)
+        if (gBattleMons[battlerDef].volatiles.cursed && (Random() % 100) >= 70)
             score += 2;
         if (atkHpPct <= 70 && gBattleMons[battlerDef].statStages[STAT_ACC] != DEFAULT_STAT_STAGE
             && atkHpPct > 40 && defHpPct > 40
@@ -1073,10 +1073,10 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
                     if (!(defStatus1 & STATUS1_ANY) && (Random() % 100) >= 100)
                         score += 1;
                 }
-                if (lastEffect == EFFECT_CONFUSE && !(defStatus2 & STATUS2_CONFUSION)
+                if (lastEffect == EFFECT_CONFUSE && !(gBattleMons[battlerDef].volatiles.confusionTurns)
                     && (Random() % 100) >= 100)
                     score += 1;
-                if (lastEffect == EFFECT_LEECH_SEED && !(gStatuses3[battlerDef] & STATUS3_LEECHSEED)
+                if (lastEffect == EFFECT_LEECH_SEED && !(gBattleMons[battlerDef].volatiles.leechSeed)
                     && (Random() % 100) >= 100)
                     score += 1;
             }
@@ -1220,15 +1220,15 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_PROTECT:
     case EFFECT_ENDURE:
         if (gDisableStructs[battlerAtk].protectUses > 1) { score -= 2; break; }
-        if (atkStatus2 & STATUS2_CURSED || gStatuses3[battlerAtk] & STATUS3_LEECHSEED ||
-            atkStatus2 & STATUS2_INFATUATION || gStatuses3[battlerAtk] & STATUS3_YAWN ||
-            atkStatus1 & STATUS1_TOXIC_POISON || gStatuses3[battlerAtk] & STATUS3_PERISH_SONG)
+        if (gBattleMons[battlerAtk].volatiles.cursed || gBattleMons[battlerAtk].volatiles.leechSeed ||
+            gBattleMons[battlerAtk].volatiles.infatuation || gBattleMons[battlerAtk].volatiles.yawn ||
+            atkStatus1 & STATUS1_TOXIC_POISON || gBattleMons[battlerAtk].volatiles.perishSong)
         {
             score += 2;
         }
-        if (defStatus2 & STATUS2_CURSED || gStatuses3[battlerDef] & STATUS3_LEECHSEED ||
-            defStatus2 & STATUS2_INFATUATION || gStatuses3[battlerDef] & STATUS3_YAWN ||
-            defStatus1 & STATUS1_TOXIC_POISON || gStatuses3[battlerDef] & STATUS3_PERISH_SONG)
+        if (gBattleMons[battlerDef].volatiles.cursed || gBattleMons[battlerDef].volatiles.leechSeed ||
+            gBattleMons[battlerDef].volatiles.infatuation || gBattleMons[battlerDef].volatiles.yawn ||
+            defStatus1 & STATUS1_TOXIC_POISON || gBattleMons[battlerDef].volatiles.perishSong)
         {
             score += 2;
         }
@@ -1283,8 +1283,8 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     case EFFECT_SEMI_INVULNERABLE:
         if (AI_HasMoveEffect(battlerDef, EFFECT_PROTECT)) { score -= 1; break; }
-        if (defStatus1 & STATUS1_TOXIC_POISON || defStatus2 & STATUS2_CURSED ||
-            gStatuses3[battlerDef] & STATUS3_LEECHSEED)
+        if (defStatus1 & STATUS1_TOXIC_POISON || gBattleMons[battlerDef].volatiles.cursed ||
+            gBattleMons[battlerDef].volatiles.leechSeed)
         {
             if ((Random() % 256) >= 80) score += 1;
         }
@@ -1332,8 +1332,8 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
 
     case EFFECT_FOCUS_PUNCH:
         if (notVeryEff) score -= 1;
-        else if ((defStatus1 & STATUS1_SLEEP) || (defStatus2 & STATUS2_INFATUATION) ||
-                 (defStatus2 & STATUS2_CONFUSION))
+        else if ((defStatus1 & STATUS1_SLEEP) || (gBattleMons[battlerDef].volatiles.infatuation) ||
+                 (gBattleMons[battlerDef].volatiles.confusionTurns))
         {
             if ((Random() % 100) >= 100) score += 1;
         }
@@ -1345,8 +1345,8 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_COUNTER:
-        if ((defStatus1 & STATUS1_SLEEP) || (defStatus2 & STATUS2_INFATUATION) ||
-            (defStatus2 & STATUS2_CONFUSION))
+        if ((defStatus1 & STATUS1_SLEEP) || (gBattleMons[battlerDef].volatiles.infatuation) ||
+            (gBattleMons[battlerDef].volatiles.confusionTurns))
         {
             score -= 1; break;
         }
@@ -1355,8 +1355,8 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_MIRROR_COAT:
-        if ((defStatus1 & STATUS1_SLEEP) || (defStatus2 & STATUS2_INFATUATION) ||
-            (defStatus2 & STATUS2_CONFUSION))
+        if ((defStatus1 & STATUS1_SLEEP) || (gBattleMons[battlerDef].volatiles.infatuation) ||
+            (gBattleMons[battlerDef].volatiles.confusionTurns))
         {
             score -= 1; break;
         }
@@ -1611,13 +1611,13 @@ static s32 AI_CalcAdditionalEffectScore(u8 battlerAtk, u8 battlerDef, u16 move, 
                 break;
             }
             case MOVE_EFFECT_BUG_BITE:
-                if (!(gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE)
+                if (!(gBattleMons[battlerDef].volatiles.substitute)
                   && aiData->abilities[battlerDef] != ABILITY_STICKY_HOLD
                   && ItemId_GetPocket(aiData->items[battlerDef]) == POCKET_BERRY_POUCH)
                     ADJUST_SCORE(DECENT_EFFECT);
                 break;
             case MOVE_EFFECT_INCINERATE:
-                if (!(gBattleMons[battlerDef].status2 & STATUS2_SUBSTITUTE)
+                if (!(gBattleMons[battlerDef].volatiles.substitute)
                   && aiData->abilities[battlerDef] != ABILITY_STICKY_HOLD
                   && ItemId_GetPocket(aiData->items[battlerDef]) == POCKET_BERRY_POUCH)
                     ADJUST_SCORE(DECENT_EFFECT);
