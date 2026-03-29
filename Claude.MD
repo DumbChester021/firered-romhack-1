@@ -153,24 +153,29 @@ TASK EXECUTION PROTOCOL
 CURRENT ACTIVE WORK (as of 2026-03-29)
 
 Active branch: feature-AI-upgrade
-TIERS A–J + ALL SUPPLEMENTS COMPLETE: Full AI scoring pipeline ported.
+ARCHITECTURE-FIRST: Clearing structural gaps before porting moves.
 * Build: clean. Verify: 71/0/0.
-* AI_CalcAdditionalEffectScore DONE (src/battle_ai_main.c, static)
-* WeatherChecker + FieldStatusChecker DONE (src/battle_ai_field_statuses.c)
-* ShouldCureStatusInternal DONE (fully functional, not a stub)
-* CalcWeatherScore DONE and wired into AI_CheckViability
-* ShouldSetWeather/ShouldClearWeather wired to WeatherChecker (not stubs)
-* ShouldSetFieldStatus/ShouldClearFieldStatus wired to FieldStatusChecker
-* struct FieldTimer + gFieldStatuses/gFieldTimers globals added
 
-EWRAM usage is at 98.87%+ — be very careful about adding EWRAM_DATA globals.
-gFieldStatuses (u32) + gFieldTimers (16 bytes) were added — watch usage.
+COMPLETED THIS SESSION:
+* Phase A: STATUS_FIELD_* bits corrected to match RHH (bits 0–11, added 6 missing flags)
+* Phase A: AI_IsTerrainActive/AI_IsTrickRoomActive implemented (live gFieldStatuses reads)
+* Phase A: AI_GetAbilityRating deleted (not in RHH)
+* Phase A: BenefitsFromGravity + BenefitsFromTrickRoom fully ported from RHH
+* Phase A: alwaysHitsInRain/accuracy50InSun/alwaysHitsInHailSnow fields + inlines added
+
+REMAINING TERRAIN STUBS (blocked on Phase B — struct Volatiles migration):
+* BenefitsFromElectricTerrain/GrassyTerrain/MistyTerrain/PsychicTerrain → FIELD_EFFECT_NEUTRAL
+
+EWRAM: 98.88% used (2,936 bytes free). Plan: move sMapTilesBackup (16KB) to heap next.
+RHH comparison shows they freed ~32KB: removed gDecompressionBuffer + help tile backup.
 Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.
 
-NEXT SESSION options:
-1. Add Gen4+ moves (Stealth Rock, Roost, U-turn, Trick Room, etc.)
-2. Port terrain mechanics (Gen6+) — implement BenefitsFromElectricTerrain etc.
-3. Re-audit for full RHH faithfulness (long-term, after gen-latest mechanics)
+NEXT IMMEDIATE: Option 1 — move sMapTilesBackup (help_system_util.c, 2 callsites) to heap.
+ARCHITECTURE ORDER AFTER THAT:
+* Phase B: struct Volatiles migration (status2 → named struct, 1200+ occ, Python script)
+* Phase C: types[3] migration (type1/type2 → enum Type types[3])
+* Phase D: MOVE_TARGET_* → TARGET_* enum (911 occ)
+* Phase E: gBattleMoveDamage → moveDamage[MAX_BATTLERS_COUNT] (232 occ)
 
 ---
 

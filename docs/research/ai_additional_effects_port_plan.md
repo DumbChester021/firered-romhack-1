@@ -1,5 +1,8 @@
 # AI Additional Effects Scoring — Port Plan
 
+> **STATUS: COMPLETE (2026-03-29).** All items in this doc are implemented.
+> See `docs/CONTINUATION_GUIDE.md` for current state. This doc is historical reference only.
+
 ## Goal
 
 Port `AI_CalcAdditionalEffectScore()` from RHH 100% faithfully (no stubs, no adaptations).

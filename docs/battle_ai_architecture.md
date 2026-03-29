@@ -107,23 +107,26 @@ bool8 AI_IsSlower(u8 battlerAtk, u8 battlerDef, u16 moveAtk, u16 moveDef);
 bool8 BattlerStatCanRise(u8 battler, u8 stat);
 ```
 
-### Gen 4+ Extension Stubs
+### Gen 4+ Terrain/Field Helpers
 
-The following are declared in `battle_ai_util.h` but return 0/FALSE. When Gen 4+ mechanics are added, implement these:
+The following are implemented and live in `battle_ai_util.c`:
 
 ```c
-// Returns a simple "rating" for an ability in battle context (0 = bad, higher = better)
-// GEN4_STUB: always returns 0
-s32 AI_GetAbilityRating(u8 ability);
+// Returns TRUE if the given STATUS_FIELD_* terrain flag is currently active.
+// Reads gFieldStatuses directly — functional once terrain is set by move engine.
+bool8 AI_IsTerrainActive(u8 terrainFlag);  // (gFieldStatuses & terrainFlag) != 0
 
-// Returns TRUE if a terrain effect is currently active
-// GEN4_STUB: always returns FALSE (no terrain in FRLG)
-bool8 AI_IsTerrainActive(u8 terrainFlag);
-
-// Returns TRUE if Trick Room is active
-// GEN4_STUB: always returns FALSE
-bool8 AI_IsTrickRoomActive(void);
+// Returns TRUE if Trick Room is currently active.
+bool8 AI_IsTrickRoomActive(void);  // (gFieldStatuses & STATUS_FIELD_TRICK_ROOM) != 0
 ```
+
+`AI_GetAbilityRating()` was a stub with no RHH equivalent — deleted (Phase A, 2026-03-29).
+
+**Remaining terrain stubs** (in `battle_ai_field_statuses.c`) — pending `struct Volatiles` migration (Phase B), which provides `.volatiles.yawn` access:
+- `BenefitsFromElectricTerrain` — returns `FIELD_EFFECT_NEUTRAL`
+- `BenefitsFromGrassyTerrain` — returns `FIELD_EFFECT_NEUTRAL`
+- `BenefitsFromMistyTerrain` — returns `FIELD_EFFECT_NEUTRAL`
+- `BenefitsFromPsychicTerrain` — returns `FIELD_EFFECT_NEUTRAL`
 
 ---
 
