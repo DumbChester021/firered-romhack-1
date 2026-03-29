@@ -427,6 +427,12 @@ Functions ported:
 - `IsWeatherActive`, `HasDamagingMoveOfType`, `HasMoveWithFlag`, `IsBattle1v1`
 - `HasNonVolatileMoveEffect`, `HasBattlerSideMoveWithAdditionalEffect`
 
+`struct MoveInfo` additions (required by field status weather helpers):
+- `alwaysHitsInRain:1`, `accuracy50InSun:1`, `alwaysHitsInHailSnow:1` fields
+- Inline helpers: `MoveAlwaysHitsInRain`, `MoveHas50AccuracyInSun`, `MoveAlwaysHitsInHailSnow`, `IsMoveGravityBanned`
+- Move data: Thunder gets `.alwaysHitsInRain = TRUE, .accuracy50InSun = TRUE`
+- Inline helpers: `MoveThawsUser`, `GetMoveType` (used by weather/field helpers)
+
 Infrastructure additions:
 - `struct FieldTimer` + `gFieldStatuses`/`gFieldTimers` globals (battle.h, battle_main.c)
 - `ABILITY_SOLAR_POWER = 94` added to `constants/abilities.h`
@@ -440,11 +446,21 @@ Infrastructure additions:
 
 **CURRENT STATUS: Tiers A–J + all supplements COMPLETE. AI scoring pipeline fully wired.**
 
-**Next sessions (choose one):**
-- Add Gen4+ moves (Stealth Rock, Roost, U-turn, etc.)
-- Port terrain mechanics (Gen6+) — implement `BenefitsFromElectricTerrain` etc.
-- Port Trick Room scoring (implement `gFieldStatuses`/`gFieldTimers` tracking)
-- Re-audit AI for full RHH faithfulness (long-term: after gen-latest mechanics added)
+**Phase A — STATUS_FIELD_* fix + Gravity/TrickRoom AI (2026-03-29, COMPLETE):**
+- `STATUS_FIELD_*` bit positions corrected to match RHH exactly (was 0-5, now 0-11 matching RHH)
+- Added missing flags: `STATUS_FIELD_MAGIC_ROOM`, `STATUS_FIELD_WONDER_ROOM`, `STATUS_FIELD_MUDSPORT`, `STATUS_FIELD_WATERSPORT`, `STATUS_FIELD_ION_DELUGE`, `STATUS_FIELD_FAIRY_LOCK`
+- `AI_IsTerrainActive()` implemented: `(gFieldStatuses & terrainFlag) != 0`
+- `AI_IsTrickRoomActive()` implemented: `(gFieldStatuses & STATUS_FIELD_TRICK_ROOM) != 0`
+- `AI_GetAbilityRating()` deleted — does not exist in RHH
+- `BenefitsFromGravity()` ported 1:1 from RHH
+- `BenefitsFromTrickRoom()` ported 1:1 from RHH
+- Build: clean. Verify: 71/0/0.
+
+**Next sessions (architecture-first order):**
+1. **Phase B** — `struct Volatiles` migration (`u32 status2` → named bitfield struct, 1200+ occ, Python script) — unblocks all 4 terrain `BenefitsFrom*` functions
+2. **Phase C** — `types[3]` migration (`type1, type2` → `enum Type types[3]`) — enables Roost, Flying Press, dual-type mechanics
+3. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
+4. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 

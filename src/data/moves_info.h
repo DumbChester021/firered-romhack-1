@@ -3823,6 +3823,8 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT] =
         .pp = 10,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
+        .alwaysHitsInRain = TRUE,
+        .accuracy50InSun = TRUE,
         .category = DAMAGE_CATEGORY_SPECIAL,
         ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_PARALYSIS,

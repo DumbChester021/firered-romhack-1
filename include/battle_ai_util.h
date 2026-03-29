@@ -82,24 +82,16 @@ u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef);
 
 // ============================================================================
 // Gen 4+ Extension Stubs
-// These return safe neutral values for now.
-// When Gen 4+ mechanics are implemented, replace the stub bodies.
-// ============================================================================
-
-// GEN4_STUB: Returns a battle desirability rating for an ability (0 = bad/irrelevant).
-s32 AI_GetAbilityRating(u8 ability);
-
-// GEN4_STUB: Returns TRUE if the given terrain flag is currently active.
-// terrainFlag is a B_TERRAIN_* constant (not defined in FRLG — define when needed).
+// Returns TRUE if the given STATUS_FIELD_* terrain flag is currently active.
 bool8 AI_IsTerrainActive(u8 terrainFlag);
 
-// GEN4_STUB: Returns TRUE if Trick Room is currently active on the field.
+// Returns TRUE if Trick Room is currently active on the field.
 bool8 AI_IsTrickRoomActive(void);
 
 // Phase 3: additionalEffects AI helper.
 // RHH source: pokeemerald-expansion/include/battle_ai_util.h
 // Returns TRUE if any of battlerId's moves have additionalEffects containing moveEffect.
-bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect);
+bool32 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect);
 
 bool8 HasMoveWithCategory(u8 battler, u8 category);
 bool8 BattlerStatCanRise(u8 battler, u8 stat);
@@ -225,5 +217,30 @@ bool32 AI_ShouldSetUpHazards(u8 battlerAtk, u8 battlerDef, u16 move, struct AiLo
 u16 AI_GetBattlerMoveTargetType(u8 battler, u16 move);
 bool32 HasMoveWithLowAccuracy(u8 battlerAtk, u8 battlerDef, u32 accCheck, bool32 ignoreStatus);
 u16 GetIncomingMove(u8 battler, u8 opposingBattler, struct AiLogicData *aiData);
+
+// RHH: ShouldCureStatus chain (src/battle_ai_util.c:4046-4139)
+bool32 HasThawingMove(u8 battler);
+bool32 IsTargetingPartner(u8 battlerAtk, u8 battlerDef);
+bool32 ShouldCureStatusWithItem(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData);
+
+// RHH: WeatherChecker infrastructure (pokeemerald-expansion/include/battle_ai_util.h:129,133,199,202,236,274)
+// MoveFlag: function pointer type for move flag tests (e.g. MoveAlwaysHitsInRain).
+typedef bool32 (*MoveFlag)(u16 move);
+
+// RHH: enum WeatherState (pokeemerald-expansion/src/battle_ai_util.c:1978-1990)
+enum WeatherState
+{
+    WEATHER_INACTIVE,
+    WEATHER_ACTIVE,
+    WEATHER_ACTIVE_BUT_BLOCKED,
+    WEATHER_INACTIVE_AND_BLOCKED,
+};
+
+enum WeatherState IsWeatherActive(u32 flags);
+bool32 HasDamagingMoveOfType(u8 battler, u8 type);
+bool32 HasMoveWithFlag(u8 battler, MoveFlag getFlag);
+bool32 IsBattle1v1(void);
+bool32 HasNonVolatileMoveEffect(u8 battlerId, u16 effect);
+bool32 HasBattlerSideMoveWithAdditionalEffect(u8 battler, u16 moveEffect);
 
 #endif // GUARD_BATTLE_AI_UTIL_H

@@ -756,29 +756,14 @@ u8 AI_EvaluateSwitch(u8 battlerAtk, u8 battlerDef)
     return PARTY_SIZE;
 }
 
-// ============================================================================
-// Gen 4+ Stubs — return safe neutral values.
-// Replace stub bodies when implementing the corresponding mechanics.
-// ============================================================================
-
-// GEN4_STUB
-s32 AI_GetAbilityRating(u8 ability)
-{
-    (void)ability;
-    return 0;
-}
-
-// GEN4_STUB
 bool8 AI_IsTerrainActive(u8 terrainFlag)
 {
-    (void)terrainFlag;
-    return FALSE;
+    return (gFieldStatuses & terrainFlag) != 0;
 }
 
-// GEN4_STUB
 bool8 AI_IsTrickRoomActive(void)
 {
-    return FALSE;
+    return (gFieldStatuses & STATUS_FIELD_TRICK_ROOM) != 0;
 }
 
 // =============================================================================

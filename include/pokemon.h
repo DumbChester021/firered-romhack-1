@@ -285,6 +285,11 @@ struct MoveInfo
     u8  dampBanned:1;            // RHH: dampBanned (blocked by Damp ability)
     u8  forcePressure:1;         // RHH: forcePressure (Pressure deducts PP even if move targets self/ally)
 
+    // Weather-interaction flags — RHH: pokeemerald-expansion/include/pokemon.h
+    u8  alwaysHitsInRain:1;      // RHH: alwaysHitsInRain (Thunder, Hurricane)
+    u8  accuracy50InSun:1;       // RHH: accuracy50InSun (Thunder in sun: 50% acc)
+    u8  alwaysHitsInHailSnow:1;  // RHH: alwaysHitsInHailSnow (Blizzard in hail/snow)
+
     // Effect-based hack replacements — port of RHH MoveInfo fields.
     // RHH source: pokeemerald-expansion/include/pokemon.h struct MoveInfo.
     u8  criticalHitStage:2;  // RHH: criticalHitStage (0=normal 1=high 2=always)
@@ -408,6 +413,40 @@ static inline bool32 MoveIgnoresTargetAbility(u16 moveId)
 {
     (void)moveId;
     return FALSE;
+}
+
+// RHH: MoveThawsUser (pokeemerald-expansion/include/move.h:435)
+static inline bool32 MoveThawsUser(u16 moveId)
+{
+    return gMovesInfo[moveId].thawsUser;
+}
+
+// RHH: GetMoveType (pokeemerald-expansion/include/move.h)
+static inline u8 GetMoveType(u16 moveId)
+{
+    return gMovesInfo[moveId].type;
+}
+
+// RHH: weather-interaction flag inlines (pokeemerald-expansion/include/move.h:455-470)
+static inline bool32 MoveAlwaysHitsInRain(u16 moveId)
+{
+    return gMovesInfo[moveId].alwaysHitsInRain;
+}
+
+static inline bool32 MoveHas50AccuracyInSun(u16 moveId)
+{
+    return gMovesInfo[moveId].accuracy50InSun;
+}
+
+static inline bool32 MoveAlwaysHitsInHailSnow(u16 moveId)
+{
+    return gMovesInfo[moveId].alwaysHitsInHailSnow;
+}
+
+// RHH: IsMoveGravityBanned (pokeemerald-expansion/include/move.h:493)
+static inline bool32 IsMoveGravityBanned(u16 moveId)
+{
+    return gMovesInfo[moveId].gravityBanned;
 }
 
 extern u8 gPlayerPartyCount;

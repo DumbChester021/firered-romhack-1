@@ -222,6 +222,44 @@
 #define B_WEATHER_HAIL                (B_WEATHER_HAIL_TEMPORARY)
 #define B_WEATHER_ANY                 (B_WEATHER_RAIN | B_WEATHER_SANDSTORM | B_WEATHER_SUN | B_WEATHER_HAIL)
 
+// RHH: composite weather flags (pokeemerald-expansion/include/constants/battle.h:454-458)
+#define B_WEATHER_ICY_ANY             (B_WEATHER_HAIL)        // Gen3: only hail; Gen8+ includes snow
+#define B_WEATHER_DAMAGING_ANY        (B_WEATHER_HAIL | B_WEATHER_SANDSTORM)
+#define B_WEATHER_PRIMAL_ANY          0                        // Gen7+ only; always 0 in Gen3
+
+// RHH: BATTLE_WEATHER_* enum (pokeemerald-expansion/include/constants/battle.h:426-435)
+// Used by CalcWeatherScore to identify the weather a move sets.
+enum BattleWeather
+{
+    BATTLE_WEATHER_NONE,
+    BATTLE_WEATHER_RAIN,
+    BATTLE_WEATHER_RAIN_PRIMAL,
+    BATTLE_WEATHER_RAIN_DOWNPOUR,
+    BATTLE_WEATHER_SUN,
+    BATTLE_WEATHER_SUN_PRIMAL,
+    BATTLE_WEATHER_SANDSTORM,
+    BATTLE_WEATHER_HAIL,
+    BATTLE_WEATHER_SNOW,        // Gen8+
+    BATTLE_WEATHER_FOG,
+    BATTLE_WEATHER_STRONG_WINDS,
+};
+
+// RHH: STATUS_FIELD_* field status constants (pokeemerald-expansion/include/constants/battle.h)
+// Bit positions match RHH exactly.
+#define STATUS_FIELD_MAGIC_ROOM         (1 << 0)
+#define STATUS_FIELD_TRICK_ROOM         (1 << 1)
+#define STATUS_FIELD_WONDER_ROOM        (1 << 2)
+#define STATUS_FIELD_MUDSPORT           (1 << 3)
+#define STATUS_FIELD_WATERSPORT         (1 << 4)
+#define STATUS_FIELD_GRAVITY            (1 << 5)
+#define STATUS_FIELD_GRASSY_TERRAIN     (1 << 6)
+#define STATUS_FIELD_MISTY_TERRAIN      (1 << 7)
+#define STATUS_FIELD_ELECTRIC_TERRAIN   (1 << 8)
+#define STATUS_FIELD_PSYCHIC_TERRAIN    (1 << 9)
+#define STATUS_FIELD_ION_DELUGE         (1 << 10)
+#define STATUS_FIELD_FAIRY_LOCK         (1 << 11)
+#define STATUS_FIELD_TERRAIN_ANY        (STATUS_FIELD_GRASSY_TERRAIN | STATUS_FIELD_MISTY_TERRAIN | STATUS_FIELD_ELECTRIC_TERRAIN | STATUS_FIELD_PSYCHIC_TERRAIN)
+
 // Move Effects
 #define MOVE_EFFECT_SLEEP               1
 #define MOVE_EFFECT_POISON              2

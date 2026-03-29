@@ -3,8 +3,7 @@
 // Gen3 adaptations:
 //   - B_WEATHER_ICY_ANY  = B_WEATHER_HAIL (no snow in Gen3)
 //   - B_WEATHER_PRIMAL_ANY = 0 (no primal weather)
-//   - Terrain (Gen6+): all BenefitsFrom*Terrain return FIELD_EFFECT_NEUTRAL
-//   - Gravity/TrickRoom (Gen4+): return FIELD_EFFECT_NEUTRAL stubs
+//   - Terrain (Gen6+): BenefitsFrom*Terrain stubs pending struct Volatiles migration (.yawn)
 //   - HOLD_EFFECT_UTILITY_UMBRELLA (Gen8+): #ifdef'd
 //   - HOLD_EFFECT_SAFETY_GOGGLES (Gen4+): #ifdef'd
 //   - Gen4+ abilities (SWIFT_SWIM, CHLOROPHYLL, etc.): all defined in our abilities.h
@@ -333,18 +332,66 @@ static enum FieldEffectOutcome BenefitsFromPsychicTerrain(u8 battler)
     return FIELD_EFFECT_NEUTRAL;  // Terrain Gen6+ — deferred
 }
 
-// RHH: BenefitsFromGravity (src/battle_ai_field_statuses.c:450-483, static)
+// RHH: BenefitsFromGravity (src/battle_ai_field_statuses.c:449-475)
 static enum FieldEffectOutcome BenefitsFromGravity(u8 battler)
 {
-    (void)battler;
-    return FIELD_EFFECT_NEUTRAL;  // Gravity Gen4+ — deferred
+    if (!AI_IsBattlerGrounded(battler))
+        return FIELD_EFFECT_NEGATIVE;
+
+    if (AI_IsAbilityOnSide(battler, ABILITY_HUSTLE))
+        return FIELD_EFFECT_POSITIVE;
+
+    if (HasMoveWithFlag(battler, IsMoveGravityBanned))
+        return FIELD_EFFECT_NEGATIVE;
+
+    if (IsBattlerAlive(LEFT_FOE(battler)))
+    {
+        if (HasMoveWithLowAccuracy(battler, LEFT_FOE(battler), LOW_ACCURACY_THRESHOLD, FALSE)
+         || (!AI_IsBattlerGrounded(LEFT_FOE(battler)) && HasDamagingMoveOfType(battler, TYPE_GROUND)))
+            return FIELD_EFFECT_POSITIVE;
+    }
+
+    if (IsBattlerAlive(RIGHT_FOE(battler)))
+    {
+        if (HasMoveWithLowAccuracy(battler, RIGHT_FOE(battler), LOW_ACCURACY_THRESHOLD, FALSE)
+         || (!AI_IsBattlerGrounded(RIGHT_FOE(battler)) && HasDamagingMoveOfType(battler, TYPE_GROUND)))
+            return FIELD_EFFECT_POSITIVE;
+    }
+
+    return FIELD_EFFECT_NEUTRAL;
 }
 
-// RHH: BenefitsFromTrickRoom (src/battle_ai_field_statuses.c:485-510, static)
+// RHH: BenefitsFromTrickRoom (src/battle_ai_field_statuses.c:477-510)
 static enum FieldEffectOutcome BenefitsFromTrickRoom(u8 battler)
 {
-    (void)battler;
-    return FIELD_EFFECT_NEUTRAL;  // Trick Room Gen4+ — deferred
+    if (IsBattle1v1())
+    {
+        if (gAiLogicData->speedStats[battler] < gAiLogicData->speedStats[LEFT_FOE(battler)])
+            return FIELD_EFFECT_POSITIVE;
+        else if (gAiLogicData->speedStats[battler] == gAiLogicData->speedStats[LEFT_FOE(battler)])
+            return FIELD_EFFECT_NEUTRAL;
+        else
+            return FIELD_EFFECT_NEGATIVE;
+    }
+
+    if (!(gFieldStatuses & STATUS_FIELD_PSYCHIC_TERRAIN))
+    {
+        u16 *aiMoves = GetMovesArray(battler);
+        u32 moveIndex;
+        for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+        {
+            u16 move = aiMoves[moveIndex];
+            if (GetBattleMovePriority(battler, gAiLogicData->abilities[battler], move) > 0
+             && !(GetMovePriority(move) > 0 && IsBattleMoveStatus(move)))
+                return FIELD_EFFECT_POSITIVE;
+        }
+    }
+
+    if ((gAiLogicData->speedStats[battler] >= gAiLogicData->speedStats[LEFT_FOE(battler)])
+     || (gAiLogicData->speedStats[battler] >= gAiLogicData->speedStats[RIGHT_FOE(battler)]))
+        return FIELD_EFFECT_NEGATIVE;
+
+    return FIELD_EFFECT_POSITIVE;
 }
 
 // RHH: CalcWeatherScore (src/battle_ai_field_statuses.c:512-603)
