@@ -371,16 +371,35 @@ Names/structures that still differ from RHH and need renaming when touched:
 - `IsMoveUnusable` inline — `include/battle_ai_util.h`
 - `MoveIgnoresSubstitute` inline — `include/pokemon.h`
 - `DoesSubstituteBlockMove()` / `CanAIFaintTarget()` / `CanTargetFaintAi()` — `src/battle_ai_util.c`
-- `IsMoldBreakerTypeAbility()` stub / `HasTwoOpponents()` / `HasPartner()` — `src/battle_ai_util.c`
+- `IsMoldBreakerTypeAbility()` stub — `src/battle_util.c` (moved from battle_ai_util.c per RHH; declared in `battle_util.h`)
+- `HasTwoOpponents()` / `HasPartner()` — `src/battle_ai_util.c`
 - `IncreaseStatDownScore()` (72 lines, volatiles→status2/gStatuses3) — `src/battle_ai_util.c`
 - `IncreaseStatUpScoreInternal()` (static, 123 lines) / `IncreaseStatUpScore()` / `IncreaseStatUpScoreContrary()` — `src/battle_ai_util.c`
-- `IncreasePoisonScore()` etc. — stubs (blocked by `CanSetNonVolatileStatus` not yet ported)
 
-**Next: Session G — Tier J** (see `docs/research/ai_additional_effects_port_plan.md` for full detailed plan):
+**Tier H — CanSetNonVolatileStatus chain (2026-03-29, COMPLETE):**
+- `IsNonVolatileStatusBlocked()` (static) / `IsSafeguardProtected()` (static) — `src/battle_util.c`
+- `CanSetNonVolatileStatus()` (Gen 3 faithful, Gen 4+ #ifdef'd) — `src/battle_util.c`
+- `CanBePoisoned()` / `CanBeBurned()` / `CanBeParalyzed()` / `CanBeSlept()` / `IsUsableWhileAsleepEffect()` — `src/battle_util.c`
+- 12 static AI helpers: `HasDamagingMove`, `HasUsableWhileAsleepMove`, `HasMoveWithMoveEffectExcept`, `IsPowerBasedOnStatus`, `DoesPartnerHaveSameMoveEffect`, `PartnerMoveEffectIsStatusSameTarget`, `AI_CanBeConfused`, `AI_CanPoison`, `AI_CanBurn`, `AI_CanParalyze`, `AI_CanPutToSleep`, `AI_CanConfuse` — `src/battle_ai_util.c`
+- `IncreasePoisonScore()` / `IncreaseBurnScore()` / `IncreaseParalyzeScore()` / `IncreaseSleepScore()` / `IncreaseConfusionScore()` — full ports, `src/battle_ai_util.c`
+
+**Tier F-G supplement (2026-03-29, COMPLETE):**
+- `CanIndexMoveFaintTarget()` / `GetBestDmgMovesFromBattler()` — `src/battle_ai_util.c`
+- `GetSpeciesBaseAttack()` / `GetSpeciesBaseSpAttack()` — `src/pokemon.c`
+
+**Audit fixes applied (2026-03-29):**
+- Removed dead `#ifdef AI_FLAG_PREDICT_MOVE` / `#ifdef AI_FLAG_PREDICT_SWITCH` (constants always defined)
+- Fixed `EFFECT_POISON_GAS` → `EFFECT_POISON` in `PartnerMoveEffectIsStatusSameTarget`
+- Fixed `GetMoveTarget()` → `GetMoveTarget(move, 0)` in `DoesPartnerHaveSameMoveEffect`
+- `#ifdef ABILITY_SIMPLE` in `IncreaseStatUpScoreInternal` is CORRECT (Gen 4+, not in Gen 3)
+
+**Tiers A–I are fully ported, build clean, 71/0/0 verify. Next: Tier J.**
+
+**Tier J — AI_CalcAdditionalEffectScore** (see `docs/research/ai_additional_effects_port_plan.md`):
 
 **Research complete (2026-03-29).** Full dependency tree mapped. 25 functions to add + 355-line main.
 
-Ordered implementation list for next session:
+Ordered implementation list:
 
 1. **Inlines** → `include/pokemon.h`: `IsSoundMove`, `GetMoveCategory`, `MoveIgnoresTargetAbility` stub
 2. **Inlines** → `include/battle.h`: `IsBattleMoveStatus`, `IsSpreadMove`
@@ -391,12 +410,12 @@ Ordered implementation list for next session:
    - `DoesBattlerIgnoreAbilityChecks` (12 lines)
    - `AI_GetWeather` + static `AI_WeatherHasEffect` (7 lines)
    - `AI_GetBattlerMoveTargetType` (Gen 9 paths #ifdef'd)
-   - `CanIndexMoveFaintTarget`, `BattlerWillFaintFromSecondaryDamage`
-   - `GetIncomingMove`, `IsAdditionalEffectBlocked`, `GetBestDmgMovesFromBattler`
+   - `BattlerWillFaintFromSecondaryDamage`
+   - `GetIncomingMove`, `IsAdditionalEffectBlocked`
    - `ShouldTryToFlinch` (volatiles: `.infatuation`→STATUS2, `.confusionTurns>0`→STATUS2_CONFUSION)
    - `ShouldTrap` (aiFlags[battler] → single aiFlags)
    - `HasMoveWithAIEffect` stub (FALSE), `HasBattlerSideMoveWithAIEffect` stub (FALSE)
-   - `CanLowerStat` (62 lines; CLEAR_AMULET/FLOWER_VEIL/BIG_PECKS/MINDS_EYE/FULL_METAL_BODY #ifdef'd; Electro Ball check → FALSE)
+   - `CanLowerStat` (62 lines; CLEAR_AMULET/FLOWER_VEIL/BIG_PECKS/MINDS_EYE/FULL_METAL_BODY #ifdef'd)
    - `ShouldSetWeather`, `ShouldClearWeather` (simplified without WeatherChecker)
    - `ShouldSetFieldStatus`, `ShouldClearFieldStatus` (stubs → FALSE; terrain Gen 6+)
    - `ShouldSetScreen` (34 lines; B_WEATHER_ICY_ANY→B_WEATHER_HAIL; AURORA_VEIL #ifdef)
@@ -407,7 +426,6 @@ Ordered implementation list for next session:
 6. Wire `AI_CalcAdditionalEffectScore` into `AI_CheckViability()` in `src/battle_ai_main.c`
 
 **Future sessions:**
-- Port `CanSetNonVolatileStatus` + status-checker deps → fill Tier H stubs
 - Port `WeatherChecker` from `battle_ai_field_statuses.c` (603 lines, own session)
 - Port `ShouldCureStatusInternal` (80+ lines, deferred)
 

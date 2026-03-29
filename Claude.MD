@@ -152,16 +152,16 @@ TASK EXECUTION PROTOCOL
 
 CURRENT ACTIVE WORK (as of 2026-03-29)
 
-Active task: Porting AI additionalEffects scoring from RHH — Session G: Tier J (implementation pending).
+Active task: Porting AI additionalEffects scoring from RHH — Tier J (AI_CalcAdditionalEffectScore) next.
 * Research doc: `docs/research/ai_additional_effects_port_plan.md` (full dependency tree mapped)
 * Python extraction tool: `tools/port_ai_scoring.py` (run with `--check-deps`)
 * Staging area: `tools/staging/ai_port/` (39+ extracted RHH functions ready)
-* Tiers A-I DONE: All infrastructure, stat scoring (IncreaseStatDownScore, IncreaseStatUpScore*)
-* Tier H status scorers: stubbed (blocked by CanSetNonVolatileStatus not yet ported)
-* Session G research DONE: 25-function dependency tree mapped, all adaptations documented
-* Session G implementation NEXT: Start with inlines, then MOVE_EFFECT constants, then battle_ai_util.c
-* See Tier J section in research doc for exact ordered port list (25 functions)
-* Continuation guide section: "RHH Convergence Tracker" in `docs/CONTINUATION_GUIDE.md`
+* Tiers A-I DONE and RHH-faithful: All infrastructure, KO calc, trap detection, status chain, all scorers
+* CanSetNonVolatileStatus chain DONE (battle_util.c). All 5 status scorers FULLY ported (no stubs).
+* IsMoldBreakerTypeAbility moved to battle_util.c per RHH architecture.
+* Build: clean. Verify: 71/0/0. Last commit: 19b580ba3 (Tier H+I+fixups)
+* Tier J NEXT: Start with inlines, then MOVE_EFFECT constants, then battle_ai_util.c (25 functions)
+* See "RHH Convergence Tracker" → "Tier J" section in `docs/CONTINUATION_GUIDE.md` for ordered list.
 
 EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
 Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.

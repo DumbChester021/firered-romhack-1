@@ -3562,3 +3562,12 @@ bool32 IsBattlerGrounded(u8 battler, u8 ability, u8 holdEffect)
 {
     return IsBattlerGroundedInternal(battler, ability, holdEffect);
 }
+
+// RHH: IsMoldBreakerTypeAbility (pokeemerald-expansion/src/battle_util.c:4912)
+// Gen 3: ABILITY_MOLD_BREAKER / ABILITY_TURBOBLAZE / ABILITY_TERAVOLT are Gen 4+ — #ifdef when ported.
+bool32 IsMoldBreakerTypeAbility(u8 battler, u8 ability)
+{
+    (void)battler;
+    (void)ability;
+    return FALSE;
+}

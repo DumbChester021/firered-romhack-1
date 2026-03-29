@@ -1603,14 +1603,6 @@ bool32 DoesSubstituteBlockMove(u8 battlerAtk, u8 battlerDef, u16 move)
     return TRUE;
 }
 
-// RHH: IsMoldBreakerTypeAbility (pokeemerald-expansion/src/battle_util.c:4912)
-// Gen 3: no Mold Breaker / Turboblaze / Teravolt — always FALSE.
-bool32 IsMoldBreakerTypeAbility(u8 battler, u8 ability)
-{
-    // ABILITY_MOLD_BREAKER / ABILITY_TURBOBLAZE / ABILITY_TERAVOLT are Gen 4+ — #ifdef when ported
-    return FALSE;
-}
-
 // RHH: HasTwoOpponents (pokeemerald-expansion/src/battle_ai_util.c:4152)
 bool32 HasTwoOpponents(u8 battler)
 {

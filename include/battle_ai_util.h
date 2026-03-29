@@ -144,7 +144,6 @@ void SetBattlerAiData(u8 battler, struct AiLogicData *aiData);
 bool32 DoesSubstituteBlockMove(u8 battlerAtk, u8 battlerDef, u16 move);
 bool32 CanAIFaintTarget(u8 battlerAtk, u8 battlerDef, u32 numHits);
 bool32 CanTargetFaintAi(u8 battlerDef, u8 battlerAtk);
-bool32 IsMoldBreakerTypeAbility(u8 battler, u8 ability);
 bool32 HasTwoOpponents(u8 battler);
 bool32 HasPartner(u8 battler);
 enum AIScore IncreaseStatDownScore(u8 battlerAtk, u8 battlerDef, u8 stat);

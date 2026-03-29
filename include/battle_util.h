@@ -129,4 +129,8 @@ bool32 CanBeParalyzed(u8 battlerAtk, u8 battlerDef, u8 abilityDef);
 bool32 CanBeSlept(u8 battlerAtk, u8 battlerDef, u8 abilityDef);
 bool32 IsUsableWhileAsleepEffect(u16 effect);
 
+// RHH: IsMoldBreakerTypeAbility (pokeemerald-expansion/src/battle_util.c:4912)
+// Gen 3: Mold Breaker / Turboblaze / Teravolt are Gen 4+ — always FALSE until ported.
+bool32 IsMoldBreakerTypeAbility(u8 battler, u8 ability);
+
 #endif // GUARD_BATTLE_UTIL_H
