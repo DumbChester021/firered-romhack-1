@@ -456,11 +456,18 @@ Infrastructure additions:
 - `BenefitsFromTrickRoom()` ported 1:1 from RHH
 - Build: clean. Verify: 71/0/0.
 
+**EWRAM Option 1 COMPLETE (2026-03-29):** `sMapTilesBackup` → heap.
+- `static EWRAM_DATA u8 sMapTilesBackup[BG_CHAR_SIZE]` (16KB) → `static u8 *sMapTilesBackup`
+- `SaveMapTiles()`: `AllocZeroed(BG_CHAR_SIZE)` before DMA copy
+- `FreeMapTilesBackup()`: new exported function — called one state after `RestoreMapTiles` in both callers (help_system_util.c state 7, save_failed_screen.c state 8) ensuring async DMA has fired
+- EWRAM: 98.88% → **92.65%** (16,384 bytes freed; 19,320 bytes now free)
+
 **Next sessions (architecture-first order):**
-1. **Phase B** — `struct Volatiles` migration (`u32 status2` → named bitfield struct, 1200+ occ, Python script) — unblocks all 4 terrain `BenefitsFrom*` functions
-2. **Phase C** — `types[3]` migration (`type1, type2` → `enum Type types[3]`) — enables Roost, Flying Press, dual-type mechanics
-3. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
-4. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
+1. **EWRAM Option 2** — `gDecompressionBuffer` (16KB, main.c) → per-system alloc (8+ files, needs audit) — drops to ~86%
+2. **Phase B** — `struct Volatiles` migration (`u32 status2` → named bitfield struct, 1200+ occ, Python script) — unblocks all 4 terrain `BenefitsFrom*` functions
+3. **Phase C** — `types[3]` migration (`type1, type2` → `enum Type types[3]`) — enables Roost, Flying Press, dual-type mechanics
+4. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
+5. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 

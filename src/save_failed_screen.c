@@ -95,6 +95,7 @@ bool32 RunSaveFailedScreen(void)
         sSaveFailedScreenState = 8;
         break;
     case 8:
+        FreeMapTilesBackup();
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 256);
         RestoreMapTextColors();
         RestoreGPURegs();

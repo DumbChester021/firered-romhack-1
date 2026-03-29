@@ -57,6 +57,7 @@ bool8 RunHelpSystemCallback(void);
 void SaveCallbacks(void);
 void SaveMapGPURegs(void);
 void SaveMapTiles(void);
+void FreeMapTilesBackup(void);
 void SaveMapTextColors(void);
 void RestoreCallbacks(void);
 void RestoreGPURegs(void);
