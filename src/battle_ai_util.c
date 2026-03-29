@@ -217,20 +217,20 @@ static u8 AI_GetTypeEffectivenessForPartyMon(u16 move, struct Pokemon *targetMon
     // We save and restore the species+types fields so no persistent mutation occurs.
     // This is the cleanest pre-AI_DATA approach available in FRLG.
     u16 savedSpecies = gBattleMons[2].species;
-    u8  savedType1   = GetBattlerType1(2);
-    u8  savedType2   = GetBattlerType2(2);
+    u8  savedType1   = gBattleMons[2].types[0];
+    u8  savedType2   = gBattleMons[2].types[1];
     u16 candSpecies  = GetMonData(targetMon, MON_DATA_SPECIES, NULL);
     u8  flags;
 
     gBattleMons[2].species = candSpecies;
-    gBattleMons[2].type1   = gSpeciesInfo[candSpecies].types[0];
-    gBattleMons[2].type2   = gSpeciesInfo[candSpecies].types[1];
+    gBattleMons[2].types[0]   = gSpeciesInfo[candSpecies].types[0];
+    gBattleMons[2].types[1]   = gSpeciesInfo[candSpecies].types[1];
 
     flags = TypeCalc(move, 0, 2);   // attacker slot doesn't matter for type chart
 
     gBattleMons[2].species = savedSpecies;
-    gBattleMons[2].type1   = savedType1;
-    gBattleMons[2].type2   = savedType2;
+    gBattleMons[2].types[0]   = savedType1;
+    gBattleMons[2].types[1]   = savedType2;
 
     if (flags & MOVE_RESULT_DOESNT_AFFECT_FOE)
         return AI_EFFECTIVENESS_x0;
@@ -265,10 +265,10 @@ static bool8 HasBadOdds(u8 battler, u8 opposingBattler)
 
     {
         // RHH lines 91-95: get types of both mons.
-        u8 atkType1 = GetBattlerType1(opposingBattler);
-        u8 atkType2 = GetBattlerType2(opposingBattler);
-        u8 defType1 = GetBattlerType1(battler);
-        u8 defType2 = GetBattlerType2(battler);
+        u8 atkType1 = gBattleMons[opposingBattler].types[0];
+        u8 atkType2 = gBattleMons[opposingBattler].types[1];
+        u8 defType1 = gBattleMons[battler].types[0];
+        u8 defType2 = gBattleMons[battler].types[1];
         s32 i;
         s32 damageDealt = 0, maxDamageDealt = 0;
         s32 damageTaken = 0, maxDamageTaken = 0;
@@ -546,8 +546,8 @@ static bool8 ShouldSwitchIfEncored(u8 battler)
 static bool8 IsAbilityPreventingEscape(u8 battler, u8 opposingBattler)
 {
     u8 oppAbility = gBattleMons[opposingBattler].ability;
-    u8 battlerType1 = GetBattlerType1(battler);
-    u8 battlerType2 = GetBattlerType2(battler);
+    u8 battlerType1 = gBattleMons[battler].types[0];
+    u8 battlerType2 = gBattleMons[battler].types[1];
 
     if (oppAbility == ABILITY_SHADOW_TAG)
         return TRUE; // traps all non-Ghost mons (Ghost immunity handled by game engine)
@@ -618,17 +618,17 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 battler, u8 opposingBattler,
                 // We need the flag to be set (immune or NVE) for requiredFlag.
                 // Temporarily borrow slot 2 as scratch for the candidate's types.
                 u16 savedSpecies = gBattleMons[2].species;
-                u8  savedT1      = GetBattlerType1(2);
-                u8  savedT2      = GetBattlerType2(2);
+                u8  savedT1      = gBattleMons[2].types[0];
+                u8  savedT2      = gBattleMons[2].types[1];
                 u16 candSpecies  = GetMonData(&party[i], MON_DATA_SPECIES, NULL);
 
                 gBattleMons[2].species = candSpecies;
-                gBattleMons[2].type1   = gSpeciesInfo[candSpecies].types[0];
-                gBattleMons[2].type2   = gSpeciesInfo[candSpecies].types[1];
+                gBattleMons[2].types[0]   = gSpeciesInfo[candSpecies].types[0];
+                gBattleMons[2].types[1]   = gSpeciesInfo[candSpecies].types[1];
                 resistFlags = TypeCalc(lastLandedMove, opposingBattler, 2);
                 gBattleMons[2].species = savedSpecies;
-                gBattleMons[2].type1   = savedT1;
-                gBattleMons[2].type2   = savedT2;
+                gBattleMons[2].types[0]   = savedT1;
+                gBattleMons[2].types[1]   = savedT2;
                 (void)resistFlags;
 
                 if (!(resistFlags & requiredFlag))

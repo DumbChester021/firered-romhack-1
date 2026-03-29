@@ -36,6 +36,7 @@ Reference codebase for porting: **pokeemerald-expansion (RHH)** at `/mnt/data/Gi
 | **preproc Tool Upgrade** | ✅ Done | C++ compiler tool upgraded for keyword args (`x=0`) |
 | **Battle Script Effect Hooks** | ✅ Done | Restored Gen 1 functionality for Two-Turn moves and basic stat modifications. |
 | **RHH Faithfulness Audit** | ✅ Done | EFFECT_RECOIL, EFFECT_STRUGGLE, ignoresSubstitute, 13 ban flags (all RHH flags ported) |
+| **Phase C: `types[3]` Migration** | ✅ Done | `type1,type2,unknown` → `types[3]`, macros, GetBattlerTypes, 86 sites |
 
 ---
 
@@ -490,12 +491,24 @@ Key files/changes:
 - `tools/migrate_volatiles.py` — Python migration script (323 lines transformed across 9 files)
 - Build: clean. Verify: 71/0/0.
 
+**Phase C — `types[3]` Migration (2026-03-30, COMPLETE):**
+
+Replaced `u8 type1; u8 type2; u8 unknown;` in `struct BattlePokemon` with `u8 types[3]` array matching RHH architecture (3-slot type system: [0]=base type1, [1]=base type2, [2]=third type defaulting to TYPE_MYSTERY).
+
+Key changes:
+- `include/pokemon.h` — `struct BattlePokemon`: `types[3]` (same memory layout/offsets)
+- `include/battle.h` — Macros: `IS_BATTLER_OF_TYPE` (checks all 3 slots via `GetBattlerTypes`), `SET_BATTLER_TYPE` (sets all 3), `RESTORE_BATTLER_TYPE` (restores from SpeciesInfo), `IS_BATTLER_TYPELESS` (all TYPE_MYSTERY check)
+- `include/battle.h` — Declarations: `GetBattlerTypes(u8 battlerId, u8 types[3])`, `RemoveBattlerType(u8 battler, u8 type)`
+- `src/battle_util.c` — Replaced `GetBattlerType1`/`GetBattlerType2` with `GetBattlerTypes` (Roost-aware, fills 3-element array) + added `RemoveBattlerType` (iterates all 3 slots)
+- 86 automated changes via `tools/migrate_types.py` across 6 files + 4 manual PokemonSubstruct fixups
+- Zero remaining `.type1`/`.type2` or `GetBattlerType1`/`GetBattlerType2` references
+- Build: clean. Verify: 71/0/0.
+
 **Next sessions (architecture-first order):**
 *Note: EWRAM Option 2 (`gDecompressionBuffer`) was skipped due to structural incompatibility: Mystery Gift uses it as executable memory, and FR-exclusive overlay systems (help/save_failed) enforce hardcoded 16KB framebuffer offsets which lack RHH equivalents.*
 
-1. **Phase C** — `types[3]` migration (`type1, type2` → `enum Type types[3]`) — enables Roost, Flying Press, dual-type mechanics
-2. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
-3. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
+1. **Phase D** — `MOVE_TARGET_*` → `TARGET_*` enum (911 occ, Python script)
+2. **Phase E** — `gBattleMoveDamage` → `moveDamage[MAX_BATTLERS_COUNT]` per-battler (232 occ)
 
 **Remaining structural changes** (not simple renames — values/semantics differ):
 
@@ -503,7 +516,7 @@ Key files/changes:
 |---|---|---|---|---|
 | `MOVE_TARGET_*` bitmask `#define`s | `TARGET_*` sequential `enum` | Values + comparison semantics change | 911 occ, 12 files + engine bitwise checks | Future |
 | `gBattleMoveDamage` (single `s32`) | `moveDamage[MAX_BATTLERS_COUNT]` in struct | Global → per-battler array | 232 occ, deep engine refactor | Future |
-| `u8 type1, type2` | `enum Type types[3]` | 2 fields → array of 3 | Struct layout + all access sites | Future |
+| ~~`u8 type1, type2`~~ | ~~`enum Type types[3]`~~ | ~~2 fields → array of 3~~ | ~~Struct layout + all access sites~~ | ✅ Done |
 | `u8 gBattlerAttacker` | `enum BattlerId gBattlerAttacker` | Type safety (u8 → enum) | Type change only | Low |
 | `bool8` returns | `bool32` returns | Width change | Function signatures | Low |
 | `sBattler_AI` | Various AI locals | AI refactoring | When porting AI | Future |

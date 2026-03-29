@@ -3354,28 +3354,36 @@ bool8 MoveHasAdditionalEffectSelf(u16 move, u16 moveEffect)
     return FALSE;
 }
 
-u8 GetBattlerType1(u8 battlerId)
+// RHH: GetBattlerTypes (pokeemerald-expansion/src/battle_util.c:9717)
+// Fills types[3] with the battler's current types, applying Roost.
+void GetBattlerTypes(u8 battlerId, u8 types[3])
 {
-    u8 type = gBattleMons[battlerId].type1;
-    if ((gBattleMons[battlerId].volatiles.roostActive) && type == TYPE_FLYING)
+    types[0] = gBattleMons[battlerId].types[0];
+    types[1] = gBattleMons[battlerId].types[1];
+    types[2] = gBattleMons[battlerId].types[2];
+
+    // Roost: temporarily removes Flying type
+    if (gBattleMons[battlerId].volatiles.roostActive)
     {
-        if (gBattleMons[battlerId].type2 == TYPE_FLYING)
-            return TYPE_NORMAL;
-        return TYPE_MYSTERY;
+        if (types[0] == TYPE_FLYING && types[1] == TYPE_FLYING)
+            types[0] = types[1] = TYPE_NORMAL;
+        else if (types[0] == TYPE_FLYING)
+            types[0] = TYPE_MYSTERY;
+        else if (types[1] == TYPE_FLYING)
+            types[1] = TYPE_MYSTERY;
     }
-    return type;
 }
 
-u8 GetBattlerType2(u8 battlerId)
+// RHH: RemoveBattlerType (pokeemerald-expansion/src/battle_util.c:9754)
+// Removes all instances of 'type' from the battler's active types.
+void RemoveBattlerType(u8 battler, u8 type)
 {
-    u8 type = gBattleMons[battlerId].type2;
-    if ((gBattleMons[battlerId].volatiles.roostActive) && type == TYPE_FLYING)
+    u32 i;
+    for (i = 0; i < 3; i++)
     {
-        if (gBattleMons[battlerId].type1 == TYPE_FLYING)
-            return TYPE_NORMAL;
-        return TYPE_MYSTERY;
+        if (gBattleMons[battler].types[i] == type)
+            gBattleMons[battler].types[i] = TYPE_MYSTERY;
     }
-    return type;
 }
 
 // RHH: IsNonVolatileStatusBlocked (pokeemerald-expansion/src/battle_util.c:5509)

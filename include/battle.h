@@ -575,15 +575,40 @@ extern struct AiLogicData *gAiLogicData;
 
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 
-#define IS_BATTLER_OF_TYPE(battlerId, type)((GetBattlerType1(battlerId) == type || GetBattlerType2(battlerId) == type))
-#define SET_BATTLER_TYPE(battlerId, type)   \
-{                                           \
-    gBattleMons[battlerId].type1 = type;    \
-    gBattleMons[battlerId].type2 = type;    \
+// RHH parity: checks all 3 type slots (types[0], types[1], types[2])
+void GetBattlerTypes(u8 battlerId, u8 types[3]);
+
+#define IS_BATTLER_OF_TYPE(battlerId, type)                             \
+    ({                                                                   \
+        u8 _types[3];                                                    \
+        GetBattlerTypes(battlerId, _types);                              \
+        (_types[0] == (type) || _types[1] == (type) || _types[2] == (type)); \
+    })
+
+#define SET_BATTLER_TYPE(battler, type)              \
+{                                                    \
+    gBattleMons[battler].types[0] = type;            \
+    gBattleMons[battler].types[1] = type;            \
+    gBattleMons[battler].types[2] = TYPE_MYSTERY;    \
 }
 
-u8 GetBattlerType1(u8 battlerId);
-u8 GetBattlerType2(u8 battlerId);
+#define RESTORE_BATTLER_TYPE(battler)                                                \
+{                                                                                    \
+    gBattleMons[battler].types[0] = gSpeciesInfo[gBattleMons[battler].species].types[0]; \
+    gBattleMons[battler].types[1] = gSpeciesInfo[gBattleMons[battler].species].types[1]; \
+    gBattleMons[battler].types[2] = TYPE_MYSTERY;                                    \
+}
+
+// RHH parity: pokeemerald-expansion/include/battle.h:764
+#define IS_BATTLER_TYPELESS(battlerId)                                                    \
+    ({                                                                                    \
+        u8 _types[3];                                                                     \
+        GetBattlerTypes(battlerId, _types);                                               \
+        _types[0] == TYPE_MYSTERY && _types[1] == TYPE_MYSTERY && _types[2] == TYPE_MYSTERY; \
+    })
+
+// RHH parity: pokeemerald-expansion/src/battle_util.c:9754
+void RemoveBattlerType(u8 battler, u8 type);
 
 #define GET_STAT_BUFF_ID(n)((n & 0xF))              // first four bits 0x1, 0x2, 0x4, 0x8
 #define GET_STAT_BUFF_VALUE2(n)((n & 0xF0))

@@ -299,8 +299,8 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_TOXIC:
     case EFFECT_POISON:
     {
-        u8 type1 = GetBattlerType1(battlerDef);
-        u8 type2 = GetBattlerType2(battlerDef);
+        u8 type1 = gBattleMons[battlerDef].types[0];
+        u8 type2 = gBattleMons[battlerDef].types[1];
         if (type1 == TYPE_STEEL || type1 == TYPE_POISON || type2 == TYPE_STEEL || type2 == TYPE_POISON)
             return score - 10;
         if (defAbility == ABILITY_IMMUNITY)
@@ -407,7 +407,7 @@ static s32 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     case EFFECT_LEECH_SEED:
         if (gBattleMons[battlerDef].volatiles.leechSeed)
             return score - 10;
-        if (gBattleMons[battlerDef].type1 == TYPE_GRASS || gBattleMons[battlerDef].type2 == TYPE_GRASS)
+        if (gBattleMons[battlerDef].types[0] == TYPE_GRASS || gBattleMons[battlerDef].types[1] == TYPE_GRASS)
             return score - 10;
         break;
 
@@ -700,10 +700,10 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
     
     u8 atkStatus1  = gBattleMons[battlerAtk].status1;
     
-    u8 defType1    = GetBattlerType1(battlerDef);
-    u8 defType2    = GetBattlerType2(battlerDef);
-    u8 atkType1    = GetBattlerType1(battlerAtk);
-    u8 atkType2    = GetBattlerType2(battlerAtk);
+    u8 defType1    = gBattleMons[battlerDef].types[0];
+    u8 defType2    = gBattleMons[battlerDef].types[1];
+    u8 atkType1    = gBattleMons[battlerAtk].types[0];
+    u8 atkType2    = gBattleMons[battlerAtk].types[1];
     bool8 faster   = AI_IsFaster(battlerAtk, battlerDef, move, MOVE_NONE, CONSIDER_PRIORITY);
     u8 typeFlags   = TypeCalc(move, battlerAtk, battlerDef);
     bool8 superEff = (typeFlags & MOVE_RESULT_SUPER_EFFECTIVE) != 0;

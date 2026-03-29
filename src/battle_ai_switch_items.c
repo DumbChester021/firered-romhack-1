@@ -311,7 +311,7 @@ static bool8 ShouldSwitch(void)
      || AbilityBattleEffects(ABILITYEFFECT_CHECK_OTHER_SIDE, gActiveBattler, ABILITY_ARENA_TRAP, 0, 0))
         return FALSE; // misses the flying or levitate check
     if (AbilityBattleEffects(ABILITYEFFECT_FIELD_SPORT, 0, ABILITY_MAGNET_PULL, 0, 0))
-        if ((gBattleMons[gActiveBattler].type1 == TYPE_STEEL) || (gBattleMons[gActiveBattler].type2 == TYPE_STEEL))
+        if ((gBattleMons[gActiveBattler].types[0] == TYPE_STEEL) || (gBattleMons[gActiveBattler].types[1] == TYPE_STEEL))
             return FALSE;
     availableToSwitch = 0;
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
@@ -475,8 +475,8 @@ u8 GetMostSuitableMonToSwitchInto(void)
                 u8 type1 = gSpeciesInfo[species].types[0];
                 u8 type2 = gSpeciesInfo[species].types[1];
                 u8 typeDmg = 10;
-                ModulateByTypeEffectiveness(GetBattlerType1(opposingBattler), type1, type2, &typeDmg);
-                ModulateByTypeEffectiveness(GetBattlerType2(opposingBattler), type1, type2, &typeDmg);
+                ModulateByTypeEffectiveness(gBattleMons[opposingBattler].types[0], type1, type2, &typeDmg);
+                ModulateByTypeEffectiveness(gBattleMons[opposingBattler].types[1], type1, type2, &typeDmg);
                 if (bestDmg < typeDmg)
                 {
                     bestDmg = typeDmg;

@@ -202,9 +202,7 @@ struct BattlePokemon
     /*0x17*/ u32 abilityNum:1;
     /*0x18*/ s8 statStages[NUM_BATTLE_STATS];
     /*0x20*/ u8 ability;
-    /*0x21*/ u8 type1;
-    /*0x22*/ u8 type2;
-    /*0x23*/ u8 unknown;
+    /*0x21*/ u8 types[3]; // [0]=type1, [1]=type2, [2]=third type (TYPE_MYSTERY default) — RHH parity
     /*0x24*/ u8 pp[MAX_MON_MOVES];
     /*0x28*/ u16 hp;
     /*0x2A*/ u8 level;
