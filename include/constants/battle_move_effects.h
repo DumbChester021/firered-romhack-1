@@ -356,6 +356,13 @@ enum {
     EFFECT_SHELL_SIDE_ARM,
     EFFECT_RECOIL,
     EFFECT_STRUGGLE,
+    // RHH: additional effects used by AI infrastructure
+    EFFECT_RAPID_SPIN,              // Clears entry hazards + deals damage (Gen3+ in RHH)
+    EFFECT_WEATHER,                 // Castform-type weather-setting moves
+    EFFECT_WEATHER_AND_SWITCH,      // Primordial Sea / Desolate Land style (Gen7+)
+    EFFECT_STEEL_ROLLER,            // Clears terrain (Gen8+)
+    EFFECT_ICE_SPINNER,             // Clears terrain (Gen9+)
+    EFFECT_OVERWRITE_ABILITY,       // Overwrites target ability (Gen5+)
     NUM_BATTLE_MOVE_EFFECTS,
 };
 

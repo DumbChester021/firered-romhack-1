@@ -393,37 +393,34 @@ Names/structures that still differ from RHH and need renaming when touched:
 - Fixed `GetMoveTarget()` → `GetMoveTarget(move, 0)` in `DoesPartnerHaveSameMoveEffect`
 - `#ifdef ABILITY_SIMPLE` in `IncreaseStatUpScoreInternal` is CORRECT (Gen 4+, not in Gen 3)
 
-**Tiers A–I are fully ported, build clean, 71/0/0 verify. Next: Tier J.**
+**Tiers A–J are fully ported, build clean, 71/0/0 verify. AI additional effects scoring COMPLETE.**
 
 **Tier J — AI_CalcAdditionalEffectScore** (see `docs/research/ai_additional_effects_port_plan.md`):
 
-**Research complete (2026-03-29).** Full dependency tree mapped. 25 functions to add + 355-line main.
+**COMPLETE (2026-03-29).** All 26 Tier J functions ported, full `GetAIEffectGroup`/`GetAIEffectGroupFromMove` infrastructure, wired into `AI_CheckViability`. Build: clean. Verify: 71/0/0.
 
-Ordered implementation list:
+Functions ported (all in `src/battle_ai_util.c`):
+- `GetIncomingMove`, `HasPartnerIgnoreFlags`, `HasBattlerSideMoveWithEffect`
+- `DoesBattlerIgnoreAbilityChecks`, `AI_WeatherHasEffect` (static), `AI_GetWeather`
+- `BattlerWillFaintFromWeather`, `BattlerWillFaintFromSecondaryDamage`
+- `IsAdditionalEffectBlocked`, `ShouldTryToFlinch`, `ShouldTrap`
+- `GetAIEffectGroup` (static), `GetAIEffectGroupFromMove` (static), `HasMoveWithAIEffect`, `HasBattlerSideMoveWithAIEffect`
+- `CanLowerStat`, `ShouldSetWeather`, `ShouldClearWeather`, `ShouldSetFieldStatus`, `ShouldClearFieldStatus`
+- `ShouldSetScreen`, `ShouldCureStatus`, `AI_TryToClearStats`, `AI_ShouldCopyStatChanges`
+- `AI_ShouldSetUpHazards`, `AI_GetBattlerMoveTargetType`, `HasMoveWithLowAccuracy`
+- `AI_CalcAdditionalEffectScore` (static, in `src/battle_ai_main.c`)
 
-1. **Inlines** → `include/pokemon.h`: `IsSoundMove`, `GetMoveCategory`, `MoveIgnoresTargetAbility` stub
-2. **Inlines** → `include/battle.h`: `IsBattleMoveStatus`, `IsSpreadMove`
-3. **MOVE_EFFECT constants** → `include/constants/battle.h`: ~20 Gen 4+ effect codes (CLEAR_SMOG, STEALTH_ROCK, THROAT_CHOP, weather effects, terrain effects, AURORA_VEIL, REMOVE_STATUS, BREAK_SCREEN, STEAL_STATS, RAISE_TEAM_*, LOWER_*_SIDE, DEF_SPDEF_DOWN, V_CREATE)
-4. **`AI_FLAG_NEGATE_UNAWARE`** → `include/constants/battle_ai.h`
-5. **src/battle_ai_util.c** — port in order:
-   - `HasPartnerIgnoreFlags`, `HasBattlerSideMoveWithEffect`
-   - `DoesBattlerIgnoreAbilityChecks` (12 lines)
-   - `AI_GetWeather` + static `AI_WeatherHasEffect` (7 lines)
-   - `AI_GetBattlerMoveTargetType` (Gen 9 paths #ifdef'd)
-   - `BattlerWillFaintFromSecondaryDamage`
-   - `GetIncomingMove`, `IsAdditionalEffectBlocked`
-   - `ShouldTryToFlinch` (volatiles: `.infatuation`→STATUS2, `.confusionTurns>0`→STATUS2_CONFUSION)
-   - `ShouldTrap` (aiFlags[battler] → single aiFlags)
-   - `HasMoveWithAIEffect` stub (FALSE), `HasBattlerSideMoveWithAIEffect` stub (FALSE)
-   - `CanLowerStat` (62 lines; CLEAR_AMULET/FLOWER_VEIL/BIG_PECKS/MINDS_EYE/FULL_METAL_BODY #ifdef'd)
-   - `ShouldSetWeather`, `ShouldClearWeather` (simplified without WeatherChecker)
-   - `ShouldSetFieldStatus`, `ShouldClearFieldStatus` (stubs → FALSE; terrain Gen 6+)
-   - `ShouldSetScreen` (34 lines; B_WEATHER_ICY_ANY→B_WEATHER_HAIL; AURORA_VEIL #ifdef)
-   - `ShouldCureStatus` (stub → FALSE; REMOVE_STATUS Gen 4+)
-   - `AI_TryToClearStats` (7 lines), `AI_ShouldCopyStatChanges` (29 lines)
-   - `AI_ShouldSetUpHazards` (24 lines)
-   - `AI_CalcAdditionalEffectScore` (355 lines, 8 adaptations listed in research doc)
-6. Wire `AI_CalcAdditionalEffectScore` into `AI_CheckViability()` in `src/battle_ai_main.c`
+Infrastructure additions:
+- `EFFECT_RAPID_SPIN`, `EFFECT_WEATHER`, `EFFECT_WEATHER_AND_SWITCH`, `EFFECT_STEEL_ROLLER`, `EFFECT_ICE_SPINNER`, `EFFECT_OVERWRITE_ABILITY` added to `battle_move_effects.h`
+- `MOVE_EFFECT_FEINT`, `MOVE_EFFECT_INCINERATE`, `MOVE_EFFECT_SALT_CURE`, `MOVE_EFFECT_GRAVITY`, terrain MOVE_EFFECTs, `MOVE_EFFECT_DEFOG`, `MOVE_EFFECT_HAZE`, `MOVE_EFFECT_REFLECT`, `MOVE_EFFECT_LIGHT_SCREEN`, `MOVE_EFFECT_TORMENT_SIDE` added to `constants/battle.h`
+- `AI_EFFECT_*` constants + `LOW_ACCURACY_THRESHOLD` added to `include/battle_ai_util.h`
+
+Deferred (own sessions):
+- `WeatherChecker` (`battle_ai_field_statuses.c`, 603 lines)
+- `ShouldCureStatusInternal` (80+ lines) — `ShouldCureStatus` is stub returning FALSE
+- `ShouldSetWeather`/`ShouldClearWeather` are stubs (FALSE after weather check)
+
+**NEXT SESSION: WeatherChecker port** OR add more Gen 4+ moves.
 
 **Future sessions:**
 - Port `WeatherChecker` from `battle_ai_field_statuses.c` (603 lines, own session)

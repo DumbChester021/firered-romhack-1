@@ -2273,3 +2273,611 @@ void IncreaseConfusionScore(u8 battlerAtk, u8 battlerDef, u16 move, s32 *score)
             ADJUST_SCORE_PTR(DECENT_EFFECT);
     }
 }
+
+// ============================================================================
+// Tier J — AI_CalcAdditionalEffectScore helper functions
+// RHH source: pokeemerald-expansion/src/battle_ai_util.c
+// ============================================================================
+
+// RHH: GetIncomingMove (src/battle_ai_util.c:205-210)
+// Returns predicted or last used move for the opposing battler.
+u16 GetIncomingMove(u8 battler, u8 opposingBattler, struct AiLogicData *aiData)
+{
+    if (aiData->predictingMove && CanAiPredictMove(battler))
+        return aiData->predictedMove[opposingBattler];
+    return aiData->lastUsedMove[opposingBattler];
+}
+
+// RHH: HasPartnerIgnoreFlags (src/battle_ai_util.c:4172-4179)
+bool32 HasPartnerIgnoreFlags(u8 battler)
+{
+    if (IsDoubleBattle() && IsBattlerAlive(BATTLE_PARTNER(battler)))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: HasBattlerSideMoveWithEffect (src/battle_ai_util.c:2639-2646)
+bool32 HasBattlerSideMoveWithEffect(u8 battler, u16 effect)
+{
+    if (HasMoveWithEffect(battler, effect))
+        return TRUE;
+    if (HasPartnerIgnoreFlags(battler) && HasMoveWithEffect(BATTLE_PARTNER(battler), effect))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: DoesBattlerIgnoreAbilityChecks (src/battle_ai_util.c:1881-1893)
+// Gen4+ ABILITY_MYCELIUM_MIGHT #ifdef'd.
+bool32 DoesBattlerIgnoreAbilityChecks(u8 battlerAtk, u8 atkAbility, u16 move)
+{
+    if (AI_THINKING_STRUCT->aiFlags & AI_FLAG_NEGATE_UNAWARE)
+        return FALSE;
+
+#ifdef ABILITY_MYCELIUM_MIGHT
+    if (atkAbility == ABILITY_MYCELIUM_MIGHT && IsBattleMoveStatus(move))
+        return TRUE;
+#endif
+
+    if (IsMoldBreakerTypeAbility(battlerAtk, atkAbility) || MoveIgnoresTargetAbility(move))
+        return TRUE;
+
+    return FALSE;
+}
+
+// RHH: AI_WeatherHasEffect (src/battle_ai_util.c:1895-1902, static inline)
+// Gen3: single aiFlags — no per-battler flag array.
+static bool32 AI_WeatherHasEffect(void)
+{
+    if (AI_THINKING_STRUCT->aiFlags & AI_FLAG_NEGATE_UNAWARE)
+        return TRUE;   // AI handicap: doesn't understand weather suppression
+    return gAiLogicData->weatherHasEffect;
+}
+
+// RHH: AI_GetWeather (src/battle_ai_util.c:1904-1911)
+bool32 AI_GetWeather(void)
+{
+    if (!gBattleWeather)
+        return 0;
+    if (!AI_WeatherHasEffect())
+        return 0;
+    return gBattleWeather;
+}
+
+// RHH: BattlerWillFaintFromWeather (src/battle_ai_util.c:3434-3444)
+// Gen3: HOLD_EFFECT_SAFETY_GOGGLES #ifdef'd; GetNonDynamaxMaxHP → maxHP.
+// Uses existing DoesBattlerTakeSandstormDamage/DoesBattlerTakeHailDamage (see above).
+bool32 BattlerWillFaintFromWeather(u8 battler, u8 ability)
+{
+#ifdef HOLD_EFFECT_SAFETY_GOGGLES
+    if (gAiLogicData->holdEffects[battler] == HOLD_EFFECT_SAFETY_GOGGLES)
+        return FALSE;
+#endif
+
+    // Note: existing statics check gBattleWeather directly; acceptable for Gen3.
+    if ((DoesBattlerTakeSandstormDamage(battler, ability) || DoesBattlerTakeHailDamage(battler, ability))
+      && gBattleMons[battler].hp <= max(1, gBattleMons[battler].maxHP / 16))
+        return TRUE;
+
+    return FALSE;
+}
+
+// RHH: BattlerWillFaintFromSecondaryDamage (src/battle_ai_util.c:3446-3452)
+bool32 BattlerWillFaintFromSecondaryDamage(u8 battler, u8 ability)
+{
+    (void)ability;
+    if (GetBattlerSecondaryDamage(battler) != 0
+      && gBattleMons[battler].hp <= max(1, gBattleMons[battler].maxHP / 16))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: IsAdditionalEffectBlocked (src/battle_ai_util.c:727-736)
+// Gen3: HOLD_EFFECT_COVERT_CLOAK #ifdef'd.
+bool32 IsAdditionalEffectBlocked(u8 battlerAtk, u8 abilityAtk, u8 battlerDef, u8 abilityDef)
+{
+#ifdef HOLD_EFFECT_COVERT_CLOAK
+    if (gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK)
+        return TRUE;
+#endif
+
+    if (abilityDef == ABILITY_SHIELD_DUST && !IsMoldBreakerTypeAbility(battlerAtk, abilityAtk))
+        return TRUE;
+
+    return FALSE;
+}
+
+// RHH: ShouldTryToFlinch (src/battle_ai_util.c:3754-3774)
+// Gen3: HOLD_EFFECT_COVERT_CLOAK #ifdef'd; volatiles → status2 bitmasks.
+bool32 ShouldTryToFlinch(u8 battlerAtk, u8 battlerDef, u8 atkAbility, u8 defAbility, u16 move)
+{
+    u16 predictedMoveSpeedCheck = GetIncomingMoveSpeedCheck(battlerAtk, battlerDef, gAiLogicData);
+
+    if ((!IsMoldBreakerTypeAbility(battlerAtk, gAiLogicData->abilities[battlerAtk])
+            && (defAbility == ABILITY_SHIELD_DUST || defAbility == ABILITY_INNER_FOCUS))
+#ifdef HOLD_EFFECT_COVERT_CLOAK
+     || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
+#endif
+     || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
+     || AI_IsSlower(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, CONSIDER_PRIORITY))
+    {
+        return FALSE;
+    }
+    else if (atkAbility == ABILITY_SERENE_GRACE
+          || (gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS)
+          || (gBattleMons[battlerDef].status2 & STATUS2_INFATUATION)
+          || (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)
+          || (AI_IsFaster(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, CONSIDER_PRIORITY)
+              && CanTargetFaintAi(battlerDef, battlerAtk)))
+    {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+// RHH: ShouldTrap (src/battle_ai_util.c:3776-3794)
+// Gen3: single aiFlags.
+bool32 ShouldTrap(u8 battlerAtk, u8 battlerDef, u16 move)
+{
+    if (AI_CanBattlerEscape(battlerDef))
+        return FALSE;
+
+    if (IsBattlerTrapped(battlerAtk, battlerDef))
+        return FALSE;
+
+    if (BattlerWillFaintFromSecondaryDamage(battlerDef, gAiLogicData->abilities[battlerDef]))
+        return TRUE;
+
+    if (AI_THINKING_STRUCT->aiFlags & AI_FLAG_STALL)
+    {
+        if (!CanTargetFaintAi(battlerDef, battlerAtk))
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
+// RHH: GetAIEffectGroup (src/battle_ai_util.c:4229-4291, static)
+// Maps a primary battle move effect to an AI_EFFECT_* group bitmask.
+// Gen4+ effects #ifdef'd where the EFFECT_ constant may not be in Gen3.
+static u32 GetAIEffectGroup(u16 effect)
+{
+    u32 aiEffect = AI_EFFECT_NONE;
+
+    switch (effect)
+    {
+    case EFFECT_WEATHER:
+    case EFFECT_WEATHER_AND_SWITCH:
+        aiEffect |= AI_EFFECT_WEATHER;
+        break;
+    case EFFECT_ELECTRIC_TERRAIN:
+    case EFFECT_GRASSY_TERRAIN:
+    case EFFECT_MISTY_TERRAIN:
+    case EFFECT_PSYCHIC_TERRAIN:
+    case EFFECT_STEEL_ROLLER:
+    case EFFECT_ICE_SPINNER:
+        aiEffect |= AI_EFFECT_TERRAIN;
+        break;
+    case EFFECT_COURT_CHANGE:
+        aiEffect |= AI_EFFECT_CLEAR_HAZARDS | AI_EFFECT_AURORA_VEIL | AI_EFFECT_BREAK_SCREENS;
+        break;
+    case EFFECT_DEFOG:
+        aiEffect |= AI_EFFECT_CLEAR_HAZARDS | AI_EFFECT_BREAK_SCREENS;
+        break;
+    case EFFECT_RAPID_SPIN:
+    case EFFECT_TIDY_UP:
+        aiEffect |= AI_EFFECT_CLEAR_HAZARDS;
+        break;
+    case EFFECT_HAZE:
+        aiEffect |= AI_EFFECT_RESET_STATS;
+        break;
+    case EFFECT_HIT_SWITCH_TARGET:
+    case EFFECT_ROAR:
+        aiEffect |= AI_EFFECT_FORCE_SWITCH;
+        break;
+    case EFFECT_TORMENT:
+        aiEffect |= AI_EFFECT_TORMENT;
+        break;
+    case EFFECT_AURORA_VEIL:
+        aiEffect |= AI_EFFECT_AURORA_VEIL;
+        break;
+    case EFFECT_LIGHT_SCREEN:
+        aiEffect |= AI_EFFECT_LIGHT_SCREEN;
+        break;
+    case EFFECT_REFLECT:
+        aiEffect |= AI_EFFECT_REFLECT;
+        break;
+    case EFFECT_GRAVITY:
+        aiEffect |= AI_EFFECT_GRAVITY;
+        break;
+    case EFFECT_DOODLE:
+    case EFFECT_ENTRAINMENT:
+    case EFFECT_GASTRO_ACID:
+    case EFFECT_ROLE_PLAY:
+    case EFFECT_SKILL_SWAP:
+    case EFFECT_OVERWRITE_ABILITY:
+        aiEffect |= AI_EFFECT_CHANGE_ABILITY;
+        break;
+    default:
+        break;
+    }
+
+    return aiEffect;
+}
+
+// RHH: GetAIEffectGroupFromMove (src/battle_ai_util.c:4294-4349, static)
+// Combines primary move effect group with additionalEffects group flags.
+static u32 GetAIEffectGroupFromMove(u8 battler, u16 move)
+{
+    (void)battler;
+    u32 aiEffect = GetAIEffectGroup(gMovesInfo[move].effect);
+    u32 additionalEffectCount = GetMoveAdditionalEffectCount(move);
+
+    for (u32 effectIndex = 0; effectIndex < additionalEffectCount; effectIndex++)
+    {
+        switch (GetMoveAdditionalEffectById(move, effectIndex)->moveEffect)
+        {
+        case MOVE_EFFECT_SUN:
+        case MOVE_EFFECT_RAIN:
+        case MOVE_EFFECT_SANDSTORM:
+        case MOVE_EFFECT_HAIL:
+            aiEffect |= AI_EFFECT_WEATHER;
+            break;
+        case MOVE_EFFECT_ELECTRIC_TERRAIN:
+        case MOVE_EFFECT_GRASSY_TERRAIN:
+        case MOVE_EFFECT_MISTY_TERRAIN:
+        case MOVE_EFFECT_PSYCHIC_TERRAIN:
+            aiEffect |= AI_EFFECT_TERRAIN;
+            break;
+        case MOVE_EFFECT_DEFOG:
+            aiEffect |= AI_EFFECT_CLEAR_HAZARDS | AI_EFFECT_BREAK_SCREENS;
+            break;
+        case MOVE_EFFECT_CLEAR_SMOG:
+        case MOVE_EFFECT_HAZE:
+            aiEffect |= AI_EFFECT_RESET_STATS;
+            break;
+        case MOVE_EFFECT_TORMENT_SIDE:
+            aiEffect |= AI_EFFECT_TORMENT;
+            break;
+        case MOVE_EFFECT_LIGHT_SCREEN:
+            aiEffect |= AI_EFFECT_LIGHT_SCREEN;
+            break;
+        case MOVE_EFFECT_REFLECT:
+            aiEffect |= AI_EFFECT_REFLECT;
+            break;
+        case MOVE_EFFECT_AURORA_VEIL:
+            aiEffect |= AI_EFFECT_AURORA_VEIL;
+            break;
+        case MOVE_EFFECT_GRAVITY:
+            aiEffect |= AI_EFFECT_GRAVITY;
+            break;
+        case MOVE_EFFECT_BREAK_SCREEN:
+            aiEffect |= AI_EFFECT_BREAK_SCREENS;
+            break;
+        default:
+            break;
+        }
+    }
+
+    return aiEffect;
+}
+
+// RHH: HasMoveWithAIEffect (src/battle_ai_util.c:2623-2637)
+bool32 HasMoveWithAIEffect(u8 battler, u32 aiEffect)
+{
+    u16 *moves = GetMovesArray(battler);
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE)
+        {
+            if (GetAIEffectGroupFromMove(battler, moves[moveIndex]) & aiEffect)
+                return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+// RHH: HasBattlerSideMoveWithAIEffect (src/battle_ai_util.c:2648-2655)
+bool32 HasBattlerSideMoveWithAIEffect(u8 battler, u32 aiEffect)
+{
+    if (HasMoveWithAIEffect(battler, aiEffect))
+        return TRUE;
+    if (HasPartnerIgnoreFlags(battler) && HasMoveWithAIEffect(BATTLE_PARTNER(battler), aiEffect))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: CanLowerStat (src/battle_ai_util.c:2327-2388)
+// Gen3 adaptations: no HOLD_EFFECT_CLEAR_AMULET/FLOWER_VEIL/BIG_PECKS/MINDS_EYE/FULL_METAL_BODY/MAGIC_BOUNCE;
+// no GetConfig/GetActiveGimmick; SHIELD_DUST simplified (no dynamax); INFILTRATOR #ifdef'd.
+bool32 CanLowerStat(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData, u8 stat)
+{
+    if (gBattleMons[battlerDef].statStages[stat] == MIN_STAT_STAGE)
+        return FALSE;
+
+#ifdef HOLD_EFFECT_CLEAR_AMULET
+    if (aiData->holdEffects[battlerDef] == HOLD_EFFECT_CLEAR_AMULET)
+        return FALSE;
+#endif
+
+    u16 move = AI_THINKING_STRUCT->moveConsidered;
+    u8 abilityAtk = aiData->abilities[battlerAtk];
+
+    if (gSideStatuses[GetBattlerSide(battlerDef)] & SIDE_STATUS_MIST
+#ifdef ABILITY_INFILTRATOR
+     && abilityAtk != ABILITY_INFILTRATOR
+#endif
+    )
+        return FALSE;
+
+    if (!DoesBattlerIgnoreAbilityChecks(battlerAtk, abilityAtk, move))
+    {
+#ifdef ABILITY_FLOWER_VEIL
+        if (IS_BATTLER_OF_TYPE(battlerDef, TYPE_GRASS) && AI_IsAbilityOnSide(battlerDef, ABILITY_FLOWER_VEIL))
+            return FALSE;
+#endif
+
+        switch (aiData->abilities[battlerDef])
+        {
+        case ABILITY_SPEED_BOOST:
+            if (stat == STAT_SPEED)
+                return FALSE;
+            break;
+        case ABILITY_HYPER_CUTTER:
+            if (stat == STAT_ATK)
+                return FALSE;
+            break;
+#ifdef ABILITY_BIG_PECKS
+        case ABILITY_BIG_PECKS:
+            if (stat == STAT_DEF)
+                return FALSE;
+            break;
+#endif
+        case ABILITY_KEEN_EYE:
+#ifdef ABILITY_MINDS_EYE
+        case ABILITY_MINDS_EYE:
+#endif
+            if (stat == STAT_ACC)
+                return FALSE;
+            break;
+        case ABILITY_CONTRARY:
+        case ABILITY_CLEAR_BODY:
+        case ABILITY_WHITE_SMOKE:
+#ifdef ABILITY_FULL_METAL_BODY
+        case ABILITY_FULL_METAL_BODY:
+#endif
+            return FALSE;
+        case ABILITY_SHIELD_DUST:
+            // Gen3: no dynamax check needed
+            if (!IsBattleMoveStatus(move))
+                return FALSE;
+            break;
+#ifdef ABILITY_MAGIC_BOUNCE
+        case ABILITY_MAGIC_BOUNCE:
+            if (IsBattleMoveStatus(move))
+                return FALSE;
+            break;
+#endif
+        default:
+            break;
+        }
+    }
+
+    if (stat == STAT_SPEED)
+    {
+        u16 predictedMoveSpeedCheck = GetIncomingMoveSpeedCheck(battlerAtk, battlerDef, gAiLogicData);
+        return !(AI_IsFaster(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, DONT_CONSIDER_PRIORITY)
+              && CountUsablePartyMons(battlerAtk) == 0
+              && !HasBattlerSideMoveWithEffect(battlerAtk, EFFECT_ELECTRO_BALL));
+    }
+
+    return TRUE;
+}
+
+// RHH: ShouldSetWeather (src/battle_ai_util.c:2229-2235)
+// Gen3 stub: WeatherChecker not ported yet.
+bool32 ShouldSetWeather(u8 battler, u32 weather)
+{
+    (void)battler;
+    if (AI_GetWeather() & weather)
+        return FALSE;
+    return FALSE;   // WeatherChecker deferred
+}
+
+// RHH: ShouldClearWeather (src/battle_ai_util.c:2237-2240)
+// Gen3 stub: WeatherChecker not ported yet.
+bool32 ShouldClearWeather(u8 battler, u32 weather)
+{
+    (void)battler;
+    (void)weather;
+    return FALSE;   // WeatherChecker deferred
+}
+
+// RHH: ShouldSetFieldStatus (src/battle_ai_util.c:2242-2254)
+// Gen3 stub: terrain/field effects not implemented.
+bool32 ShouldSetFieldStatus(u8 battler, u32 fieldStatus)
+{
+    (void)battler;
+    (void)fieldStatus;
+    return FALSE;
+}
+
+// RHH: ShouldClearFieldStatus (src/battle_ai_util.c:2256-2259)
+// Gen3 stub: terrain/field effects not implemented.
+bool32 ShouldClearFieldStatus(u8 battler, u32 fieldStatus)
+{
+    (void)battler;
+    (void)fieldStatus;
+    return FALSE;
+}
+
+// RHH: ShouldSetScreen (src/battle_ai_util.c:4011-4044)
+// Gen3: HasMoveWithAIEffect stub always FALSE; B_WEATHER_ICY_ANY → B_WEATHER_HAIL;
+// SIDE_STATUS_AURORA_VEIL #ifdef'd.
+bool32 ShouldSetScreen(u8 battlerAtk, u8 battlerDef, u16 moveEffect)
+{
+    u8 atkSide = GetBattlerSide(battlerAtk);
+
+    if (HasMoveWithAIEffect(battlerDef, AI_EFFECT_BREAK_SCREENS))
+        return FALSE;
+
+    switch (moveEffect)
+    {
+    case EFFECT_AURORA_VEIL:
+        if ((AI_GetWeather() & B_WEATHER_HAIL)
+#ifdef SIDE_STATUS_AURORA_VEIL
+         && !(gSideStatuses[atkSide] & (SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHTSCREEN | SIDE_STATUS_AURORA_VEIL))
+#else
+         && !(gSideStatuses[atkSide] & (SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHTSCREEN))
+#endif
+        )
+            return TRUE;
+        break;
+    case EFFECT_REFLECT:
+        if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL)
+#ifdef SIDE_STATUS_AURORA_VEIL
+         && !(gSideStatuses[atkSide] & (SIDE_STATUS_REFLECT | SIDE_STATUS_AURORA_VEIL))
+#else
+         && !(gSideStatuses[atkSide] & SIDE_STATUS_REFLECT)
+#endif
+        )
+            return TRUE;
+        break;
+    case EFFECT_LIGHT_SCREEN:
+        if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL)
+#ifdef SIDE_STATUS_AURORA_VEIL
+         && !(gSideStatuses[atkSide] & (SIDE_STATUS_LIGHTSCREEN | SIDE_STATUS_AURORA_VEIL))
+#else
+         && !(gSideStatuses[atkSide] & SIDE_STATUS_LIGHTSCREEN)
+#endif
+        )
+            return TRUE;
+        break;
+    default:
+        break;
+    }
+
+    return FALSE;
+}
+
+// RHH: ShouldCureStatus (src/battle_ai_util.c:4132-4135)
+// Gen3 stub: ShouldCureStatusInternal not ported yet.
+bool32 ShouldCureStatus(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData)
+{
+    (void)battlerAtk;
+    (void)battlerDef;
+    (void)aiData;
+    return FALSE;
+}
+
+// RHH: AI_TryToClearStats (src/battle_ai_util.c:5648-5654)
+s32 AI_TryToClearStats(u8 battlerAtk, u8 battlerDef, bool32 isDoubleBattle)
+{
+    (void)battlerAtk;
+    if (isDoubleBattle)
+        return min(CountPositiveStatStages(battlerDef) + CountPositiveStatStages(BATTLE_PARTNER(battlerDef)), 7);
+    else
+        return min(CountPositiveStatStages(battlerDef), 4);
+}
+
+// RHH: AI_ShouldCopyStatChanges (src/battle_ai_util.c:5656-5684)
+// Gen3: single aiFlags; HasMoveWithLowAccuracy uses raw accuracy.
+bool32 AI_ShouldCopyStatChanges(u8 battlerAtk, u8 battlerDef)
+{
+    for (u8 statId = STAT_ATK; statId < NUM_BATTLE_STATS; statId++)
+    {
+        if (gBattleMons[battlerDef].statStages[statId] > gBattleMons[battlerAtk].statStages[statId])
+        {
+            switch (statId)
+            {
+            case STAT_ATK:
+                return HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_PHYSICAL);
+            case STAT_SPATK:
+                return HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_SPECIAL);
+            case STAT_ACC:
+                return HasMoveWithLowAccuracy(battlerAtk, battlerDef, LOW_ACCURACY_THRESHOLD, FALSE);
+            case STAT_EVASION:
+            case STAT_SPEED:
+                return TRUE;
+            case STAT_DEF:
+            case STAT_SPDEF:
+                return (AI_THINKING_STRUCT->aiFlags & AI_FLAG_STALL) != 0;
+            default:
+                break;
+            }
+        }
+    }
+    return FALSE;
+}
+
+// RHH: AI_ShouldSetUpHazards (src/battle_ai_util.c:5687-5710)
+bool32 AI_ShouldSetUpHazards(u8 battlerAtk, u8 battlerDef, u16 move, struct AiLogicData *aiData)
+{
+    if (CountUsablePartyMons(battlerDef) == 0
+     || HasBattlerSideMoveWithAIEffect(battlerDef, AI_EFFECT_CLEAR_HAZARDS))
+        return FALSE;
+
+    if (IsBattleMoveStatus(move))
+    {
+        if (HasMoveWithEffect(battlerDef, EFFECT_MAGIC_COAT))
+            return FALSE;
+        if (DoesBattlerIgnoreAbilityChecks(battlerAtk, aiData->abilities[battlerAtk], move))
+            return TRUE;
+#ifdef ABILITY_MAGIC_BOUNCE
+        if (aiData->abilities[battlerDef] == ABILITY_MAGIC_BOUNCE)
+            return FALSE;
+#endif
+    }
+    else
+    {
+        if (DoesBattlerIgnoreAbilityChecks(battlerAtk, aiData->abilities[battlerAtk], move))
+            return TRUE;
+        if (aiData->abilities[battlerDef] == ABILITY_SHIELD_DUST)
+            return FALSE;
+    }
+    return TRUE;
+}
+
+// RHH: AI_GetBattlerMoveTargetType (src/battle_ai_util.c:80-91)
+// Gen3: no terrain/Terapagos; GetMoveTarget(move, 0).
+u16 AI_GetBattlerMoveTargetType(u8 battler, u16 move)
+{
+    u16 effect = gMovesInfo[move].effect;
+    if (effect == EFFECT_CURSE && !IS_BATTLER_OF_TYPE(battler, TYPE_GHOST))
+        return MOVE_TARGET_USER;
+    return GetMoveTarget(move, 0);
+}
+
+// RHH: HasMoveWithLowAccuracy (src/battle_ai_util.c:2839-2864)
+// Gen3 simplified: uses raw gMovesInfo[move].accuracy (no moveAccuracy field in AiLogicData).
+bool32 HasMoveWithLowAccuracy(u8 battlerAtk, u8 battlerDef, u32 accCheck, bool32 ignoreStatus)
+{
+    u16 *moves = GetMovesArray(battlerAtk);
+    u32 moveLimitations = gAiLogicData->moveLimitations[battlerAtk];
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (IsMoveUnusable(moveIndex, moves[moveIndex], moveLimitations))
+            continue;
+        if (moves[moveIndex] == MOVE_NONE || moves[moveIndex] == MOVE_UNAVAILABLE)
+            continue;
+
+        if (ignoreStatus && IsBattleMoveStatus(moves[moveIndex]))
+            continue;
+
+        u16 acc = gMovesInfo[moves[moveIndex]].accuracy;
+        if (acc == 0)   // always-hit moves
+            continue;
+
+        u16 target = AI_GetBattlerMoveTargetType(battlerAtk, moves[moveIndex]);
+        if (target == MOVE_TARGET_USER || target == MOVE_TARGET_OPPONENTS_FIELD)
+            continue;
+
+        if (acc <= accCheck)
+            return TRUE;
+    }
+
+    return FALSE;
+}

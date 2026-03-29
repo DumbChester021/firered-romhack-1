@@ -287,10 +287,49 @@
 #define MOVE_EFFECT_ROUND               61
 #define MOVE_EFFECT_TERA_BLAST          62
 #define MOVE_EFFECT_RECOIL_HP_25        63
-#define NUM_MOVE_EFFECTS                64
+// RHH Gen 4+ move effects — AI scoring only (not used by battle script engine yet).
+// moveEffect is u16 in AdditionalEffect, so values above 63 do not conflict with
+// MOVE_EFFECT_AFFECTS_USER (0x40) / MOVE_EFFECT_CERTAIN (0x80) bitmask flags.
+#define MOVE_EFFECT_REMOVE_STATUS       64  // Heal Bell / Aromatherapy style (Gen4+)
+#define MOVE_EFFECT_DEF_SPDEF_DOWN      65  // e.g. Shell Side Arm
+#define MOVE_EFFECT_CLEAR_SMOG          66  // Clear Smog stat-reset
+#define MOVE_EFFECT_V_CREATE            67  // V-Create Def/SpDef/Spe drop self
+#define MOVE_EFFECT_THROAT_CHOP         68  // Prevent sound moves 2 turns
+#define MOVE_EFFECT_RAISE_TEAM_ATTACK   69
+#define MOVE_EFFECT_RAISE_TEAM_DEFENSE  70
+#define MOVE_EFFECT_RAISE_TEAM_SPEED    71
+#define MOVE_EFFECT_RAISE_TEAM_SP_ATK   72
+#define MOVE_EFFECT_RAISE_TEAM_SP_DEF   73
+#define MOVE_EFFECT_LOWER_ATTACK_SIDE   74
+#define MOVE_EFFECT_LOWER_DEFENSE_SIDE  75
+#define MOVE_EFFECT_LOWER_SPEED_SIDE    76
+#define MOVE_EFFECT_LOWER_SP_ATK_SIDE   77
+#define MOVE_EFFECT_LOWER_SP_DEF_SIDE   78
+#define MOVE_EFFECT_SUN                 79
+#define MOVE_EFFECT_RAIN                80
+#define MOVE_EFFECT_SANDSTORM           81
+#define MOVE_EFFECT_HAIL                82
+#define MOVE_EFFECT_AURORA_VEIL         83  // Aurora Veil (requires hail; Gen7+)
+#define MOVE_EFFECT_STEALTH_ROCK        84  // Max Move rocks side effect
+#define MOVE_EFFECT_BREAK_SCREEN        85  // Brick Break style; pre-hit
+#define MOVE_EFFECT_STEAL_STATS         86  // Spectral Thief style; pre-hit
+#define MOVE_EFFECT_FEINT               87  // Feint / Hyperspace Hole (breaks protect)
+#define MOVE_EFFECT_INCINERATE          88  // Incinerate / Knock off berries + gems
+#define MOVE_EFFECT_SALT_CURE           89  // Salt Cure (double damage Water/Steel)
+#define MOVE_EFFECT_GRAVITY             90  // Gravity field
+#define MOVE_EFFECT_MISTY_TERRAIN       91  // Misty Terrain
+#define MOVE_EFFECT_GRASSY_TERRAIN      92  // Grassy Terrain
+#define MOVE_EFFECT_ELECTRIC_TERRAIN    93  // Electric Terrain
+#define MOVE_EFFECT_PSYCHIC_TERRAIN     94  // Psychic Terrain
+#define MOVE_EFFECT_DEFOG               95  // Defog (Gen4+ — clears hazards + screens)
+#define MOVE_EFFECT_HAZE                96  // Haze (clears all stat changes)
+#define MOVE_EFFECT_REFLECT             97  // Reflect (from additionalEffect)
+#define MOVE_EFFECT_LIGHT_SCREEN        98  // Light Screen (from additionalEffect)
+#define MOVE_EFFECT_TORMENT_SIDE        99  // Side-wide Torment (Gen9+)
+#define NUM_MOVE_EFFECTS               100
 
-#define MOVE_EFFECT_AFFECTS_USER        (1 << 6) // 64
-#define MOVE_EFFECT_CERTAIN             (1 << 7) // 128
+#define MOVE_EFFECT_AFFECTS_USER        (1 << 6) // 64 — bitmask OR'd with effect for self-targeting
+#define MOVE_EFFECT_CERTAIN             (1 << 7) // 128 — bitmask for guaranteed secondary
 
 // Battle terrain defines for gBattleTerrain.
 #define BATTLE_TERRAIN_GRASS        0

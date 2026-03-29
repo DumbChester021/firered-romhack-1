@@ -800,4 +800,19 @@ static inline bool32 IsBattlerAlive(u8 battler)
     return TRUE;
 }
 
+// RHH: IsBattleMoveStatus (pokeemerald-expansion/include/battle.h:742)
+static inline bool32 IsBattleMoveStatus(u16 move)
+{
+    return GetMoveCategory(move) == DAMAGE_CATEGORY_STATUS;
+}
+
+// RHH: IsSpreadMove (pokeemerald-expansion/include/battle.h:1152)
+// Returns TRUE in a double battle if the move targets both foes or all battlers.
+static inline bool32 IsSpreadMove(u16 moveTarget)
+{
+    if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
+        return FALSE;
+    return moveTarget == MOVE_TARGET_BOTH || moveTarget == MOVE_TARGET_FOES_AND_ALLY;
+}
+
 #endif // GUARD_BATTLE_H

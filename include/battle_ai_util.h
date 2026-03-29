@@ -176,4 +176,54 @@ bool32 IsBattlerTrapped(u8 battlerAtk, u8 battlerDef);
 bool32 CanIndexMoveFaintTarget(u8 battlerAtk, u8 battlerDef, u32 moveIndex, enum DamageCalcContext calcContext);
 void GetBestDmgMovesFromBattler(u8 battlerAtk, u8 battlerDef, enum DamageCalcContext calcContext, u16 *bestMoves);
 
+// ============================================================================
+// Tier J — AI_CalcAdditionalEffectScore helper infrastructure
+// RHH source: pokeemerald-expansion/include/battle_ai_util.h:339-354
+// ============================================================================
+
+// AI_EFFECT_* flags — group move additional effects for AI category tests.
+#define AI_EFFECT_NONE                        0
+#define AI_EFFECT_WEATHER              (1 <<  0)
+#define AI_EFFECT_TERRAIN              (1 <<  1)
+#define AI_EFFECT_CLEAR_HAZARDS        (1 <<  2)
+#define AI_EFFECT_BREAK_SCREENS        (1 <<  3)
+#define AI_EFFECT_RESET_STATS          (1 <<  4)
+#define AI_EFFECT_FORCE_SWITCH         (1 <<  5)
+#define AI_EFFECT_TORMENT              (1 <<  6)
+#define AI_EFFECT_LIGHT_SCREEN         (1 <<  7)
+#define AI_EFFECT_REFLECT              (1 <<  8)
+#define AI_EFFECT_GRAVITY              (1 <<  9)
+#define AI_EFFECT_CHANGE_ABILITY       (1 << 10)
+#define AI_EFFECT_AURORA_VEIL          (AI_EFFECT_LIGHT_SCREEN | AI_EFFECT_REFLECT)
+
+// RHH: LOW_ACCURACY_THRESHOLD (pokeemerald-expansion/include/config/ai.h:62)
+#define LOW_ACCURACY_THRESHOLD  75
+
+// RHH: Tier J helper functions
+// pokeemerald-expansion/src/battle_ai_util.c (various lines)
+bool32 HasPartnerIgnoreFlags(u8 battler);
+bool32 HasBattlerSideMoveWithEffect(u8 battler, u16 effect);
+bool32 DoesBattlerIgnoreAbilityChecks(u8 battlerAtk, u8 atkAbility, u16 move);
+bool32 AI_GetWeather(void);
+bool32 BattlerWillFaintFromWeather(u8 battler, u8 ability);
+bool32 BattlerWillFaintFromSecondaryDamage(u8 battler, u8 ability);
+bool32 IsAdditionalEffectBlocked(u8 battlerAtk, u8 abilityAtk, u8 battlerDef, u8 abilityDef);
+bool32 ShouldTryToFlinch(u8 battlerAtk, u8 battlerDef, u8 atkAbility, u8 defAbility, u16 move);
+bool32 ShouldTrap(u8 battlerAtk, u8 battlerDef, u16 move);
+bool32 HasMoveWithAIEffect(u8 battler, u32 aiEffect);
+bool32 HasBattlerSideMoveWithAIEffect(u8 battler, u32 aiEffect);
+bool32 CanLowerStat(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData, u8 stat);
+bool32 ShouldSetWeather(u8 battler, u32 weather);
+bool32 ShouldClearWeather(u8 battler, u32 weather);
+bool32 ShouldSetFieldStatus(u8 battler, u32 fieldStatus);
+bool32 ShouldClearFieldStatus(u8 battler, u32 fieldStatus);
+bool32 ShouldSetScreen(u8 battlerAtk, u8 battlerDef, u16 moveEffect);
+bool32 ShouldCureStatus(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData);
+s32 AI_TryToClearStats(u8 battlerAtk, u8 battlerDef, bool32 isDoubleBattle);
+bool32 AI_ShouldCopyStatChanges(u8 battlerAtk, u8 battlerDef);
+bool32 AI_ShouldSetUpHazards(u8 battlerAtk, u8 battlerDef, u16 move, struct AiLogicData *aiData);
+u16 AI_GetBattlerMoveTargetType(u8 battler, u16 move);
+bool32 HasMoveWithLowAccuracy(u8 battlerAtk, u8 battlerDef, u32 accCheck, bool32 ignoreStatus);
+u16 GetIncomingMove(u8 battler, u8 opposingBattler, struct AiLogicData *aiData);
+
 #endif // GUARD_BATTLE_AI_UTIL_H

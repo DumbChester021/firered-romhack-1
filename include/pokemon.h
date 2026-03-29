@@ -390,6 +390,26 @@ static inline bool32 MoveIgnoresSubstitute(u16 moveId)
     return gMovesInfo[moveId].ignoresSubstitute;
 }
 
+// RHH: GetMoveCategory (pokeemerald-expansion/include/move.h:243)
+static inline u8 GetMoveCategory(u16 moveId)
+{
+    return gMovesInfo[moveId].category;
+}
+
+// RHH: IsSoundMove (pokeemerald-expansion/include/move.h:360)
+static inline bool32 IsSoundMove(u16 moveId)
+{
+    return gMovesInfo[moveId].soundMove;
+}
+
+// RHH: MoveIgnoresTargetAbility (pokeemerald-expansion/include/move.h:400)
+// Gen 3: no ignoresTargetAbility field — stub FALSE; #ifdef when ported.
+static inline bool32 MoveIgnoresTargetAbility(u16 moveId)
+{
+    (void)moveId;
+    return FALSE;
+}
+
 extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;

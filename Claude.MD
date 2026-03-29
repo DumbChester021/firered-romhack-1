@@ -152,16 +152,22 @@ TASK EXECUTION PROTOCOL
 
 CURRENT ACTIVE WORK (as of 2026-03-29)
 
-Active task: Porting AI additionalEffects scoring from RHH — Tier J (AI_CalcAdditionalEffectScore) next.
-* Research doc: `docs/research/ai_additional_effects_port_plan.md` (full dependency tree mapped)
-* Python extraction tool: `tools/port_ai_scoring.py` (run with `--check-deps`)
-* Staging area: `tools/staging/ai_port/` (39+ extracted RHH functions ready)
-* Tiers A-I DONE and RHH-faithful: All infrastructure, KO calc, trap detection, status chain, all scorers
-* CanSetNonVolatileStatus chain DONE (battle_util.c). All 5 status scorers FULLY ported (no stubs).
-* IsMoldBreakerTypeAbility moved to battle_util.c per RHH architecture.
-* Build: clean. Verify: 71/0/0. Last commit: 19b580ba3 (Tier H+I+fixups)
-* Tier J NEXT: Start with inlines, then MOVE_EFFECT constants, then battle_ai_util.c (25 functions)
-* See "RHH Convergence Tracker" → "Tier J" section in `docs/CONTINUATION_GUIDE.md` for ordered list.
+Active branch: feature-AI-upgrade
+TIERS A–J COMPLETE: Full AI additionalEffects scoring infrastructure ported.
+* Build: clean. Verify: 71/0/0.
+* AI_CalcAdditionalEffectScore DONE (src/battle_ai_main.c, static)
+* Wired into AI_CheckViability() — all secondary effects scored
+* GetAIEffectGroup + GetAIEffectGroupFromMove DONE (full port, no stubs)
+* HasMoveWithAIEffect DONE (fully functional, not a stub)
+* All 26 Tier J helper functions DONE (see CONTINUATION_GUIDE.md for full list)
+
+EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
+Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.
+
+NEXT SESSION options:
+1. WeatherChecker port (battle_ai_field_statuses.c, 603 lines — own session)
+2. ShouldCureStatusInternal port (80+ lines)
+3. New Gen 4+ moves batch 3
 
 EWRAM usage is at 98.87% — be very careful about adding EWRAM_DATA globals.
 Use heap allocation (AllocZeroed) for new large structs, like gAiLogicData does.
