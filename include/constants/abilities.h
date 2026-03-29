@@ -80,6 +80,9 @@
 #define ABILITY_CACOPHONY 76
 #define ABILITY_AIR_LOCK 77
 
+// Gen4+ abilities — added for AI scoring; not yet assigned to species
+#define ABILITY_SOLAR_POWER 94
+
 #define ABILITY_CONTRARY 126
 
 #define ABILITIES_COUNT 127

@@ -11,6 +11,7 @@
 #include "constants/battle_ai.h"
 #include "constants/battle_move_effects.h"
 #include "constants/items.h"
+#include "battle_ai_field_statuses.h"
 #include "constants/moves.h"
 #include "constants/pokemon.h"
 #include "item.h"
@@ -1297,23 +1298,11 @@ static s32 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s32 score)
         break;
 
     case EFFECT_RAIN_DANCE:
-        if (atkHpPct < 40) score -= 1;
-        else if (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SUN | B_WEATHER_SANDSTORM))
-            score += 1;
-        else if (atkAbility == ABILITY_SWIFT_SWIM || atkAbility == ABILITY_RAIN_DISH)
-            score += 1;
-        break;
-
     case EFFECT_SUNNY_DAY:
-        if (atkHpPct < 40) score -= 1;
-        else if (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_RAIN | B_WEATHER_SANDSTORM))
-            score += 1;
-        break;
-
+    case EFFECT_SANDSTORM:
     case EFFECT_HAIL:
-        if (atkHpPct < 40) score -= 1;
-        else if (gBattleWeather & (B_WEATHER_SUN | B_WEATHER_RAIN | B_WEATHER_SANDSTORM))
-            score += 1;
+        // RHH: CalcWeatherScore (battle_ai_field_statuses.c) — full weather benefit analysis
+        ADJUST_SCORE(CalcWeatherScore(battlerAtk, battlerDef, move, gAiLogicData));
         break;
 
     case EFFECT_DRAGON_DANCE:

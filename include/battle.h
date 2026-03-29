@@ -270,6 +270,24 @@ struct WishFutureKnock
 
 extern struct WishFutureKnock gWishFutureKnock;
 
+// RHH: struct FieldTimer (pokeemerald-expansion/include/battle.h:156-166)
+// Tracks timer countdowns for Gen4+ field effects. Gen3: most fields are always 0;
+// trickRoomTimer, gravityTimer, terrainTimer used when those mechanics are ported.
+struct FieldTimer
+{
+    u16 mudSportTimer;
+    u16 waterSportTimer;
+    u16 wonderRoomTimer;
+    u16 magicRoomTimer;
+    u16 trickRoomTimer;
+    u16 terrainTimer;
+    u16 gravityTimer;
+    u16 fairyLockTimer;
+};
+
+extern u32 gFieldStatuses;
+extern struct FieldTimer gFieldTimers;
+
 struct AI_ThinkingStruct
 {
     u8 aiState;

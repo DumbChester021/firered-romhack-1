@@ -14,6 +14,7 @@
 #include "constants/hold_effects.h"
 #include "constants/moves.h"
 #include "constants/battle_move_effects.h"
+#include "battle_ai_field_statuses.h"
 
 #define AI_THINKING_STRUCT (gBattleResources->ai)
 
@@ -786,10 +787,9 @@ bool8 AI_IsTrickRoomActive(void)
 // Returns TRUE if any of battlerId's moves have an additionalEffects entry
 // matching moveEffect (targeting the foe).
 // =============================================================================
-bool8 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect)
+bool32 HasMoveWithAdditionalEffect(u8 battlerId, u16 moveEffect)
 {
-    u8 i;
-    for (i = 0; i < MAX_MON_MOVES; i++)
+    for (u32 i = 0; i < MAX_MON_MOVES; i++)
     {
         u16 move = gBattleMons[battlerId].moves[i];
         if (move != MOVE_NONE && MoveHasAdditionalEffect(move, moveEffect))
@@ -2677,40 +2677,39 @@ bool32 CanLowerStat(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData, u8
 }
 
 // RHH: ShouldSetWeather (src/battle_ai_util.c:2229-2235)
-// Gen3 stub: WeatherChecker not ported yet.
 bool32 ShouldSetWeather(u8 battler, u32 weather)
 {
-    (void)battler;
     if (AI_GetWeather() & weather)
         return FALSE;
-    return FALSE;   // WeatherChecker deferred
+
+    return WeatherChecker(battler, weather, FIELD_EFFECT_POSITIVE);
 }
 
 // RHH: ShouldClearWeather (src/battle_ai_util.c:2237-2240)
-// Gen3 stub: WeatherChecker not ported yet.
 bool32 ShouldClearWeather(u8 battler, u32 weather)
 {
-    (void)battler;
-    (void)weather;
-    return FALSE;   // WeatherChecker deferred
+    return WeatherChecker(battler, weather, FIELD_EFFECT_NEGATIVE);
 }
 
 // RHH: ShouldSetFieldStatus (src/battle_ai_util.c:2242-2254)
-// Gen3 stub: terrain/field effects not implemented.
 bool32 ShouldSetFieldStatus(u8 battler, u32 fieldStatus)
 {
-    (void)battler;
-    (void)fieldStatus;
-    return FALSE;
+    if (gFieldStatuses & fieldStatus)
+    {
+        if (!(fieldStatus & STATUS_FIELD_TRICK_ROOM))
+            return FALSE;
+        // Re-cast Trick Room on last turn to avoid letting it expire
+        else if (gFieldTimers.trickRoomTimer != 1)
+            return FALSE;
+    }
+
+    return FieldStatusChecker(battler, fieldStatus, FIELD_EFFECT_POSITIVE);
 }
 
 // RHH: ShouldClearFieldStatus (src/battle_ai_util.c:2256-2259)
-// Gen3 stub: terrain/field effects not implemented.
 bool32 ShouldClearFieldStatus(u8 battler, u32 fieldStatus)
 {
-    (void)battler;
-    (void)fieldStatus;
-    return FALSE;
+    return FieldStatusChecker(battler, fieldStatus, FIELD_EFFECT_NEGATIVE);
 }
 
 // RHH: ShouldSetScreen (src/battle_ai_util.c:4011-4044)
@@ -2762,14 +2761,236 @@ bool32 ShouldSetScreen(u8 battlerAtk, u8 battlerDef, u16 moveEffect)
     return FALSE;
 }
 
+// RHH: IsWeatherActive (src/battle_ai_util.c:1976-1996)
+enum WeatherState IsWeatherActive(u32 flags)
+{
+    enum WeatherState state;
+
+    if (gBattleWeather & flags)
+        state = WEATHER_ACTIVE;
+    else
+        state = WEATHER_INACTIVE;
+
+    if (!AI_WeatherHasEffect())
+    {
+        if (state == WEATHER_ACTIVE)
+            state = WEATHER_ACTIVE_BUT_BLOCKED;
+        else
+            state = WEATHER_INACTIVE_AND_BLOCKED;
+    }
+
+    return state;
+}
+
+// RHH: HasDamagingMoveOfType (src/battle_ai_util.c:3219-3240)
+// Gen3 simplified: no GetDynamicMoveType (type-changing abilities); use raw type field.
+bool32 HasDamagingMoveOfType(u8 battler, u8 type)
+{
+    u16 *moves = GetMovesArray(battler);
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+         && GetMovePower(moves[moveIndex]) > 0
+         && GetMoveType(moves[moveIndex]) == type)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: HasMoveWithFlag (src/battle_ai_util.c:3241-3252)
+bool32 HasMoveWithFlag(u8 battler, MoveFlag getFlag)
+{
+    u16 *moves = GetMovesArray(battler);
+    u32 moveLimitations = gAiLogicData->moveLimitations[battler];
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (IsMoveUnusable(moveIndex, moves[moveIndex], moveLimitations))
+            continue;
+        if (getFlag(moves[moveIndex]))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: IsBattle1v1 (src/battle_ai_util.c:4143-4150)
+bool32 IsBattle1v1(void)
+{
+    if (IsDoubleBattle()
+      && ((IsBattlerAlive(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)) && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)))
+      || (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)) && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))))
+        return FALSE;
+    return TRUE;
+}
+
+// RHH: HasNonVolatileMoveEffect (src/battle_ai_util.c:2689-2700)
+// Gen3 simplified: checks additionalEffects (no GetMoveNonVolatileStatus, no EFFECT_NON_VOLATILE_STATUS).
+bool32 HasNonVolatileMoveEffect(u8 battlerId, u16 effect)
+{
+    u16 *moves = GetMovesArray(battlerId);
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+         && MoveHasAdditionalEffect(moves[moveIndex], effect))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: HasBattlerSideMoveWithAdditionalEffect (src/battle_ai_util.c:2731-2737)
+bool32 HasBattlerSideMoveWithAdditionalEffect(u8 battler, u16 moveEffect)
+{
+    if (HasMoveWithAdditionalEffect(battler, moveEffect))
+        return TRUE;
+    if (HasPartnerIgnoreFlags(battler) && HasMoveWithAdditionalEffect(BATTLE_PARTNER(battler), moveEffect))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: IsTargetingPartner (src/battle_ai_util.c:4181-4186)
+// Gen3: AI_FLAG_ATTACKS_PARTNER not defined — just check flank pairing.
+bool32 IsTargetingPartner(u8 battlerAtk, u8 battlerDef)
+{
+#ifdef AI_FLAG_ATTACKS_PARTNER
+    if (AI_THINKING_STRUCT->aiFlags & AI_FLAG_ATTACKS_PARTNER)
+        return FALSE;
+#endif
+    return (battlerAtk == (battlerDef ^ BIT_FLANK));
+}
+
+// RHH: HasThawingMove (src/battle_ai_util.c:2923-2932)
+bool32 HasThawingMove(u8 battler)
+{
+    u16 *moves = GetMovesArray(battler);
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        if (moves[moveIndex] != MOVE_NONE && moves[moveIndex] != MOVE_UNAVAILABLE
+         && MoveThawsUser(moves[moveIndex]))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// RHH: DoesBattlerBenefitFromAllVolatileStatus (src/battle_ai_util.c:3572-3582, static)
+// Gen3: ABILITY_QUICK_FEET/MAGIC_GUARD #ifdef'd.
+static bool32 DoesBattlerBenefitFromAllVolatileStatus(u8 battler, u8 ability)
+{
+    if (ability == ABILITY_MARVEL_SCALE
+#ifdef ABILITY_QUICK_FEET
+     || ability == ABILITY_QUICK_FEET
+#endif
+#ifdef ABILITY_MAGIC_GUARD
+     || ability == ABILITY_MAGIC_GUARD
+#endif
+     || (ability == ABILITY_GUTS && HasMoveWithCategory(battler, DAMAGE_CATEGORY_PHYSICAL))
+     || HasMoveWithEffect(battler, EFFECT_FACADE)
+     || HasMoveWithEffect(battler, EFFECT_PSYCHO_SHIFT))
+        return TRUE;
+    return FALSE;
+}
+
+// RHH: ShouldCureStatusInternal (src/battle_ai_util.c:4046-4131, static)
+// Gen3: HOLD_EFFECT_TOXIC_ORB/FLAME_ORB, ABILITY_POISON_HEAL/TOXIC_BOOST/FLARE_BOOST #ifdef'd.
+static bool32 ShouldCureStatusInternal(u8 battlerAtk, u8 battlerDef, bool32 usingItem, struct AiLogicData *aiData)
+{
+    bool32 targetingSelf = (battlerAtk == battlerDef);
+    bool32 targetingAlly = IsTargetingPartner(battlerAtk, battlerDef);
+    u32 status = gBattleMons[battlerDef].status1;
+
+    if (status & STATUS1_SLEEP)
+    {
+        if (targetingAlly || targetingSelf)
+        {
+            if (HasUsableWhileAsleepMove(battlerDef))
+                return FALSE;
+            else
+                return usingItem || targetingAlly;
+        }
+        return FALSE;
+    }
+
+    if (status & STATUS1_FREEZE)
+    {
+        if (targetingAlly || targetingSelf)
+        {
+            if (HasThawingMove(battlerDef))
+                return FALSE;
+            return usingItem || targetingAlly;
+        }
+        return FALSE;
+    }
+
+    bool32 isHarmless = FALSE;
+
+    if (DoesBattlerBenefitFromAllVolatileStatus(battlerDef, aiData->abilities[battlerDef]))
+        isHarmless = TRUE;
+
+    if (status & STATUS1_PSN_ANY)
+    {
+#ifdef HOLD_EFFECT_TOXIC_ORB
+        if (aiData->holdEffects[battlerDef] == HOLD_EFFECT_TOXIC_ORB)
+            return FALSE;
+#endif
+#ifdef ABILITY_POISON_HEAL
+        if (aiData->abilities[battlerDef] == ABILITY_POISON_HEAL)
+            isHarmless = TRUE;
+#endif
+#ifdef ABILITY_TOXIC_BOOST
+        if (aiData->abilities[battlerDef] == ABILITY_TOXIC_BOOST && !isHarmless)
+        {
+            if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
+                isHarmless = TRUE;
+            else if (!(targetingSelf || targetingAlly) && !HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
+                isHarmless = TRUE;
+        }
+#endif
+    }
+
+    if (status & STATUS1_BURN)
+    {
+#ifdef HOLD_EFFECT_FLAME_ORB
+        if (aiData->holdEffects[battlerDef] == HOLD_EFFECT_FLAME_ORB)
+            return FALSE;
+#endif
+#ifdef ABILITY_FLARE_BOOST
+        if (aiData->abilities[battlerDef] == ABILITY_FLARE_BOOST && !isHarmless)
+        {
+            if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
+                isHarmless = TRUE;
+            else if (!(targetingSelf || targetingAlly) && !HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
+                isHarmless = TRUE;
+        }
+#endif
+    }
+
+    if (isHarmless)
+    {
+        if (targetingSelf || targetingAlly)
+            return FALSE;
+        else
+            return TRUE;
+    }
+    else
+    {
+        if (targetingSelf || targetingAlly)
+            return TRUE;
+        else
+            return FALSE;
+    }
+}
+
 // RHH: ShouldCureStatus (src/battle_ai_util.c:4132-4135)
-// Gen3 stub: ShouldCureStatusInternal not ported yet.
 bool32 ShouldCureStatus(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData)
 {
-    (void)battlerAtk;
-    (void)battlerDef;
-    (void)aiData;
-    return FALSE;
+    return ShouldCureStatusInternal(battlerAtk, battlerDef, FALSE, aiData);
+}
+
+// RHH: ShouldCureStatusWithItem (src/battle_ai_util.c:4137-4140)
+bool32 ShouldCureStatusWithItem(u8 battlerAtk, u8 battlerDef, struct AiLogicData *aiData)
+{
+    return ShouldCureStatusInternal(battlerAtk, battlerDef, TRUE, aiData);
 }
 
 // RHH: AI_TryToClearStats (src/battle_ai_util.c:5648-5654)
